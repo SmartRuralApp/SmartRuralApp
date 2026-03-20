@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services - Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-landmark"></i>
+        </div>
+        <span class="logo-text">Smart Grama Panchayat</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/tax-search"><i class="fas fa-search-dollar"></i> Tax Payment</a></li>
+        <li><a href="/services" class="active"><i class="fas fa-handshake"></i> Services</a></li>
+        <li><a href="/admin-login"><i class="fas fa-user-shield"></i> Admin</a></li>
+      </ul>
+      <button class="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1 class="mb-2">Panchayat Services</h1>
+      <p class="text-muted mb-4">Browse all available services offered by your local Panchayat.</p>
+
+      <!-- Services Grid -->
+      <div class="services-grid">
+        <% if (services && services.length > 0) { %>
+          <% services.forEach(function(service) { %>
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fas fa-<%= service.icon %>"></i>
+              </div>
+              <h3 class="service-title"><%= service.title %></h3>
+              <p class="service-description"><%= service.description %></p>
+              <span class="status-badge <%= service.status.toLowerCase() %>"><%= service.status %></span>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <div class="card text-center" style="grid-column: 1 / -1;">
+            <i class="fas fa-info-circle" style="font-size: 3rem; color: var(--text-secondary); margin-bottom: 1rem;"></i>
+            <h3>No Services Available</h3>
+            <p class="text-muted">Check back later for updates.</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-logo">Smart Grama Panchayat</div>
+      <p>Digitizing Rural Governance | All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
+

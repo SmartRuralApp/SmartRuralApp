@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services Management - Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-landmark"></i>
+          <span>Admin Panel</span>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li>
+          <a href="/admin-dashboard">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-tax">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span>Tax Management</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-services" class="active">
+            <i class="fas fa-cogs"></i>
+            <span>Services</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+      <div class="admin-header">
+        <div>
+          <h1>Services Management</h1>
+          <p class="text-muted">Manage Panchayat services</p>
+        </div>
+      </div>
+
+      <!-- Add New Service -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3 class="card-title">Add New Service</h3>
+        </div>
+        <form id="serviceForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Service Title</label>
+              <input type="text" name="title" class="form-control" placeholder="Enter service title" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Icon Class</label>
+              <select name="icon" class="form-control">
+                <option value="fa-baby">Baby (Birth Certificate)</option>
+                <option value="fa-certificate">Certificate</option>
+                <option value="fa-ring">Marriage</option>
+                <option value="fa-tint">Water</option>
+                <option value="fa-home">Building</option>
+                <option value="fa-briefcase">Business</option>
+                <option value="fa-road">Roads</option>
+                <option value="fa-lightbulb">Electricity</option>
+                <option value="fa-cogs">Settings</option>
+                <option value="fa-handshake">General</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select name="status" class="form-control">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" rows="3" placeholder="Enter service description" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Service
+          </button>
+        </form>
+      </div>
+
+      <!-- Services Table -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">All Services</h3>
+        </div>
+        <div class="table-container" style="box-shadow: none;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Icon</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (services && services.length > 0) { %>
+                <% services.forEach(function(service) { %>
+                  <tr>
+                    <td><%= service.id %></td>
+                    <td><i class="fas fa-<%= service.icon %>" style="font-size: 1.25rem; color: var(--primary);"></i></td>
+                    <td><strong><%= service.title %></strong></td>
+                    <td><%= service.description %></td>
+                    <td><span class="status-badge <%= service.status.toLowerCase() %>"><%= service.status %></span></td>
+                    <td class="table-actions">
+                      <button class="btn btn-sm btn-outline" onclick="editService('<%= service.id %>', '<%= service.title %>', '<%= service.description %>', '<%= service.icon %>', '<%= service.status %>')">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-sm btn-danger" onclick="deleteService('<%= service.id %>')">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="6" class="text-center text-muted">No services found</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Edit Service Modal -->
+  <div class="modal-overlay" id="editServiceModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Service</h3>
+        <button class="modal-close" onclick="closeEditServiceModal()">&times;</button>
+      </div>
+      <form id="editServiceForm">
+        <div class="modal-body">
+          <input type="hidden" id="editServiceId" name="id">
+          <div class="form-group">
+            <label class="form-label">Service Title</label>
+            <input type="text" id="editServiceTitle" name="title" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Icon Class</label>
+            <select id="editServiceIcon" name="icon" class="form-control">
+              <option value="fa-baby">Baby (Birth Certificate)</option>
+              <option value="fa-certificate">Certificate</option>
+              <option value="fa-ring">Marriage</option>
+              <option value="fa-tint">Water</option>
+              <option value="fa-home">Building</option>
+              <option value="fa-briefcase">Business</option>
+              <option value="fa-road">Roads</option>
+              <option value="fa-lightbulb">Electricity</option>
+              <option value="fa-cogs">Settings</option>
+              <option value="fa-handshake">General</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select id="editServiceStatus" name="status" class="form-control">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea id="editServiceDescription" name="description" class="form-control" rows="3" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeEditServiceModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" onclick="updateService(); return false;">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
+

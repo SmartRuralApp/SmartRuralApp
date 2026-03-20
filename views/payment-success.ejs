@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful - Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="success-page">
+    <div class="success-card">
+      <div class="success-icon">
+        <i class="fas fa-check"></i>
+      </div>
+      <h1 class="success-title">Payment Successful!</h1>
+      <p class="success-message">Your tax payment has been processed successfully. Thank you for your payment.</p>
+      
+      <div class="success-details">
+        <div class="success-detail-item">
+          <span class="success-detail-label">Transaction ID</span>
+          <span class="success-detail-value"><%= transactionId || 'N/A' %></span>
+        </div>
+        <div class="success-detail-item">
+          <span class="success-detail-label">Property ID</span>
+          <span class="success-detail-value"><%= propertyId || 'N/A' %></span>
+        </div>
+        <div class="success-detail-item">
+          <span class="success-detail-label">Amount Paid</span>
+          <span class="success-detail-value">₹<%= parseFloat(amount || 0).toLocaleString('en-IN') %></span>
+        </div>
+        <div class="success-detail-item">
+          <span class="success-detail-label">Date</span>
+          <span class="success-detail-value"><%= new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+        </div>
+      </div>
+      
+      <div class="mt-4">
+        <a href="/" class="btn btn-primary">
+          <i class="fas fa-home"></i> Back to Home
+        </a>
+        <a href="/tax-search" class="btn btn-outline mt-2">
+          <i class="fas fa-search"></i> Search More
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
+

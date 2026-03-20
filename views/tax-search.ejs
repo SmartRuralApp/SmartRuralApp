@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Search - Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-landmark"></i>
+        </div>
+        <span class="logo-text">Smart Grama Panchayat</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/tax-search" class="active"><i class="fas fa-search-dollar"></i> Tax Payment</a></li>
+        <li><a href="/services"><i class="fas fa-handshake"></i> Services</a></li>
+        <li><a href="/admin-login"><i class="fas fa-user-shield"></i> Admin</a></li>
+      </ul>
+      <button class="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1 class="mb-2">Tax Payment</h1>
+      <p class="text-muted mb-4">Search for your property tax details by entering your Property ID or Owner Name.</p>
+
+      <!-- Search Section -->
+      <div class="search-section">
+        <div class="search-tabs">
+          <button class="search-tab active" data-type="propertyId">
+            <i class="fas fa-home"></i> By Property ID
+          </button>
+          <button class="search-tab" data-type="ownerName">
+            <i class="fas fa-user"></i> By Owner Name
+          </button>
+        </div>
+        
+        <form class="search-form">
+          <input type="text" class="search-input" placeholder="Enter Property ID (e.g., PROP001)" required>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i> Search
+          </button>
+        </form>
+      </div>
+
+      <!-- Results Section (dynamically populated) -->
+      <div id="searchResults"></div>
+    </div>
+  </main>
+
+  <!-- Payment Modal -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Confirm Payment</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Property ID</label>
+          <div id="paymentPropertyId" style="font-weight: 600; font-size: 1.1rem;"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount to Pay</label>
+          <div id="paymentAmount" style="font-weight: 700; font-size: 1.5rem; color: var(--primary);"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select class="form-control">
+            <option>Online Payment (Credit/Debit Card)</option>
+            <option>UPI Payment</option>
+            <option>Net Banking</option>
+          </select>
+        </div>
+        <input type="hidden" id="paymentRecordId">
+        <input type="hidden" id="paymentPropertyIdInput">
+        <input type="hidden" id="paymentAmountInput">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closePaymentModal()">Cancel</button>
+        <button class="btn btn-success" id="payButton" onclick="processPayment()">
+          <i class="fas fa-lock"></i> Pay Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-logo">Smart Grama Panchayat</div>
+      <p>Digitizing Rural Governance | All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
+

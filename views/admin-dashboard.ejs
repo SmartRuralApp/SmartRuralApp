@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-landmark"></i>
+          <span>Admin Panel</span>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li>
+          <a href="/admin-dashboard" class="active">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-tax">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span>Tax Management</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-services">
+            <i class="fas fa-cogs"></i>
+            <span>Services</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+      <div class="admin-header">
+        <div>
+          <h1>Dashboard</h1>
+          <p class="text-muted">Welcome back, Admin!</p>
+        </div>
+        <div>
+          <a href="/" class="btn btn-outline" target="_blank">
+            <i class="fas fa-external-link-alt"></i> View Site
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <i class="fas fa-rupee-sign"></i>
+          </div>
+          <div class="stat-info">
+            <h3>₹<%= stats.collection.toLocaleString('en-IN') %></h3>
+            <p>Total Collection</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h3><%= stats.pending %></h3>
+            <p>Pending Payments</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <i class="fas fa-home"></i>
+          </div>
+          <div class="stat-info">
+            <h3><%= stats.properties %></h3>
+            <p>Total Properties</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Payments -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Recent Payments</h3>
+          <a href="/admin-tax" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="table-container" style="box-shadow: none;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Transaction ID</th>
+                <th>Property ID</th>
+                <th>Owner Name</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Method</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (recentPayments && recentPayments.length > 0) { %>
+                <% recentPayments.forEach(function(payment) { %>
+                  <tr>
+                    <td><strong><%= payment.transaction_id %></strong></td>
+                    <td><%= payment.property_id %></td>
+                    <td><%= payment.owner_name %></td>
+                    <td><strong>₹<%= payment.amount.toLocaleString('en-IN') %></strong></td>
+                    <td><%= new Date(payment.payment_date).toLocaleDateString('en-IN') %></td>
+                    <td><%= payment.payment_method %></td>
+                  </tr>
+                <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="6" class="text-center text-muted">No recent payments</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
+
