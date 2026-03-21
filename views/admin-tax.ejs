@@ -3,190 +3,220 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tax Management - Smart Grama Panchayat</title>
+  <title>Tax Management - Admin | Smart Grama Panchayat</title>
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;family=Open+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 </head>
 <body>
+  <nav class="header">
+    <div class="navbar">
+      <div class="logo">
+        <div class="logo-icon"><i class="fas fa-landmark"></i></div>
+        <div class="logo-text">Panchayat Admin</div>
+      </div>
+      <ul class="nav-links">
+        <li><a href="/admin-dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/admin-tax" class="nav-link active"><i class="fas fa-receipt"></i> Tax Management</a></li>
+        <li><a href="/admin-services" class="nav-link"><i class="fas fa-cogs"></i> Services</a></li>
+        <li><a href="/admin-logout" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+      <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+    </div>
+  </nav>
+
   <div class="admin-layout">
-    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo">
-          <i class="fas fa-landmark"></i>
-          <span>Admin Panel</span>
+          <i class="fas fa-shield-alt"></i> Admin
         </div>
       </div>
       <ul class="sidebar-menu">
-        <li>
-          <a href="/admin-dashboard">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin-tax" class="active">
-            <i class="fas fa-file-invoice-dollar"></i>
-            <span>Tax Management</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin-services">
-            <i class="fas fa-cogs"></i>
-            <span>Services</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin-logout">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-          </a>
-        </li>
+        <li><a href="/admin-dashboard" class="sidebar-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/admin-tax" class="sidebar-link active"><i class="fas fa-receipt"></i> Tax Records</a></li>
+        <li><a href="/admin-services" class="sidebar-link"><i class="fas fa-cogs"></i> Services</a></li>
+        <li><a href="/admin-logout" class="sidebar-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
       </ul>
     </aside>
 
-    <!-- Main Content -->
     <main class="admin-content">
-      <div class="admin-header">
-        <div>
-          <h1>Tax Management</h1>
-          <p class="text-muted">Manage property tax records</p>
-        </div>
-      </div>
+      <div class="container">
+        <div class="admin-header">
+          <h1><i class="fas fa-receipt"></i> Tax Management</h1>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon blue"><i class="fas fa-file-invoice"></i></div>
+              <div class="stat-info">
+<h3><%= taxRecords ? taxRecords.length : 0 %></h3>
 
-      <!-- Add New Tax Record -->
-      <div class="card mb-4">
-        <div class="card-header">
-          <h3 class="card-title">Add New Tax Record</h3>
-        </div>
-        <form id="taxRecordForm">
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Property</label>
-              <select name="propertyId" class="form-control" required>
-                <option value="">Select Property</option>
-                <% if (properties && properties.length > 0) { %>
-                  <% properties.forEach(function(prop) { %>
-                    <option value="<%= prop.property_id %>"><%= prop.property_id %> - <%= prop.owner_name %></option>
-                  <% }); %>
-                <% } %>
-              </select>
+                <p>Total Properties</p>
+              </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">Tax Amount (₹)</label>
-              <input type="number" name="taxAmount" class="form-control" placeholder="Enter amount" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Due Date</label>
-              <input type="date" name="dueDate" class="form-control" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Year</label>
-              <input type="number" name="year" class="form-control" value="<%= new Date().getFullYear() %>" required>
+            <div class="stat-card">
+              <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+              <div class="stat-info">
+                <h3><%= taxRecords.length %></h3>
+                <p>Tax Records</p>
+              </div>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Add Tax Record
-          </button>
-        </form>
-      </div>
-
-      <!-- Tax Records Table -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">All Tax Records</h3>
         </div>
-        <div class="table-container" style="box-shadow: none;">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Property ID</th>
-                <th>Owner Name</th>
-                <th>Amount</th>
-                <th>Due Date</th>
-                <th>Year</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if (taxRecords && taxRecords.length > 0) { %>
-                <% taxRecords.forEach(function(record) { %>
+        
+        <!-- Add New Tax Record Form -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-plus"></i> Add New Tax Record</h3>
+          </div>
+          <div class="card-body">
+            <form id="taxRecordForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="propertyId" class="form-label">Property ID</label>
+                  <input type="text" id="propertyId" name="propertyId" class="form-control" placeholder="e.g., PROP001" required>
+                </div>
+                <div class="form-group">
+                  <label for="ownerName" class="form-label">Owner Name</label>
+                  <input type="text" id="ownerName" name="ownerName" class="form-control" placeholder="Owner name">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="taxAmount" class="form-label">Tax Amount</label>
+                  <input type="number" id="taxAmount" name="taxAmount" class="form-control" placeholder="2500" step="0.01" required>
+                </div>
+                <div class="form-group">
+                  <label for="dueDate" class="form-label">Due Date</label>
+                  <input type="date" id="dueDate" name="dueDate" class="form-control" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="year" class="form-label">Year</label>
+                  <input type="number" id="year" name="year" class="form-control" placeholder="2026" required>
+                </div>
+              </div>
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Tax Record</button>
+                <button type="reset" class="btn btn-outline">Reset</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Tax Records Table -->
+        <div class="card table-container">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-list"></i> Tax Records</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
                   <tr>
-                    <td><%= record.id %></td>
-                    <td><strong><%= record.property_id %></strong></td>
-                    <td><%= record.owner_name %></td>
-                    <td><strong>₹<%= record.tax_amount.toLocaleString('en-IN') %></strong></td>
-                    <td><%= new Date(record.due_date).toLocaleDateString('en-IN') %></td>
-                    <td><%= record.year %></td>
-                    <td><span class="status-badge <%= record.status.toLowerCase() %>"><%= record.status %></span></td>
-                    <td class="table-actions">
-                      <button class="btn btn-sm btn-outline" onclick="editTaxRecord('<%= record.id %>', '<%= record.property_id %>', '<%= record.tax_amount %>', '<%= record.due_date %>', '<%= record.year %>', '<%= record.status %>')">
-                        <i class="fas fa-edit"></i>
-                      </button>
-                      <button class="btn btn-sm btn-danger" onclick="deleteTaxRecord('<%= record.id %>')">
-                        <i class="fas fa-trash"></i>
-                      </button>
-                    </td>
+                    <th>Property ID</th>
+                    <th>Owner</th>
+                    <th>Amount</th>
+                    <th>Due Date</th>
+                    <th>Year</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
                   </tr>
-                <% }); %>
-              <% } else { %>
-                <tr>
-                  <td colspan="8" class="text-center text-muted">No tax records found</td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                  <% if (taxRecords.length === 0) { %>
+                    <tr>
+                      <td colspan="8" class="text-center text-muted py-4">
+                        <i class="fas fa-inbox fa-3x mb-3"></i><br>
+                        No tax records found
+                      </td>
+                    </tr>
+                  <% } else { %>
+                    <% taxRecords.forEach(record => { %>
+                      <tr>
+                        <td><strong><%= record.property_id %></strong></td>
+                        <td><%= record.owner_name %></td>
+                        <td>₹<%= parseFloat(record.tax_amount).toLocaleString('en-IN') %></td>
+                        <td><%= new Date(record.due_date).toLocaleDateString('en-IN') %></td>
+                        <td><%= record.year %></td>
+                        <td>
+                          <span class="status-badge <%= record.status.toLowerCase() %>"><%= record.status %></span>
+                        </td>
+                        <td><small><%= new Date(record.created_at).toLocaleDateString('en-IN') %></small></td>
+                        <td>
+                          <div class="table-actions">
+                            <button class="btn btn-sm btn-outline" onclick="editTaxRecord('<%= record.id %>', '<%= record.property_id %>', <%= record.tax_amount %>, '<%= record.due_date %>', <%= record.year %>, '<%= record.status %>')">
+                              <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteTaxRecord('<%= record.id %>')">
+                              <i class="fas fa-trash"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </main>
   </div>
 
   <!-- Edit Tax Modal -->
-  <div class="modal-overlay" id="editTaxModal">
+  <div id="editTaxModal" class="modal-overlay">
     <div class="modal">
       <div class="modal-header">
         <h3>Edit Tax Record</h3>
-        <button class="modal-close" onclick="closeEditTaxModal()">&times;</button>
+        <button class="modal-close"><i class="fas fa-times"></i></button>
       </div>
-      <form id="editTaxForm">
-        <div class="modal-body">
+      <div class="modal-body">
+        <form id="editTaxForm">
           <input type="hidden" id="editTaxId" name="id">
-          <div class="form-group">
-            <label class="form-label">Property ID</label>
-            <input type="text" id="editPropertyId" class="form-control" readonly>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editTaxAmount" class="form-label">Tax Amount</label>
+              <input type="number" id="editTaxAmount" name="taxAmount" class="form-control" step="0.01" required>
+            </div>
+            <div class="form-group">
+              <label for="editDueDate" class="form-label">Due Date</label>
+              <input type="date" id="editDueDate" name="dueDate" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editYear" class="form-label">Year</label>
+              <input type="number" id="editYear" name="year" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="editStatus" class="form-label">Status</label>
+              <select id="editStatus" name="status" class="form-control" required>
+                <option value="Unpaid">Unpaid</option>
+                <option value="Paid">Paid</option>
+                <option value="Overdue">Overdue</option>
+              </select>
+            </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Tax Amount (₹)</label>
-            <input type="number" id="editTaxAmount" name="taxAmount" class="form-control" required>
+            <input type="hidden" id="editPropertyId" name="propertyId">
           </div>
-          <div class="form-group">
-            <label class="form-label">Due Date</label>
-            <input type="date" id="editDueDate" name="dueDate" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Year</label>
-            <input type="number" id="editYear" name="year" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Status</label>
-            <select id="editStatus" name="status" class="form-control">
-              <option value="Unpaid">Unpaid</option>
-              <option value="Paid">Paid</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline" onclick="closeEditTaxModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary" onclick="updateTaxRecord(); return false;">Update</button>
-        </div>
-      </form>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeEditTaxModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="updateTaxRecord()">Update Record</button>
+      </div>
     </div>
   </div>
 
   <script src="/js/main.js"></script>
+  <script>
+    // Set default due date to end of month
+    document.getElementById('dueDate').valueAsDate = new Date(new Date().getFullYear(), new Date().getMonth() + 11, 31);
+    document.getElementById('year').value = new Date().getFullYear();
+  </script>
 </body>
 </html>
-

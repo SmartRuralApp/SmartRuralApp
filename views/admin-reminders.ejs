@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMS Reminders - Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-landmark"></i>
+          <span>Admin Panel</span>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/admin-tax"><i class="fas fa-file-invoice-dollar"></i> Tax Management</a></li>
+        <li><a href="/admin-reminders" class="active"><i class="fas fa-bell"></i> Reminders</a></li>
+        <li><a href="/admin-services"><i class="fas fa-cogs"></i> Services</a></li>
+        <li><a href="/admin-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </aside>
+
+    <main class="admin-content">
+      <div class="admin-header">
+        <div>
+          <h1>SMS Reminders</h1>
+          <p class="text-muted">Send bulk SMS reminders to citizens</p>
+        </div>
+      </div>
+
+      <!-- Bulk SMS Buttons -->
+      <div class="stats-grid">
+        <div class="stat-card reminder-card">
+          <div class="stat-icon warning">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div class="stat-info">
+            <h3 onclick="sendBulkReminder('30')" style="cursor: pointer;">30 Days</h3>
+            <p>Early reminder</p>
+          </div>
+        </div>
+        <div class="stat-card reminder-card">
+          <div class="stat-icon orange">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h3 onclick="sendBulkReminder('20')" style="cursor: pointer;">20 Days</h3>
+            <p>2nd reminder</p>
+          </div>
+        </div>
+        <div class="stat-card reminder-card">
+          <div class="stat-icon red">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 onclick="sendBulkReminder('15')" style="cursor: pointer;">15 Days</h3>
+            <p>FINAL notice</p>
+          </div>
+        </div>
+        <div class="stat-card reminder-card">
+          <div class="stat-icon error">
+            <i class="fas fa-stopwatch"></i>
+          </div>
+          <div class="stat-info">
+            <h3 onclick="sendBulkReminder('overdue')" style="cursor: pointer;">Overdue</h3>
+            <p>Already overdue</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Individual Reminder -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Send Individual Reminder</h3>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="flex: 1;">
+            <label class="form-label">Property ID</label>
+            <input type="text" id="individualPropertyId" class="form-control" placeholder="e.g. PROP001">
+          </div>
+          <div class="form-group" style="width: 200px;">
+            <label class="form-label">Type</label>
+            <select id="individualType" class="form-control">
+              <option value="15">15 Days</option>
+              <option value="20">20 Days</option>
+              <option value="30">30 Days</option>
+              <option value="overdue">Overdue</option>
+            </select>
+          </div>
+          <div class="form-group" style="width: 150px; align-self: end;">
+            <button onclick="sendIndividualReminder()" class="btn btn-warning">
+              <i class="fas fa-paper-plane"></i> Send
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Reminders Table -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Pending Reminders (<span id="pendingCount">0</span>)</h3>
+        </div>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Property ID</th>
+                <th>Owner</th>
+                <th>Tax Amount</th>
+                <th>Due Date</th>
+                <th>Reminder Type</th>
+                <th>Reminder Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="pendingReminders">
+              <!-- Dynamic -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SMS Logs -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">SMS Logs (<span id="smsCount">0</span>)</h3>
+        </div>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Sent</th>
+              </tr>
+            </thead>
+            <tbody id="smsLogs">
+              <!-- Dynamic -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Load data on page load
+    async function loadRemindersData() {
+      try {
+        // Pending reminders
+        const pendingRes = await fetch('/api/admin/pending-reminders');
+        const pending = await pendingRes.json();
+        displayPendingReminders(pending.data);
+        
+        // SMS logs
+        const logsRes = await fetch('/api/admin/sms-logs');
+        const logs = await logsRes.json();
+        displaySMSLogs(logs.data);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
+    }
+
+    function displayPendingReminders(reminders) {
+      const tbody = document.getElementById('pendingReminders');
+      document.getElementById('pendingCount').textContent = reminders.length;
+      
+      tbody.innerHTML = reminders.map(r => `
+        <tr>
+          <td><strong>${r.property_id}</strong></td>
+          <td>${r.owner_name}</td>
+          <td>₹${r.tax_amount.toLocaleString('en-IN')}</td>
+          <td>${r.due_date}</td>
+          <td>${r.reminder_days} days</td>
+          <td>${r.reminder_date}</td>
+          <td>
+            <button class="btn btn-sm btn-warning" onclick="sendReminder('${r.property_id}', '${r.reminder_days}')">
+              <i class="fas fa-paper-plane"></i> Send
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function displaySMSLogs(logs) {
+      const tbody = document.getElementById('smsLogs');
+      document.getElementById('smsCount').textContent = logs.length;
+      
+      tbody.innerHTML = logs.map(log => `
+        <tr>
+          <td>${log.property_id}</td>
+          <td>${log.phone}</td>
+          <td><span class="status-badge ${log.status === 'Sent' ? 'success' : 'error'}">${log.status}</span></td>
+          <td>${new Date(log.sent_at).toLocaleString('en-IN')}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function sendBulkReminder(type) {
+      if (!confirm(`Send ${type}-day reminder to ALL pending properties?`)) return;
+      
+      try {
+        const res = await fetch('/api/admin/send-bulk-reminder', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ reminderType: type })
+        });
+        const result = await res.json();
+        alert(result.message);
+        loadRemindersData();
+      } catch (error) {
+        alert('Error sending bulk reminder');
+      }
+    }
+
+    async function sendIndividualReminder() {
+      const propertyId = document.getElementById('individualPropertyId').value.trim();
+      const type = document.getElementById('individualType').value;
+      
+      if (!propertyId) {
+        alert('Please enter Property ID');
+        return;
+      }
+      
+      try {
+        const res = await fetch('/api/admin/send-reminder', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ propertyId, reminderType: type })
+        });
+        const result = await res.json();
+        alert(result.message);
+        loadRemindersData();
+      } catch (error) {
+        alert('Error sending reminder');
+      }
+    }
+
+    // Page load
+    document.addEventListener('DOMContentLoaded', loadRemindersData);
+  </script>
+</body>
+</html>

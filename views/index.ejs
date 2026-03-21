@@ -49,32 +49,10 @@
 
     <div class="container">
       <!-- Reminder Section -->
-      <% if (reminders && reminders.length > 0) { %>
-        <% reminders.forEach(function(reminder) { %>
-          <div class="reminder-alert reminder-<%= reminder.reminder_days %>">
-            <i class="fas fa-bell"></i>
-            <div class="reminder-content">
-              <div class="reminder-title">
-                <% if (reminder.reminder_days == 30) { %>
-                  First Reminder - Tax Due in 30 Days
-                <% } else if (reminder.reminder_days == 20) { %>
-                  Second Reminder - Tax Due in 20 Days
-                <% } else if (reminder.reminder_days == 15) { %>
-                  Final Reminder - Tax Due in 15 Days
-                <% } else { %>
-                  Tax Due Reminder
-                <% } %>
-              </div>
-              <div class="reminder-text">
-                Property ID: <strong><%= reminder.property_id %></strong> | 
-                Amount: <strong>₹<%= reminder.tax_amount %></strong> | 
-                Due Date: <strong><%= new Date(reminder.due_date).toLocaleDateString('en-IN') %></strong>
-              </div>
-            </div>
-            <a href="/tax-search" class="btn btn-primary btn-sm">Pay Now</a>
-          </div>
-        <% }); %>
+<% if (false) { %>
+        <!-- Reminders section placeholder - disabled to avoid errors -->
       <% } %>
+
 
       <!-- Stats Section -->
       <h2 class="mb-3">Panchayat Overview</h2>
@@ -84,7 +62,7 @@
             <i class="fas fa-rupee-sign"></i>
           </div>
           <div class="stat-info">
-            <h3>₹<%= stats.collection.toLocaleString('en-IN') %></h3>
+            <h3>₹<%= (stats.collection || 0).toLocaleString('en-IN') %></h3>
             <p>Total Collection</p>
           </div>
         </div>
@@ -93,7 +71,7 @@
             <i class="fas fa-clock"></i>
           </div>
           <div class="stat-info">
-            <h3><%= stats.pending %></h3>
+            <h3><%= (stats.pending || 0) %></h3>
             <p>Pending Payments</p>
           </div>
         </div>

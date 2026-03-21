@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <form id="testForm">
+    Property ID: <input name="propertyId" value="SIMPLE1"><br>
+    Owner: <input name="ownerName" value="Simple Test"><br>
+    Phone: <input name="phone" value="9999999999"><br>
+    Tax: <input name="taxAmount" value="1000"><br>
+    Due: <input name="dueDate" value="2025-12-31" type="date"><br>
+    Year: <input name="year" value="2025"><br>
+    <button type="submit">TEST SAVE</button>
+  </form>
+
+  <script>
+  document.getElementById('testForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const res = await fetch('/api/admin/add-property-tax', {
+      method: 'POST',
+      body: fd,
+      credentials: 'include'
+    });
+    const result = await res.text();
+    alert('RESPONSE: ' + result);
+  });
+  </script>
+</body>
+</html>

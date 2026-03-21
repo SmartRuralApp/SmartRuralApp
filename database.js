@@ -201,55 +201,50 @@ function saveDatabase() {
 }
 
 // Helper functions to match better-sqlite3 API
+
 function prepare(sql) {
   return {
     all: function(...params) {
       try {
-        const result = db.exec(sql, params);
-        if (result.length === 0) return [];
-        
-        const columns = result[0].columns;
-        return result[0].values.map(row => {
-          const obj = {};
-          columns.forEach((col, i) => {
-            obj[col] = row[i];
-          });
-          return obj;
-        });
+        console.log('SQL:', sql, params);
+        const stmt = db.prepare(sql);
+        const result = stmt.getAsObject(...params);
+        stmt.free();
+        if (!result) return [];
+        return [result];
       } catch (e) {
-        console.error('SQL Error:', e.message);
+        console.error('SQL Error:', e.message, sql, params);
         return [];
       }
     },
     get: function(...params) {
       try {
-        const result = db.exec(sql, params);
-        if (result.length === 0 || result[0].values.length === 0) return null;
-        
-        const columns = result[0].columns;
-        const row = result[0].values[0];
-        const obj = {};
-        columns.forEach((col, i) => {
-          obj[col] = row[i];
-        });
-        return obj;
+        console.log('SQL GET:', sql, params);
+        const stmt = db.prepare(sql);
+        const result = stmt.getAsObject(...params);
+        stmt.free();
+        return result || null;
       } catch (e) {
-        console.error('SQL Error:', e.message);
+        console.error('SQL Error:', e.message, sql, params);
         return null;
       }
     },
     run: function(...params) {
       try {
-        db.run(sql, params);
+        console.log('SQL RUN:', sql, params);
+        const stmt = db.prepare(sql);
+        stmt.run(...params);
+        stmt.free();
         saveDatabase();
-        return { changes: db.getRowsModified() };
+        return { changes: 1 };
       } catch (e) {
-        console.error('SQL Error:', e.message);
+        console.error('SQL Error:', e.message, sql, params);
         throw e;
       }
     }
   };
 }
+
 
 // Export initialization and database access
 module.exports = {

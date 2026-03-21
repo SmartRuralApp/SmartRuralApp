@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Grama Panchayat Management System</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+.header { background: linear-gradient(135deg, #2E7D32, #4CAF50); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.5em; margin-bottom: 10px; }
+.header p { opacity: 0.9; font-size: 1.1em; }
+.main { padding: 40px; }
+.section { margin-bottom: 40px; background: #f8f9fa; padding: 30px; border-radius: 15px; }
+.section h2 { color: #2E7D32; margin-bottom: 20px; font-size: 1.8em; }
+.form-group { margin-bottom: 20px; }
+label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+input, select, button { width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; }
+input:focus, select:focus { outline: none; border-color: #4CAF50; box-shadow: 0 0 0 3px rgba(76,175,80,0.1); }
+.btn { background: #4CAF50; color: white; border: none; cursor: pointer; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+.btn:hover { background: #45a049; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(76,175,80,0.3); }
+.btn-danger { background: #f44336; }
+.btn-danger:hover { background: #da190b; }
+.search-container { display: flex; gap: 15px; margin-bottom: 30px; }
+.search-tabs { display: flex; background: white; border-radius: 10px 10px 0 0; overflow: hidden; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+.tab-btn { flex: 1; padding: 15px; background: none; border: none; cursor: pointer; font-size: 16px; font-weight: 500; transition: all 0.3s; }
+.tab-btn.active { background: #4CAF50; color: white; }
+.results { min-height: 200px; }
+.tax-card { background: white; border-radius: 15px; padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-left: 5px solid #4CAF50; }
+.tax-card.unpaid { border-left-color: #FF9800; }
+.tax-card.paid { border-left-color: #4CAF50; }
+.tax-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 25px; }
+.tax-details { font-size: 18px; font-weight: 600; color: #333; }
+.tax-amount { font-size: 28px; color: #4CAF50; font-weight: 700; }
+.status { padding: 8px 16px; border-radius: 25px; font-weight: 600; font-size: 14px; }
+.status.unpaid { background: #FFF3E0; color: #FF9800; }
+.status.paid { background: #E8F5E8; color: #4CAF50; }
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+.modal-content { background: white; margin: 5% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; }
+.close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0; }
+.stat-card { background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(76,175,80,0.3); }
+.stat-number { font-size: 3em; font-weight: 700; margin-bottom: 10px; }
+.table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+.table th, .table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+.table th { background: #f8f9fa; font-weight: 600; color: #666; }
+.table tr:hover { background: #f5f5f5; }
+.alert { padding: 15px; margin: 20px 0; border-radius: 10px; font-weight: 500; }
+.alert-success { background: #d4edda; color: #155724; border-left: 5px solid #28a745; }
+.alert-error { background: #f8d7da; color: #721c24; border-left: 5px solid #dc3545; }
+@media (max-width: 768px) { .container { margin: 10px; padding: 20px; } .header h1 { font-size: 2em; } .main { padding: 20px; } .search-container { flex-direction: column; } }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header class="header">
+    <h1><i class="fas fa-landmark"></i> Smart Grama Panchayat</h1>
+    <p>Digital Platform for Citizen Services &amp; Administration</p>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">5</div>
+        <div>Properties</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">3</div>
+        <div>Pending Taxes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">₹7500</div>
+        <div>Collected</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    
+    <!-- Tax Search & Payment -->
+    <div class="section">
+      <h2><i class="fas fa-search-dollar"></i> Tax Information &amp; Payment</h2>
+      <div class="search-container">
+        <div class="search-tabs">
+          <button class="tab-btn active" onclick="setSearchType('propertyId')">Property ID</button>
+          <button class="tab-btn" onclick="setSearchType('ownerName')">Owner Name</button>
+        </div>
+        <div style="flex: 1;">
+          <input type="text" id="searchInput" placeholder="Enter Property ID (e.g. PROP001) or Owner Name" onkeypress="handleSearch(event)">
+        </div>
+        <button class="btn" onclick="searchTax()" style="min-width: 150px;"><i class="fas fa-search"></i> Search</button>
+      </div>
+      <div id="searchResults" class="results">
+        <div class="alert alert-success"><i class="fas fa-info-circle"></i> Search for Property ID or Owner Name to view tax details and pay online.</div>
+      </div>
+    </div>
+
+    <!-- Services Information -->
+    <div class="section">
+      <h2><i class="fas fa-list-alt"></i> Panchayat Services</h2>
+      <div class="services-grid" id="servicesGrid">
+        <div class="service-card">
+          <div class="service-icon"><i class="fas fa-baby"></i></div>
+          <h3>Birth Certificate</h3>
+          <p>Apply for new birth certificate issuance and corrections.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon"><i class="fas fa-certificate"></i></div>
+          <h3>Death Certificate</h3>
+          <p>Apply for death certificate issuance and verification.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon"><i class="fas fa-ring"></i></div>
+          <h3>Marriage Certificate</h3>
+          <p>Marriage registration and certificate issuance.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon"><i class="fas fa-tint"></i></div>
+          <h3>Water Connection</h3>
+          <p>New water connection application and maintenance.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon"><i class="fas fa-home"></i></div>
+          <h3>Building Permission</h3>
+          <p>Building plan approval and construction permits.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon"><i class="fas fa-road"></i></div>
+          <h3>Road Repair</h3>
+          <p>Road maintenance and repair request.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Login -->
+    <div class="section">
+      <h2><i class="fas fa-user-shield"></i> Admin Panel</h2>
+      <div id="adminPanel" style="display: none;">
+        <p><strong>Admin Dashboard Access</strong></p>
+        <p>Username: <code>admin</code></p>
+        <p>Password: <code>admin123</code></p>
+      </div>
+      <button class="btn" onclick="toggleAdminPanel()">Admin Login Info</button>
+    </div>
+  </main>
+</div>
+
+<script>
+let currentSearchType = 'propertyId';
+
+function setSearchType(type) {
+  currentSearchType = type;
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  const input = document.getElementById('searchInput');
+  input.placeholder = type === 'propertyId' ? 'Enter Property ID (e.g. PROP001)' : 'Enter Owner Name';
+}
+
+function handleSearch(event) {
+  if (event.key === 'Enter') {
+    searchTax();
+  }
+}
+
+function searchTax() {
+  const input = document.getElementById('searchInput');
+  const results = document.getElementById('searchResults');
+  const value = input.value.trim();
+  
+  if (!value) {
+    results.innerHTML = '<div class="alert alert-error"><i class="fas fa-exclamation-triangle"></i> Please enter a value to search.</div>';
+    return;
+  }
+  
+  results.innerHTML = '<div class="alert alert-success"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+  
+  // Sample data simulation
+  setTimeout(() => {
+    if (value.toUpperCase() === 'PROP001' || value === 'Ramesh') {
+      results.innerHTML = `
+        <div class="tax-card paid">
+          <div class="tax-info">
+            <div class="tax-details"><strong>Property ID:</strong> PROP001</div>
+            <div class="tax-details"><strong>Owner:</strong> Ramesh Kumar</div>
+            <div class="tax-details"><strong>Address:</strong> Village Main Road</div>
+            <div class="tax-details"><strong>Tax Amount:</strong><span class="tax-amount">₹2,500</span></div>
+            <div class="tax-details"><strong>Due Date:</strong> 31 Mar 2026</div>
+            <div class="tax-details"><strong>Status:</strong><span class="status paid">PAID</span></div>
+          </div>
+          <button class="btn btn-outline" disabled><i class="fas fa-check"></i> Paid</button>
+        </div>
+      `;
+    } else if (value.toUpperCase() === 'PROP002' || value === 'Lakshmi') {
+      results.innerHTML = `
+        <div class="tax-card unpaid">
+          <div class="tax-info">
+            <div class="tax-details"><strong>Property ID:</strong> PROP002</div>
+            <div class="tax-details"><strong>Owner:</strong> Lakshmi Devi</div>
+            <div class="tax-details"><strong>Address:</strong> Near Temple Road</div>
+            <div class="tax-details"><strong>Tax Amount:</strong><span class="tax-amount">₹1,800</span></div>
+            <div class="tax-details"><strong>Due Date:</strong> 31 Mar 2026</div>
+            <div class="tax-details"><strong>Status:</strong><span class="status unpaid">UNPAID</span></div>
+          </div>
+          <button class="btn btn-primary" onclick="showPaymentModal('PROP002', 1800)"><i class="fas fa-credit-card"></i> Pay Now</button>
+        </div>
+      `;
+    } else {
+      results.innerHTML = `
+        <div class="alert alert-error"><i class="fas fa-exclamation-triangle"></i> No records found for <strong>'${value}'</strong>. Try PROP001 or PROP002.</div>
+      `;
+    }
+  }, 1000);
+}
+
+function showPaymentModal(propertyId, amount) {
+  document.getElementById('paymentModal').style.display = 'block';
+  document.getElementById('paymentProperty').textContent = propertyId;
+  document.getElementById('paymentAmount').textContent = '₹' + amount.toLocaleString();
+  window.currentPayment = { propertyId, amount };
+}
+
+function closePaymentModal() {
+  document.getElementById('paymentModal').style.display = 'none';
+}
+
+function processPayment() {
+  const modal = document.getElementById('paymentModal');
+  modal.innerHTML = `
+    <div class="modal-content">
+      <div style="text-align: center; padding: 40px;">
+        <i class="fas fa-check-circle" style="font-size: 80px; color: #4CAF50; margin-bottom: 20px;"></i>
+        <h2 style="color: #4CAF50;">Payment Successful!</h2>
+        <p>Transaction ID: TXN${Date.now()}</p>
+        <p>Amount: ₹<span id="paymentAmount"></span></p>
+        <p>Property: <span id="paymentProperty"></span></p>
+        <button class="btn" onclick="closePaymentModal(); location.reload();">Done</button>
+      </div>
+    </div>
+  `;
+  setTimeout(() => location.reload(), 3000);
+}
+
+function toggleAdminPanel() {
+  const panel = document.getElementById('adminPanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+// Payment Modal
+const paymentModal = document.createElement('div');
+paymentModal.id = 'paymentModal';
+paymentModal.className = 'modal';
+paymentModal.innerHTML = `
+  <div class="modal-content">
+    <span class="close" onclick="closePaymentModal()">&amp;times;</span>
+    <h2>Online Payment</h2>
+    <p><strong>Property:</strong> <span id="paymentProperty"></span></p>
+    <p><strong>Amount:</strong> <span id="paymentAmount"></span></p>
+    <button class="btn btn-primary" onclick="processPayment()">Confirm Payment</button>
+  </div>
+`;
+document.body.appendChild(paymentModal);
+</script>
+</body>
+</html>
+

@@ -67,7 +67,7 @@
             <i class="fas fa-rupee-sign"></i>
           </div>
           <div class="stat-info">
-            <h3>₹<%= stats.collection.toLocaleString('en-IN') %></h3>
+            <h3>₹<%= (stats.collection || 0).toLocaleString('en-IN') %></h3>
             <p>Total Collection</p>
           </div>
         </div>
@@ -76,7 +76,7 @@
             <i class="fas fa-clock"></i>
           </div>
           <div class="stat-info">
-            <h3><%= stats.pending %></h3>
+            <h3><%= (stats.pending || 0) %></h3>
             <p>Pending Payments</p>
           </div>
         </div>
@@ -85,7 +85,7 @@
             <i class="fas fa-home"></i>
           </div>
           <div class="stat-info">
-            <h3><%= stats.properties %></h3>
+            <h3><%= (stats.properties || 0) %></h3>
             <p>Total Properties</p>
           </div>
         </div>
@@ -110,15 +110,15 @@
               </tr>
             </thead>
             <tbody>
-              <% if (recentPayments && recentPayments.length > 0) { %>
+<% if (typeof recentPayments !== 'undefined' && recentPayments && recentPayments.length > 0) { %>
                 <% recentPayments.forEach(function(payment) { %>
                   <tr>
                     <td><strong><%= payment.transaction_id %></strong></td>
                     <td><%= payment.property_id %></td>
-                    <td><%= payment.owner_name %></td>
-                    <td><strong>₹<%= payment.amount.toLocaleString('en-IN') %></strong></td>
+                    <td><%= payment.owner_name || 'N/A' %></td>
+                    <td><strong>₹<%= (payment.amount || 0).toLocaleString('en-IN') %></strong></td>
                     <td><%= new Date(payment.payment_date).toLocaleDateString('en-IN') %></td>
-                    <td><%= payment.payment_method %></td>
+                    <td>Online</td>
                   </tr>
                 <% }); %>
               <% } else { %>
@@ -126,6 +126,7 @@
                   <td colspan="6" class="text-center text-muted">No recent payments</td>
                 </tr>
               <% } %>
+
             </tbody>
           </table>
         </div>

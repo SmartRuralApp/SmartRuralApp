@@ -300,9 +300,42 @@ window.openPaymentModal = openPaymentModal;
 
 // Form Initialization
 function initForms() {
-  // Tax Record Form
+// Tax Record Form - Add Property + Tax + User
   const taxForm = document.getElementById('taxRecordForm');
   if (taxForm) {
+    taxForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(taxForm);
+      
+      const submitBtn = taxForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving Property...';
+      submitBtn.disabled = true;
+      
+      try {
+        const response = await fetch('/api/admin/add-property-tax', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          showAlert(result.message, 'success');
+          taxForm.reset();
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          showAlert(result.message, 'error');
+        }
+      } catch (error) {
+        showAlert('Error saving property: ' + error.message, 'error');
+      } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+  }
     taxForm.addEventListener('submit', async function(e) {
       e.preventDefault();
       

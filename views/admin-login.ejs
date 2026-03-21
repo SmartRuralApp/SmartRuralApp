@@ -19,11 +19,12 @@
         <p class="login-subtitle">Smart Grama Panchayat Management System</p>
       </div>
 
-      <% if (error) { %>
+<% if (typeof error !== 'undefined' && error) { %>
         <div class="login-error">
           <i class="fas fa-exclamation-circle"></i> <%= error %>
         </div>
       <% } %>
+
 
       <form action="/admin-login" method="POST">
         <div class="form-group">

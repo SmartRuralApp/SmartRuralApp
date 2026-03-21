@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Grama Panchayat Management System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Open Sans', sans-serif; background: #f5f5f5; color: #212121; line-height: 1.6; }
+    .header { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; padding: 1rem 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+    .navbar { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 2rem; }
+    .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: white; font-weight: 700; font-size: 1.3rem; }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px; transition: 0.3s; }
+    .nav-links a:hover { background: rgba(255,255,255,0.15); }
+    .hero { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; text-align: center; padding: 4rem 2rem; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .stat-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; gap: 1rem; align-items: center; }
+    .stat-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; }
+    .stat-icon.green { background: #2e7d32; }
+    .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: 0.3s; }
+    .btn-primary { background: #ff8f00; color: white; }
+    .btn-primary:hover { background: #ffb300; transform: translateY(-2px); }
+    .card { background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .search-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 2rem 0; }
+    .search-tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+    .search-tab { padding: 0.5rem 1rem; border: none; background: transparent; cursor: pointer; border-bottom: 2px solid transparent; }
+    .search-tab.active { border-bottom-color: #2e7d32; color: #2e7d32; font-weight: 600; }
+    .search-form { display: flex; gap: 1rem; }
+    .search-input { flex: 1; padding: 0.875rem; border: 2px solid #eee; border-radius: 6px; font-size: 1rem; }
+    .search-input:focus { outline: none; border-color: #2e7d32; }
+    .tax-result { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left: 4px solid #2e7d32; }
+    .tax-detail { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+    .tax-label { font-size: 0.85rem; color: #757575; margin-bottom: 0.25rem; }
+    .tax-value { font-weight: 600; }
+    .status-badge { padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+    .status-badge.paid { background: #e8f5e9; color: #2e7d32; }
+    .status-badge.unpaid { background: #fff3e0; color: #ff8f00; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .service-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .service-icon { width: 50px; height: 50px; background: #2e7d32; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-bottom: 1rem; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 260px; background: linear-gradient(180deg, #1565c0 0%, #0d47a1 100%); color: white; padding: 1.5rem 0; position: fixed; height: 100vh; }
+    .admin-content { margin-left: 260px; padding: 2rem; }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .admin-content { margin-left: 0; } }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+    .modal { background: white; border-radius: 12px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { padding: 1.5rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .modal-body { padding: 1.5rem; }
+    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #eee; display: flex; gap: 1rem; justify-content: flex-end; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+    th { background: #f8f9fa; font-weight: 600; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+    .form-control { width: 100%; padding: 0.75rem; border: 2px solid #eee; border-radius: 6px; }
+    .form-control:focus { border-color: #2e7d32; outline: none; }
+    .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%); }
+    .login-card { background: white; border-radius: 12px; padding: 2.5rem; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .login-error { background: #ffeb ee; color: #e53935; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; }
+    .success-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%); }
+    .success-card { background: white; border-radius: 12px; padding: 3rem; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .custom-alert { position: fixed; top: 100px; right: 20px; padding: 1rem 1.5rem; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 3000; animation: slideIn 0.3s ease; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .table-filter { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .filter-btn { padding: 0.5rem 1rem; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; cursor: pointer; }
+    .filter-btn.active { background: #2e7d32; color: white; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <i class="fas fa-landmark"></i>
+        <span>Smart Grama Panchayat</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#home" class="nav-active">Home</a></li>
+        <li><a href="#tax-search" onclick="showSection('tax-search')">Tax</a></li>
+        <li><a href="#services" onclick="showSection('services')">Services</a></li>
+        <li><a href="#admin" onclick="showSection('admin')">Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Home Section -->
+  <section id="home" class="hero">
+    <div class="container">
+      <h1>Welcome to Smart Grama Panchayat</h1>
+      <p>Digitize your Panchayat services - Pay taxes online, view services, and manage records efficiently.</p>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <i class="fas fa-rupee-sign"></i>
+          </div>
+          <div class="stat-info">
+            <h3>₹1,45,000</h3>
+            <p>Total Collection</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h3>8</h3>
+            <p>Pending Taxes</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <i class="fas fa-home"></i>
+          </div>
+          <div class="stat-info">
+            <h3>245</h3>
+            <p>Properties</p>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 2rem;">
+        <a href="#tax-search" onclick="showSection('tax-search')" class="btn btn-primary" style="font-size: 1.2rem;">
+          <i class="fas fa-search-dollar"></i> Pay Tax Now
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tax Search Section -->
+  <section id="tax-search" class="section hidden">
+    <div class="container">
+      <div class="card">
+        <h2>Tax Payment Portal</h2>
+        <p>Enter Property ID or Owner Name to view tax details and pay online.</p>
+        <div class="search-tabs">
+          <button class="search-tab active" onclick="setSearchType('propertyId')">
+            <i class="fas fa-home"></i> Property ID
+          </button>
+          <button class="search-tab" onclick="setSearchType('ownerName')">
+            <i class="fas fa-user"></i> Owner Name
+          </button>
+        </div>
+        <div class="search-form">
+          <input type="text" id="searchInput" class="search-input" placeholder="Enter Property ID (PROP001) or Owner Name">
+          <button onclick="searchTax()" class="btn btn-primary">
+            <i class="fas fa-search"></i> Search
+          </button>
+        </div>
+        <div id="taxResults"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="section hidden">
+    <div class="container">
+      <h2>Panchayat Services</h2>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-certificate"></i>
+          </div>
+          <h3>Birth Certificate</h3>
+          <p>Apply for birth certificate</p>
+        </div>
+        <div class="service-card">
+          <i class="fas fa-cross"></i>
+          <div class="service-icon">
+            <i class="fas fa-certificate"></i>
+          </div>
+          <h3>Death Certificate</h3>
+          <p>Apply for death certificate</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-ring"></i>
+          </div>
+          <h3>Marriage Certificate</h3>
+          <p>Marriage registration</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-tint"></i>
+          </div>
+          <h3>Water Connection</h3>
+          <p>New water connection</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <h3>Building Permission</h3>
+          <p>Construction permission</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <h3>Trade License</h3>
+          <p>Business license</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-road"></i>
+          </div>
+          <h3>Road Repair</h3>
+          <p>Road maintenance request</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <h3>Street Light</h3>
+          <p>Street light repair</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Admin Section -->
+  <section id="admin" class="section hidden">
+    <div class="container">
+      <h2>Admin Login</h2>
+      <div class="login-card" style="max-width: 400px; margin: 0 auto;">
+        <form id="adminForm">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="adminUser" class="form-control" value="admin">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="adminPass" class="form-control" value="admin123">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+        </form>
+        <div id="adminDashboard" style="display: none;">
+          <h3>Admin Dashboard</h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon green">
+                <i class="fas fa-rupee-sign"></i>
+              </div>
+              <h3 id="totalCollection">₹0</h3>
+              <p>Total Collection</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon orange">
+                <i class="fas fa-clock"></i>
+              </div>
+              <h3 id="pendingTaxes">0</h3>
+              <p>Pending Taxes</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon blue">
+                <i class="fas fa-home"></i>
+              </div>
+              <h3 id="totalProperties">0</h3>
+              <p>Properties</p>
+            </div>
+          </div>
+          <!-- Tax Management -->
+          <div class="card">
+            <h3>Add Tax Record</h3>
+            <form id="addTaxForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Property ID</label>
+                  <input type="text" id="newPropertyId" class="form-control" value="PROP004">
+                </div>
+                <div class="form-group">
+                  <label>Owner Name</label>
+                  <input type="text" id="newOwnerName" class="form-control" value="New Owner">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Tax Amount</label>
+                  <input type="number" id="newTaxAmount" class="form-control" value="2500">
+                </div>
+                <div class="form-group">
+                  <label>Due Date</label>
+                  <input type="date" id="newDueDate" class="form-control" value="2026-03-31">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Add Tax</button>
+            </form>
+          </div>
+          <!-- Tax List -->
+          <div class="card">
+            <h3>Tax Records <span style="font-size: 0.8rem; color: #757575;">(Filter: <button onclick="filterTaxes('all')" class="filter-btn active">All</button> <button onclick="filterTaxes('paid')" class="filter-btn">Paid</button> <button onclick="filterTaxes('unpaid')" class="filter-btn">Unpaid</button>)</span></h3>
+            <div id="taxList">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Property ID</th>
+                    <th>Owner</th>
+                    <th>Amount</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <table>
+                  <tbody id="taxTableBody">
+                    <!-- Dynamic content -->
+                  </tbody>
+                </table>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Sample Data - Local Storage as "Database"
+    let properties = [
+      { id: 1, property_id: 'PROP001', owner_name: 'Ramesh Kumar', phone: '9876543210', taxes: [{ id: 1, amount: 2500, due_date: '2026-03-31', status: 'Paid' }] },
+      { id: 2, property_id: 'PROP002', owner_name: 'Lakshmi Devi', phone: '9876543211', taxes: [{ id: 2, amount: 1800, due_date: '2026-03-31', status: 'Unpaid' }] },
+      { id: 3, property_id: 'PROP003', owner_name: 'Suresh Reddy', phone: '9876543212', taxes: [{ id: 3, amount: 5000, due_date: '2026-03-31', status: 'Unpaid' }] }
+    ];
+
+    // Navigation
+    function showSection(sectionId) {
+      document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
+      document.getElementById(sectionId).classList.remove('hidden');
+      document.querySelectorAll('.nav-active').forEach(a => a.classList.remove('nav-active'));
+      event.target.classList.add('nav-active');
+    }
+
+    // Tax Search
+    let searchType = 'propertyId';
+    function setSearchType(type) {
+      searchType = type;
+      document.querySelectorAll('.search-tab').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('searchInput').placeholder = type === 'propertyId' ? 'Enter Property ID (PROP001)' : 'Enter Owner Name';
+    }
+
+    function searchTax() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const results = properties.filter(p => 
+        p.property_id.toLowerCase().includes(query) || p.owner_name.toLowerCase().includes(query)
+      );
+      displayTaxResults(results);
+    }
+
+    function displayTaxResults(results) {
+      let html = '<h3>Search Results</h3>';
+      if (results.length === 0) {
+        html += '<p>No results found</p>';
+      } else {
+        results.forEach(property => {
+          property.taxes.forEach(tax => {
+            html += `
+              <div class="tax-result ${tax.status.toLowerCase()}">
+                <div class="tax-detail">
+                  <div>Property ID: <strong>${property.property_id}</strong></div>
+                  <div>Owner: <strong>${property.owner_name}</strong></div>
+                  <div>Phone: <strong>${property.phone}</strong></div>
+                  <div>Tax Amount: <strong>₹${tax.amount.toLocaleString()}</strong></div>
+                  <div>Due Date: <strong>${new Date(tax.due_date).toLocaleDateString('en-IN')}</strong></div>
+                  <div class="status-badge ${tax.status.toLowerCase()}">${tax.status}</div>
+                </div>
+                ${tax.status === 'Unpaid' ? `<button onclick="payTax('${property.property_id}', ${tax.id}, ${tax.amount})" class="btn btn-primary">Pay Now</button>` : '<span style="color: green;">✓ Paid</span>'}
+              </div>
+            `;
+          });
+        });
+      }
+      document.getElementById('taxResults').innerHTML = html;
+    }
+
+    // Payment
+    function payTax(propertyId, taxId, amount) {
+      if (confirm(`Pay ₹${amount.toLocaleString()} for ${propertyId}?`)) {
+        // Find and update tax
+        properties.find(p => p.property_id === propertyId).taxes.find(t => t.id === taxId).status = 'Paid';
+        alert('Payment successful! Receipt: TXN-' + Date.now());
+        searchTax(); // Refresh results
+        updateAdminStats();
+      }
+    }
+
+    // Admin
+    document.getElementById('adminForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const user = document.getElementById('adminUser').value;
+      const pass = document.getElementById('adminPass').value;
+      if (user === 'admin' && pass === 'admin123') {
+        document.getElementById('adminDashboard').style.display = 'block';
+        updateAdminStats();
+        loadTaxList();
+      } else {
+        alert('Invalid credentials');
+      }
+    });
+
+    // Admin Stats
+    function updateAdminStats() {
+      const collection = properties.reduce((sum, p) => sum + (p.taxes.reduce((s, t) => t.status === 'Paid' ? s + t.amount : s, 0)), 0);
+      const pending = properties.reduce((sum, p) => sum + p.taxes.filter(t => t.status === 'Unpaid').length, 0);
+      const totalProps = properties.length;
+      
+      document.getElementById('totalCollection').textContent = '₹' + collection.toLocaleString();
+      document.getElementById('pendingTaxes').textContent = pending;
+      document.getElementById('totalProperties').textContent = totalProps;
+    }
+
+    // Tax Management
+    document.getElementById('addTaxForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const newProp = {
+        property_id: document.getElementById('newPropertyId').value,
+        owner_name: document.getElementById('newOwnerName').value,
+        taxes: [{
+          id: Date.now(),
+          amount: parseInt(document.getElementById('newTaxAmount').value),
+          due_date: document.getElementById('newDueDate').value,
+          status: 'Unpaid'
+        }]
+      };
+      properties.push(newProp);
+      alert('Tax record added!');
+      this.reset();
+      loadTaxList();
+      updateAdminStats();
+    });
+
+    let currentFilter = 'all';
+    function filterTaxes(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      loadTaxList();
+    }
+
+    function loadTaxList() {
+      let html = '';
+      properties.forEach(p => {
+        p.taxes.forEach(t => {
+          if (currentFilter === 'all' || t.status.toLowerCase() === currentFilter) {
+            html += `
+              <tr>
+                <td>${p.property_id}</td>
+                <td>${p.owner_name}</td>
+                <td>₹${t.amount.toLocaleString()}</td>
+                <td>${new Date(t.due_date).toLocaleDateString('en-IN')}</td>
+                <td><span class="status-badge ${t.status.toLowerCase()}">${t.status}</span></td>
+                <td>
+                  ${t.status === 'Unpaid' ? `<button onclick="markPaid(${p.taxes.indexOf(t)})" class="btn btn-success btn-sm">Mark Paid</button>` : 'Paid'}
+                  <button onclick="deleteTax(${p.taxes.indexOf(t)})" class="btn btn-danger btn-sm">Delete</button>
+                </td>
+              </tr>
+            `;
+          }
+        });
+      });
+      document.getElementById('taxTableBody').innerHTML = html || '<tr><td colspan="6">No records</td></tr>';
+    }
+
+    function markPaid(taxIndex) {
+      properties[properties.length - 1].taxes[taxIndex].status = 'Paid'; // Simplified for demo
+      loadTaxList();
+      updateAdminStats();
+    }
+
+    function deleteTax(taxIndex) {
+      if (confirm('Delete this tax record?')) {
+        properties[properties.length - 1].taxes.splice(taxIndex, 1);
+        loadTaxList();
+        updateAdminStats();
+      }
+    }
+
+    // Reminders
+    function checkReminders() {
+      const today = new Date();
+      properties.forEach(p => {
+        p.taxes.forEach(t => {
+          if (t.status === 'Unpaid') {
+            const due = new Date(t.due_date);
+            const days = Math.floor((due - today) / (1000 * 60 * 60 * 24));
+            if (days <= 30 && days > 0) {
+              console.log(`Reminder for ${p.property_id}: ${days} days remaining`);
+            }
+          }
+        });
+      });
+    }
+
+    checkReminders();
+    updateAdminStats();
+    loadTaxList();
+  </script>
+</body>
+</html>
+
