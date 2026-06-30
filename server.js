@@ -599,12 +599,19 @@ app.post('/api/admin/delete-property', requireAdmin, (req, res) => {
 
 app.get('/admin-citizens', requireAdmin, (req, res) => {
   const citizens = db.prepare('SELECT * FROM users ORDER BY created_at DESC').all() || [];
-  const properties = db.prepare('SELECT property_id, owner_name FROM properties').all() || [];
+  const properties = db.prepare(`
+    SELECT p.property_id, p.owner_name, u.id as user_id
+    FROM properties p
+    LEFT JOIN users u ON p.property_id = u.property_id
+  `).all() || [];
   res.render('admin-citizens', { session: req.session, citizens, properties });
 });
 
 app.post('/api/admin/add-citizen', requireAdmin, (req, res) => {
   const { propertyId, name, phone, email, password, age, gender, occupation, income, landSize, isFarmer, isStudent, disability } = req.body;
+  if (!propertyId || !name || !phone) {
+    return res.json({ success: false, message: 'Property ID, Name, and Phone are required.' });
+  }
   try {
     db.prepare(`
       INSERT INTO users (property_id, name, phone, email, password, age, gender, occupation, income, land_size, is_farmer, is_student, disability)
@@ -617,7 +624,11 @@ app.post('/api/admin/add-citizen', requireAdmin, (req, res) => {
     );
     res.json({ success: true, message: 'Citizen profile registered successfully!' });
   } catch (e) {
-    res.json({ success: false, message: e.message });
+    let msg = e.message;
+    if (msg.includes('UNIQUE constraint failed: users.property_id')) {
+      msg = `This Property ID (${propertyId.toUpperCase()}) is already registered to another citizen profile.`;
+    }
+    res.json({ success: false, message: msg });
   }
 });
 
@@ -883,6 +894,11 @@ app.post('/api/admin/add-tax', requireAdmin, (req, res) => {
     return res.json({ success: false, message: 'All fields are required' });
   }
   try {
+    const existing = db.prepare('SELECT id FROM tax_records WHERE property_id = ? AND year = ?').get(propertyId.toUpperCase(), parseInt(year));
+    if (existing) {
+      return res.json({ success: false, message: `A tax record already exists for Property ID ${propertyId.toUpperCase()} and Year ${year}.` });
+    }
+
     let property = db.prepare('SELECT * FROM properties WHERE property_id = ?').get(propertyId);
     if (!property) {
       db.prepare(`

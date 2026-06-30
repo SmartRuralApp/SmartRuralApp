@@ -105,10 +105,16 @@
                     <td><%= prop.address %></td>
                     <td><span class="status-badge active"><%= prop.property_type %></span></td>
                     <td class="table-actions">
-                      <button class="btn btn-sm btn-outline" onclick="editProperty('<%= prop.id %>', '<%= prop.property_id %>', '<%= prop.owner_name %>', '<%= prop.address %>', '<%= prop.property_type %>')">
+                      <button class="btn btn-sm btn-outline" onclick="editProperty(this)"
+                              data-id="<%= prop.id %>"
+                              data-property-id="<%= prop.property_id %>"
+                              data-owner-name="<%= prop.owner_name %>"
+                              data-address="<%= prop.address %>"
+                              data-property-type="<%= prop.property_type %>">
                         <i class="fas fa-edit"></i>
                       </button>
-                      <button class="btn btn-sm btn-danger" onclick="deleteProperty('<%= prop.id %>')">
+                      <button class="btn btn-sm btn-danger" onclick="deleteProperty(this)"
+                              data-id="<%= prop.id %>">
                         <i class="fas fa-trash"></i>
                       </button>
                     </td>

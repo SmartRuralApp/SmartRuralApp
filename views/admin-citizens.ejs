@@ -47,13 +47,16 @@
         </div>
         <div class="card-body">
           <form id="citizenForm">
+
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Property ID Mapping</label>
                 <select name="propertyId" class="form-control" required>
                   <option value="">-- Select Property ID --</option>
                   <% properties.forEach(function(prop) { %>
-                    <option value="<%= prop.property_id %>"><%= prop.property_id %> - <%= prop.owner_name %></option>
+                    <option value="<%= prop.property_id %>" <%= prop.user_id ? 'disabled style="color: #999;"' : '' %>>
+                      <%= prop.property_id %> - <%= prop.owner_name %> <%= prop.user_id ? '(Already Registered)' : '' %>
+                    </option>
                   <% }); %>
                 </select>
               </div>
@@ -178,10 +181,24 @@
                       <span class="status-badge active" style="font-size: 0.7rem; padding: 2px 5px;"><%= cit.is_farmer ? 'F' : '' %><%= cit.is_student ? 'S' : '' %><%= cit.disability ? 'D' : '' %></span>
                     </td>
                     <td class="table-actions">
-                      <button class="btn btn-sm btn-outline" onclick="editCitizen('<%= cit.id %>', '<%= cit.property_id %>', '<%= cit.name %>', '<%= cit.phone %>', '<%= cit.email %>', <%= cit.age %>, '<%= cit.gender %>', '<%= cit.occupation %>', <%= cit.income %>, <%= cit.land_size %>, <%= cit.is_farmer %>, <%= cit.is_student %>, <%= cit.disability %>)">
+                      <button class="btn btn-sm btn-outline" onclick="editCitizen(this)"
+                              data-id="<%= cit.id %>"
+                              data-property-id="<%= cit.property_id %>"
+                              data-name="<%= cit.name %>"
+                              data-phone="<%= cit.phone %>"
+                              data-email="<%= cit.email || '' %>"
+                              data-age="<%= cit.age %>"
+                              data-gender="<%= cit.gender %>"
+                              data-occupation="<%= cit.occupation %>"
+                              data-income="<%= cit.income %>"
+                              data-land-size="<%= cit.land_size %>"
+                              data-is-farmer="<%= cit.is_farmer %>"
+                              data-is-student="<%= cit.is_student %>"
+                              data-disability="<%= cit.disability %>">
                         <i class="fas fa-edit"></i>
                       </button>
-                      <button class="btn btn-sm btn-danger" onclick="deleteCitizen('<%= cit.id %>')">
+                      <button class="btn btn-sm btn-danger" onclick="deleteCitizen(this)"
+                              data-id="<%= cit.id %>">
                         <i class="fas fa-trash"></i>
                       </button>
                     </td>

@@ -91,10 +91,15 @@
                     <td><%= s.description %></td>
                     <td><code style="background: #FFF9C4; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;"><%= s.target_criteria %></code></td>
                     <td class="table-actions">
-                      <button class="btn btn-sm btn-outline" onclick="editScheme('<%= s.id %>', '<%= s.title %>', '<%= s.description %>', '<%= s.target_criteria %>')">
+                      <button class="btn btn-sm btn-outline" onclick="editScheme(this)"
+                              data-id="<%= s.id %>"
+                              data-title="<%= s.title %>"
+                              data-description="<%= s.description %>"
+                              data-target-criteria="<%= s.target_criteria %>">
                         <i class="fas fa-edit"></i>
                       </button>
-                      <button class="btn btn-sm btn-danger" onclick="deleteScheme('<%= s.id %>')">
+                      <button class="btn btn-sm btn-danger" onclick="deleteScheme(this)"
+                              data-id="<%= s.id %>">
                         <i class="fas fa-trash"></i>
                       </button>
                     </td>

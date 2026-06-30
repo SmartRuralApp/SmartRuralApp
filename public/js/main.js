@@ -476,69 +476,68 @@ function initForms() {
   }
 }
 
-// Edit Tax Record
-window.editTaxRecord = function(id, propertyId, taxAmount, dueDate, year, status) {
-  document.getElementById('editTaxId').value = id;
-  document.getElementById('editPropertyId').value = propertyId;
-  document.getElementById('editTaxAmount').value = taxAmount;
-  document.getElementById('editDueDate').value = dueDate;
-  document.getElementById('editYear').value = year;
-  document.getElementById('editStatus').value = status;
+window.editTaxRecord = function(btn) {
+  document.getElementById('editTaxId').value = btn.dataset.id;
+  document.getElementById('editPropertyId').value = btn.dataset.propertyId;
+  document.getElementById('editTaxAmount').value = btn.dataset.taxAmount;
+  document.getElementById('editDueDate').value = btn.dataset.dueDate;
+  document.getElementById('editYear').value = btn.dataset.year;
+  document.getElementById('editStatus').value = btn.dataset.status;
   
   const modal = document.getElementById('editTaxModal');
   if (modal) modal.classList.add('active');
 };
 
 // Edit Service
-window.editService = function(id, title, description, icon, status) {
-  document.getElementById('editServiceId').value = id;
-  document.getElementById('editServiceTitle').value = title;
-  document.getElementById('editServiceDescription').value = description;
-  document.getElementById('editServiceIcon').value = icon;
-  document.getElementById('editServiceStatus').value = status;
+window.editService = function(btn) {
+  document.getElementById('editServiceId').value = btn.dataset.id;
+  document.getElementById('editServiceTitle').value = btn.dataset.title;
+  document.getElementById('editServiceDescription').value = btn.dataset.description;
+  document.getElementById('editServiceIcon').value = btn.dataset.icon;
+  document.getElementById('editServiceStatus').value = btn.dataset.status;
   
   const modal = document.getElementById('editServiceModal');
   if (modal) modal.classList.add('active');
 };
 
 // Edit Property
-window.editProperty = function(id, propertyId, ownerName, address, propertyType) {
-  document.getElementById('editPropId').value = id;
-  document.getElementById('editPropertyIdField').value = propertyId;
-  document.getElementById('editPropOwnerName').value = ownerName;
-  document.getElementById('editPropAddress').value = address;
-  document.getElementById('editPropType').value = propertyType;
+window.editProperty = function(btn) {
+  document.getElementById('editPropId').value = btn.dataset.id;
+  document.getElementById('editPropertyIdField').value = btn.dataset.propertyId;
+  document.getElementById('editPropOwnerName').value = btn.dataset.ownerName;
+  document.getElementById('editPropAddress').value = btn.dataset.address;
+  document.getElementById('editPropType').value = btn.dataset.propertyType;
   
   const modal = document.getElementById('editPropertyModal');
   if (modal) modal.classList.add('active');
 };
 
 // Edit Citizen
-window.editCitizen = function(id, propertyId, name, phone, email, age, gender, occupation, income, landSize, isFarmer, isStudent, disability) {
-  document.getElementById('editCitId').value = id;
-  document.getElementById('editCitPropertyId').value = propertyId;
-  document.getElementById('editCitName').value = name;
-  document.getElementById('editCitPhone').value = phone;
-  document.getElementById('editCitEmail').value = email;
-  document.getElementById('editCitAge').value = age;
-  document.getElementById('editCitGender').value = gender;
-  document.getElementById('editCitOccupation').value = occupation;
-  document.getElementById('editCitIncome').value = income;
-  document.getElementById('editCitLandSize').value = landSize;
-  document.getElementById('editCitIsFarmer').value = isFarmer;
-  document.getElementById('editCitIsStudent').value = isStudent;
-  document.getElementById('editCitDisability').value = disability;
+window.editCitizen = function(btn) {
+  document.getElementById('editCitId').value = btn.dataset.id;
+  document.getElementById('editCitPropertyId').value = btn.dataset.propertyId;
+  document.getElementById('editCitName').value = btn.dataset.name;
+  document.getElementById('editCitPhone').value = btn.dataset.phone;
+  document.getElementById('editCitEmail').value = btn.dataset.email;
+  document.getElementById('editCitAge').value = btn.dataset.age;
+  document.getElementById('editCitGender').value = btn.dataset.gender;
+  document.getElementById('editCitOccupation').value = btn.dataset.occupation;
+  document.getElementById('editCitIncome').value = btn.dataset.income;
+  document.getElementById('editCitLandSize').value = btn.dataset.landSize;
+  document.getElementById('editCitIsFarmer').value = btn.dataset.isFarmer;
+  document.getElementById('editCitIsStudent').value = btn.dataset.isStudent;
+  document.getElementById('editCitDisability').value = btn.dataset.disability;
   
   const modal = document.getElementById('editCitizenModal');
   if (modal) modal.classList.add('active');
 };
 
 // Edit Scheme
-window.editScheme = function(id, title, description, targetCriteria) {
-  document.getElementById('editSchemeId').value = id;
-  document.getElementById('editSchemeTitle').value = title;
-  document.getElementById('editSchemeDescription').value = description;
-  document.getElementById('editSchemeCriteria').value = targetCriteria;
+window.editScheme = function(btn) {
+  document.getElementById('editSchemeId').value = btn.dataset.id;
+  document.getElementById('editSchemeTitle').value = btn.dataset.title;
+  document.getElementById('editSchemeDescription').value = btn.dataset.description;
+  document.getElementById('editSchemeCriteria').value = btn.dataset.targetCriteria;
   
   const modal = document.getElementById('editSchemeModal');
   if (modal) modal.classList.add('active');
@@ -571,8 +570,9 @@ window.closeEditSchemeModal = function() {
 };
 
 // Delete Tax Record
-window.deleteTaxRecord = async function(id) {
+window.deleteTaxRecord = async function(target) {
   if (!confirm('Are you sure you want to delete this tax record?')) return;
+  const id = (target && typeof target === 'object') ? target.dataset.id : target;
   
   try {
     const formData = new FormData();
@@ -597,8 +597,9 @@ window.deleteTaxRecord = async function(id) {
 };
 
 // Delete Service
-window.deleteService = async function(id) {
+window.deleteService = async function(target) {
   if (!confirm('Are you sure you want to delete this service?')) return;
+  const id = (target && typeof target === 'object') ? target.dataset.id : target;
   
   try {
     const formData = new FormData();
@@ -623,8 +624,9 @@ window.deleteService = async function(id) {
 };
 
 // Delete Property
-window.deleteProperty = async function(id) {
+window.deleteProperty = async function(target) {
   if (!confirm('Are you sure you want to delete this property? This will not delete tax records associated with it.')) return;
+  const id = (target && typeof target === 'object') ? target.dataset.id : target;
   
   try {
     const formData = new FormData();
@@ -649,8 +651,9 @@ window.deleteProperty = async function(id) {
 };
 
 // Delete Citizen
-window.deleteCitizen = async function(id) {
+window.deleteCitizen = async function(target) {
   if (!confirm('Are you sure you want to delete this citizen?')) return;
+  const id = (target && typeof target === 'object') ? target.dataset.id : target;
   
   try {
     const formData = new FormData();
@@ -675,8 +678,9 @@ window.deleteCitizen = async function(id) {
 };
 
 // Delete Scheme
-window.deleteScheme = async function(id) {
+window.deleteScheme = async function(target) {
   if (!confirm('Are you sure you want to delete this scheme?')) return;
+  const id = (target && typeof target === 'object') ? target.dataset.id : target;
   
   try {
     const formData = new FormData();

@@ -180,10 +180,17 @@
                         <td><small><%= new Date(record.created_at).toLocaleDateString('en-IN') %></small></td>
                         <td>
                           <div class="table-actions">
-                            <button class="btn btn-sm btn-outline" onclick="editTaxRecord('<%= record.id %>', '<%= record.property_id %>', <%= record.tax_amount %>, '<%= record.due_date %>', <%= record.year %>, '<%= record.status %>')">
+                            <button class="btn btn-sm btn-outline" onclick="editTaxRecord(this)"
+                                    data-id="<%= record.id %>"
+                                    data-property-id="<%= record.property_id %>"
+                                    data-tax-amount="<%= record.tax_amount %>"
+                                    data-due-date="<%= record.due_date %>"
+                                    data-year="<%= record.year %>"
+                                    data-status="<%= record.status %>">
                               <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteTaxRecord('<%= record.id %>')">
+                            <button class="btn btn-sm btn-danger" onclick="deleteTaxRecord(this)"
+                                    data-id="<%= record.id %>">
                               <i class="fas fa-trash"></i>
                             </button>
                           </div>

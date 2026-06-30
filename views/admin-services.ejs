@@ -156,10 +156,16 @@
                     <td><%= service.description %></td>
                     <td><span class="status-badge <%= service.status.toLowerCase() %>"><%= service.status %></span></td>
                     <td class="table-actions">
-                      <button class="btn btn-sm btn-outline" onclick="editService('<%= service.id %>', '<%= service.title %>', '<%= service.description %>', '<%= service.icon %>', '<%= service.status %>')">
+                      <button class="btn btn-sm btn-outline" onclick="editService(this)"
+                              data-id="<%= service.id %>"
+                              data-title="<%= service.title %>"
+                              data-description="<%= service.description %>"
+                              data-icon="<%= service.icon %>"
+                              data-status="<%= service.status %>">
                         <i class="fas fa-edit"></i>
                       </button>
-                      <button class="btn btn-sm btn-danger" onclick="deleteService('<%= service.id %>')">
+                      <button class="btn btn-sm btn-danger" onclick="deleteService(this)"
+                              data-id="<%= service.id %>">
                         <i class="fas fa-trash"></i>
                       </button>
                     </td>
