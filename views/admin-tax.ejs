@@ -34,8 +34,13 @@
       </div>
       <ul class="sidebar-menu">
         <li><a href="/admin-dashboard" class="sidebar-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/admin-properties" class="sidebar-link"><i class="fas fa-city"></i> Properties</a></li>
+        <li><a href="/admin-citizens" class="sidebar-link"><i class="fas fa-users"></i> Citizens</a></li>
         <li><a href="/admin-tax" class="sidebar-link active"><i class="fas fa-receipt"></i> Tax Records</a></li>
+        <li><a href="/admin-complaints" class="sidebar-link"><i class="fas fa-exclamation-triangle"></i> Complaints</a></li>
         <li><a href="/admin-services" class="sidebar-link"><i class="fas fa-cogs"></i> Services</a></li>
+        <li><a href="/admin-schemes" class="sidebar-link"><i class="fas fa-hand-holding-usd"></i> Schemes</a></li>
+        <li><a href="/admin-ml-performance" class="sidebar-link"><i class="fas fa-chart-line"></i> ML Performance</a></li>
         <li><a href="/admin-logout" class="sidebar-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
       </ul>
     </aside>
@@ -120,6 +125,7 @@
                     <th>Due Date</th>
                     <th>Year</th>
                     <th>Status</th>
+                    <th>ML Default Risk</th>
                     <th>Created</th>
                     <th>Actions</th>
                   </tr>
@@ -127,7 +133,7 @@
                 <tbody>
                   <% if (taxRecords.length === 0) { %>
                     <tr>
-                      <td colspan="8" class="text-center text-muted py-4">
+                      <td colspan="9" class="text-center text-muted py-4">
                         <i class="fas fa-inbox fa-3x mb-3"></i><br>
                         No tax records found
                       </td>
@@ -142,6 +148,34 @@
                         <td><%= record.year %></td>
                         <td>
                           <span class="status-badge <%= record.status.toLowerCase() %>"><%= record.status %></span>
+                        </td>
+                        <td>
+                          <% if (record.status === 'Unpaid') { %>
+                            <div style="display: flex; flex-direction: column; gap: 4px;">
+                              <div>
+                                <span class="status-badge <%= record.predicted_status === 'High Risk' ? 'overdue' : record.predicted_status === 'Medium Risk' ? 'unpaid' : 'paid' %>">
+                                  <%= record.predicted_status %> (<%= Math.round(record.payment_probability) %>%)
+                                </span>
+                                <% if (record.admin_corrected) { %>
+                                  <small class="text-success" title="Admin Overridden"><i class="fas fa-check-circle"></i></small>
+                                <% } %>
+                              </div>
+                              <% if (record.xai_explanation) { %>
+                                <small class="text-muted" style="font-size: 0.73rem; font-style: italic; line-height: 1.1; margin-top: 2px;">
+                                  <i class="fas fa-info-circle"></i> <%= record.xai_explanation %>
+                                </small>
+                              <% } %>
+                              <!-- Override Select -->
+                              <select class="form-control form-control-sm" style="width: auto; font-size: 0.75rem; margin-top: 4px; padding: 2px 5px;" onchange="overrideTaxRisk('<%= record.id %>', this.value)">
+                                <option value="">Override Risk...</option>
+                                <option value="Low Risk" <%= record.predicted_status === 'Low Risk' ? 'selected' : '' %>>Low Risk</option>
+                                <option value="Medium Risk" <%= record.predicted_status === 'Medium Risk' ? 'selected' : '' %>>Medium Risk</option>
+                                <option value="High Risk" <%= record.predicted_status === 'High Risk' ? 'selected' : '' %>>High Risk</option>
+                              </select>
+                            </div>
+                          <% } else { %>
+                            <span class="text-muted">—</span>
+                          <% } %>
                         </td>
                         <td><small><%= new Date(record.created_at).toLocaleDateString('en-IN') %></small></td>
                         <td>
@@ -217,6 +251,24 @@
     // Set default due date to end of month
     document.getElementById('dueDate').valueAsDate = new Date(new Date().getFullYear(), new Date().getMonth() + 11, 31);
     document.getElementById('year').value = new Date().getFullYear();
+
+    function overrideTaxRisk(id, risk) {
+      if (!risk) return;
+      fetch('/api/admin/override-tax-prediction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, risk })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.reload();
+        } else {
+          alert("Error applying override: " + data.error);
+        }
+      })
+      .catch(err => alert("Network error: " + err.message));
+    }
   </script>
 </body>
 </html>

@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Chart.js for ML Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="admin-layout">
@@ -15,7 +17,7 @@
       <div class="sidebar-header">
         <div class="sidebar-logo">
           <i class="fas fa-landmark"></i>
-          <span>Admin Panel</span>
+          <span>Panchayat Admin</span>
         </div>
       </div>
       <ul class="sidebar-menu">
@@ -26,15 +28,45 @@
           </a>
         </li>
         <li>
+          <a href="/admin-properties">
+            <i class="fas fa-city"></i>
+            <span>Properties</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-citizens">
+            <i class="fas fa-users"></i>
+            <span>Citizens</span>
+          </a>
+        </li>
+        <li>
           <a href="/admin-tax">
             <i class="fas fa-file-invoice-dollar"></i>
             <span>Tax Management</span>
           </a>
         </li>
         <li>
+          <a href="/admin-complaints">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Complaints</span>
+          </a>
+        </li>
+        <li>
           <a href="/admin-services">
             <i class="fas fa-cogs"></i>
             <span>Services</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-schemes">
+            <i class="fas fa-hand-holding-usd"></i>
+            <span>Schemes</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-ml-performance">
+            <i class="fas fa-chart-line"></i>
+            <span>ML Performance</span>
           </a>
         </li>
         <li>
@@ -50,13 +82,26 @@
     <main class="admin-content">
       <div class="admin-header">
         <div>
-          <h1>Dashboard</h1>
-          <p class="text-muted">Welcome back, Admin!</p>
+          <h1>Dashboard Overview</h1>
+          <p class="text-muted">Smart Governance Analytics & AI Portal</p>
         </div>
-        <div>
+        <div class="d-flex gap-2">
+          <button id="retrainBtn" class="btn btn-primary">
+            <i class="fas fa-sync-alt"></i> Export & Retrain ML Models
+          </button>
           <a href="/" class="btn btn-outline" target="_blank">
             <i class="fas fa-external-link-alt"></i> View Site
           </a>
+        </div>
+      </div>
+
+      <!-- Retraining Progress Overlay -->
+      <div id="retrainProgressCard" class="card mb-4 hidden" style="border-left: 4px solid var(--accent);">
+        <div class="card-header">
+          <h3 class="card-title" id="retrainStatusText"><i class="fas fa-spinner fa-spin"></i> Exporting Data & Retraining Models...</h3>
+        </div>
+        <div class="card-body">
+          <pre id="retrainLogArea" style="background: #212121; color: #4CAF50; padding: 15px; border-radius: var(--radius-sm); font-family: monospace; max-height: 150px; overflow-y: auto; font-size: 0.85rem; margin-top: 10px;">Initializing retraining logs...</pre>
         </div>
       </div>
 
@@ -91,6 +136,99 @@
         </div>
       </div>
 
+      <!-- ML Metadata & Smart Alerts Panel -->
+      <div class="grid-2 mt-4">
+        <!-- ML Info -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-brain"></i> Active Machine Learning Models</h3>
+            <span class="status-badge active">Version <%= mlMeta.version %></span>
+          </div>
+          <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+              <div class="d-flex justify-between" style="border-bottom: 1px solid #EEE; padding-bottom: 8px;">
+                <span class="text-muted"><i class="fas fa-calendar-check"></i> Last Retrained:</span>
+                <strong><%= mlMeta.last_trained %></strong>
+              </div>
+              <div class="d-flex justify-between" style="border-bottom: 1px solid #EEE; padding-bottom: 8px;">
+                <span class="text-muted"><i class="fas fa-database"></i> Training Set Size:</span>
+                <strong><%= mlMeta.dataset_size %> samples</strong>
+              </div>
+              <div class="d-flex justify-between" style="border-bottom: 1px solid #EEE; padding-bottom: 8px;">
+                <span class="text-muted"><i class="fas fa-folder-open"></i> Excel Datasets Path:</span>
+                <span style="font-family: monospace; font-size: 0.85rem; color: var(--secondary);">/datasets/*.xlsx</span>
+              </div>
+              <a href="/admin-ml-performance" class="btn btn-outline btn-sm mt-3" style="width: 100%; justify-content: center;">
+                <i class="fas fa-chart-bar"></i> View Detailed Performance Metrics
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Smart Alerts -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-bell"></i> AI Smart Notifications & Alerts</h3>
+            <span class="status-badge <%= alerts.length > 0 ? 'unpaid' : 'paid' %>"><%= alerts.length %> New</span>
+          </div>
+          <div class="card-body" style="max-height: 250px; overflow-y: auto;">
+            <% if (alerts && alerts.length > 0) { %>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <% alerts.forEach(function(alert) { %>
+                  <div class="alert-item" data-id="<%= alert.id %>" style="padding: 10px; border-radius: var(--radius-sm); background: #F5F5F5; border-left: 4px solid <%= alert.type === 'Alert' ? 'var(--error)' : alert.type === 'Duplicate' ? 'var(--warning)' : 'var(--secondary)' %>; position: relative;">
+                    <div class="d-flex justify-between align-items-center" style="margin-bottom: 4px;">
+                      <strong style="font-size: 0.9rem;"><%= alert.title %></strong>
+                      <small class="text-muted"><%= new Date(alert.created_at).toLocaleTimeString('en-IN') %></small>
+                    </div>
+                    <p style="font-size: 0.85rem; margin: 0; color: var(--text-secondary);"><%= alert.message %></p>
+                    <button class="dismiss-alert-btn" style="position: absolute; top: 5px; right: 5px; background: none; border: none; cursor: pointer; color: #BBB;">&times;</button>
+                  </div>
+                <% }); %>
+              </div>
+            <% } else { %>
+              <div class="text-center text-muted py-4">
+                <i class="fas fa-check-circle fa-2x mb-2" style="color: var(--success);"></i>
+                <p>No active alerts. Panchayat operating smoothly!</p>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart.js Visualizations Section -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-chart-pie"></i> ML Insights & Predictive Analytics</h3>
+        </div>
+        <div class="card-body">
+          <div class="grid-3" style="margin-top: 15px;">
+            <!-- Priority Chart -->
+            <div style="text-align: center;">
+              <h4 style="margin-bottom: 10px; font-size: 0.95rem;">Complaint Priorities (ML)</h4>
+              <div style="width: 220px; height: 220px; margin: 0 auto;">
+                <canvas id="priorityChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Category Chart -->
+            <div style="text-align: center;">
+              <h4 style="margin-bottom: 10px; font-size: 0.95rem;">Complaint Categories (ML)</h4>
+              <div style="width: 260px; height: 220px; margin: 0 auto;">
+                <canvas id="categoryChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Tax Default Risk Chart -->
+            <div style="text-align: center;">
+              <h4 style="margin-bottom: 10px; font-size: 0.95rem;">Tax Default Risk (ML)</h4>
+              <div style="width: 220px; height: 220px; margin: 0 auto;">
+                <canvas id="defaultRiskChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Recent Payments -->
       <div class="card mt-4">
         <div class="card-header">
@@ -110,7 +248,7 @@
               </tr>
             </thead>
             <tbody>
-<% if (typeof recentPayments !== 'undefined' && recentPayments && recentPayments.length > 0) { %>
+              <% if (typeof recentPayments !== 'undefined' && recentPayments && recentPayments.length > 0) { %>
                 <% recentPayments.forEach(function(payment) { %>
                   <tr>
                     <td><strong><%= payment.transaction_id %></strong></td>
@@ -126,7 +264,6 @@
                   <td colspan="6" class="text-center text-muted">No recent payments</td>
                 </tr>
               <% } %>
-
             </tbody>
           </table>
         </div>
@@ -134,7 +271,159 @@
     </main>
   </div>
 
+  <!-- Custom Grid CSS inside head or stylesheet -->
+  <style>
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      align-items: center;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .dismiss-alert-btn:hover {
+      color: #333 !important;
+    }
+  </style>
+
   <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // 1. Initialise Retraining Button click
+      const retrainBtn = document.getElementById("retrainBtn");
+      const progressCard = document.getElementById("retrainProgressCard");
+      const statusText = document.getElementById("retrainStatusText");
+      const logArea = document.getElementById("retrainLogArea");
+
+      retrainBtn.addEventListener("click", () => {
+        retrainBtn.disabled = true;
+        progressCard.classList.remove("hidden");
+        statusText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting Data & Retraining Models...';
+        logArea.innerText = "Querying latest database tables...\nExporting records to Excel datasets...\nLaunching ML retraining script...\n";
+
+        fetch('/api/admin/retrain', {
+          method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            statusText.innerHTML = '<i class="fas fa-check-circle" style="color: var(--success);"></i> Model Retraining Complete!';
+            logArea.innerText += "\n[SUCCESS] Retrain Complete!\nLogs:\n" + data.logs;
+            // Reload page after a delay
+            setTimeout(() => window.location.reload(), 4000);
+          } else {
+            statusText.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: var(--error);"></i> Training Failed';
+            logArea.innerText += "\n[ERROR] Retraining failed:\n" + data.logs;
+            retrainBtn.disabled = false;
+          }
+        })
+        .catch(err => {
+          statusText.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: var(--error);"></i> Network Error';
+          logArea.innerText += "\n[ERROR] Network error contacting API: " + err.message;
+          retrainBtn.disabled = false;
+        });
+      });
+
+      // Dismiss Alert
+      document.querySelectorAll(".dismiss-alert-btn").forEach(btn => {
+        btn.addEventListener("click", function() {
+          const item = btn.closest(".alert-item");
+          const id = item.getAttribute("data-id");
+          fetch('/api/notifications/read', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              item.style.transition = 'all 0.3s ease';
+              item.style.opacity = '0';
+              item.style.transform = 'translateX(20px)';
+              setTimeout(() => item.remove(), 300);
+            }
+          });
+        });
+      });
+
+      // 2. Render Chart.js Analytics Graphs
+      const chartData = <%- JSON.stringify(charts) %>;
+
+      // Priority Distribution Chart
+      const pCtx = document.getElementById('priorityChart').getContext('2d');
+      new Chart(pCtx, {
+        type: 'pie',
+        data: {
+          labels: ['High', 'Medium', 'Low'],
+          datasets: [{
+            data: [chartData.priorityDist.High || 0, chartData.priorityDist.Medium || 0, chartData.priorityDist.Low || 0],
+            backgroundColor: ['#E53935', '#FFA000', '#43A047'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+          }
+        }
+      });
+
+      // Category Distribution Chart
+      const cCtx = document.getElementById('categoryChart').getContext('2d');
+      const catLabels = Object.keys(chartData.catDist || {});
+      const catValues = Object.values(chartData.catDist || {});
+      new Chart(cCtx, {
+        type: 'bar',
+        data: {
+          labels: catLabels.length > 0 ? catLabels : ['None'],
+          datasets: [{
+            label: 'Complaints',
+            data: catValues.length > 0 ? catValues : [0],
+            backgroundColor: '#1565C0',
+            borderRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true, ticks: { precision: 0 } }
+          }
+        }
+      });
+
+      // Tax Default Risk Chart
+      const tCtx = document.getElementById('defaultRiskChart').getContext('2d');
+      new Chart(tCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['High Risk', 'Medium Risk', 'Low Risk'],
+          datasets: [{
+            data: [chartData.defaultRiskDist['High Risk'] || 0, chartData.defaultRiskDist['Medium Risk'] || 0, chartData.defaultRiskDist['Low Risk'] || 0],
+            backgroundColor: ['#E53935', '#FFA000', '#1565C0'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>
-

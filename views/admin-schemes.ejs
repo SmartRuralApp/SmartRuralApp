@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Government Schemes Management - Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-landmark"></i>
+          <span>Panchayat Admin</span>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="/admin-properties"><i class="fas fa-city"></i> <span>Properties</span></a></li>
+        <li><a href="/admin-citizens"><i class="fas fa-users"></i> <span>Citizens</span></a></li>
+        <li><a href="/admin-tax"><i class="fas fa-file-invoice-dollar"></i> <span>Tax Management</span></a></li>
+        <li><a href="/admin-complaints"><i class="fas fa-exclamation-triangle"></i> <span>Complaints</span></a></li>
+        <li><a href="/admin-services"><i class="fas fa-cogs"></i> <span>Services</span></a></li>
+        <li><a href="/admin-schemes" class="active"><i class="fas fa-handholding-usd"></i> <span>Schemes</span></a></li>
+        <li><a href="/admin-ml-performance"><i class="fas fa-chart-line"></i> <span>ML Performance</span></a></li>
+        <li><a href="/admin-logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+      <div class="admin-header">
+        <div>
+          <h1>Government Welfare Schemes</h1>
+          <p class="text-muted">Register and configure rural assistance & pension criteria.</p>
+        </div>
+      </div>
+
+      <!-- Add Scheme Form -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-plus"></i> Add New Welfare Scheme</h3>
+        </div>
+        <div class="card-body">
+          <form id="schemeForm">
+            <div class="form-group mb-3">
+              <label class="form-label">Scheme Title</label>
+              <input type="text" name="title" class="form-control" placeholder="e.g. PM Kisan" required>
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Eligibility Target Criteria (Description)</label>
+              <input type="text" name="targetCriteria" class="form-control" placeholder="e.g. Farmer Status = 1, Land Size > 0, Occupation = Agriculture" required>
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Description</label>
+              <textarea name="description" class="form-control" rows="3" placeholder="Scheme details and benefits description" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">
+              <i class="fas fa-save"></i> Save Scheme
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Schemes list -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-clipboard-list"></i> Schemes Database</h3>
+        </div>
+        <div class="table-container" style="box-shadow: none;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Target Criteria</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (schemes && schemes.length > 0) { %>
+                <% schemes.forEach(function(s) { %>
+                  <tr>
+                    <td><%= s.id %></td>
+                    <td><strong><%= s.title %></strong></td>
+                    <td><%= s.description %></td>
+                    <td><code style="background: #FFF9C4; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;"><%= s.target_criteria %></code></td>
+                    <td class="table-actions">
+                      <button class="btn btn-sm btn-outline" onclick="editScheme('<%= s.id %>', '<%= s.title %>', '<%= s.description %>', '<%= s.target_criteria %>')">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-sm btn-danger" onclick="deleteScheme('<%= s.id %>')">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="5" class="text-center text-muted">No welfare schemes in database</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Edit Scheme Modal -->
+  <div class="modal-overlay" id="editSchemeModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Welfare Scheme</h3>
+        <button class="modal-close" onclick="closeEditSchemeModal()">&times;</button>
+      </div>
+      <form id="editSchemeForm">
+        <div class="modal-body">
+          <input type="hidden" id="editSchemeId" name="id">
+          <div class="form-group">
+            <label class="form-label">Scheme Title</label>
+            <input type="text" id="editSchemeTitle" name="title" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Criteria</label>
+            <input type="text" id="editSchemeCriteria" name="targetCriteria" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea id="editSchemeDescription" name="description" class="form-control" rows="3" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeEditSchemeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" onclick="updateScheme(); return false;">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
