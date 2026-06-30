@@ -246,7 +246,7 @@
     </div>
   </div>
 
-  <script src="/js/main.js"></script>
+  <script src="/js/main.js?v=<%= Date.now() %>"></script>
   <script>
     // Set default due date to end of month
     document.getElementById('dueDate').valueAsDate = new Date(new Date().getFullYear(), new Date().getMonth() + 11, 31);
