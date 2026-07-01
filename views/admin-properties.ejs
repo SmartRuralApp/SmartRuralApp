@@ -40,13 +40,12 @@
         </div>
       </div>
 
-      <!-- Add Property Form -->
       <div class="card mb-4">
         <div class="card-header">
           <h3 class="card-title"><i class="fas fa-plus-circle"></i> Add New Property</h3>
         </div>
         <div class="card-body">
-          <form id="propertyForm">
+          <form id="propertyForm" method="POST" action="/api/admin/add-property">
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Property ID</label>
@@ -132,14 +131,13 @@
     </main>
   </div>
 
-  <!-- Edit Property Modal -->
   <div class="modal-overlay" id="editPropertyModal">
     <div class="modal">
       <div class="modal-header">
         <h3>Edit Property</h3>
         <button class="modal-close" onclick="closeEditPropertyModal()">&times;</button>
       </div>
-      <form id="editPropertyForm">
+      <form id="editPropertyForm" method="POST" action="/api/admin/update-property">
         <div class="modal-body">
           <input type="hidden" id="editPropId" name="id">
           <div class="form-group">
@@ -165,7 +163,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline" onclick="closeEditPropertyModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary" onclick="updateProperty(); return false;">Update</button>
+          <button type="submit" class="btn btn-primary">Update</button>
         </div>
       </form>
     </div>

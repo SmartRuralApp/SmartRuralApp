@@ -74,7 +74,7 @@
             <h3 class="card-title"><i class="fas fa-plus"></i> Add New Tax Record</h3>
           </div>
           <div class="card-body">
-            <form id="taxRecordForm">
+            <form id="taxRecordForm" method="POST" action="/api/admin/add-tax">
               <div class="form-row">
                 <div class="form-group">
                   <label for="propertyId" class="form-label">Property ID</label>
@@ -214,8 +214,9 @@
         <h3>Edit Tax Record</h3>
         <button class="modal-close"><i class="fas fa-times"></i></button>
       </div>
-      <div class="modal-body">
-        <form id="editTaxForm">
+      <form id="editTaxForm" method="POST" action="/api/admin/update-tax">
+        <div class="modal-body">
+
           <input type="hidden" id="editTaxId" name="id">
           <div class="form-row">
             <div class="form-group">
@@ -244,12 +245,12 @@
           <div class="form-group">
             <input type="hidden" id="editPropertyId" name="propertyId">
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" onclick="closeEditTaxModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="updateTaxRecord()">Update Record</button>
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeEditTaxModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Record</button>
+        </div>
+      </form>
     </div>
   </div>
 

@@ -46,7 +46,7 @@
           <h3 class="card-title"><i class="fas fa-plus"></i> Add New Welfare Scheme</h3>
         </div>
         <div class="card-body">
-          <form id="schemeForm">
+          <form id="schemeForm" method="POST" action="/api/admin/add-scheme">
             <div class="form-group mb-3">
               <label class="form-label">Scheme Title</label>
               <input type="text" name="title" class="form-control" placeholder="e.g. PM Kisan" required>
@@ -124,7 +124,7 @@
         <h3>Edit Welfare Scheme</h3>
         <button class="modal-close" onclick="closeEditSchemeModal()">&times;</button>
       </div>
-      <form id="editSchemeForm">
+      <form id="editSchemeForm" method="POST" action="/api/admin/update-scheme">
         <div class="modal-body">
           <input type="hidden" id="editSchemeId" name="id">
           <div class="form-group">
@@ -138,11 +138,10 @@
           <div class="form-group">
             <label class="form-label">Description</label>
             <textarea id="editSchemeDescription" name="description" class="form-control" rows="3" required></textarea>
-          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline" onclick="closeEditSchemeModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary" onclick="updateScheme(); return false;">Update</button>
+          <button type="submit" class="btn btn-primary">Update</button>
         </div>
       </form>
     </div>

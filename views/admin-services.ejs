@@ -85,12 +85,11 @@
         </div>
       </div>
 
-      <!-- Add New Service -->
       <div class="card mb-4">
         <div class="card-header">
           <h3 class="card-title">Add New Service</h3>
         </div>
-        <form id="serviceForm">
+        <form id="serviceForm" method="POST" action="/api/admin/add-service">
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Service Title</label>
@@ -190,7 +189,7 @@
         <h3>Edit Service</h3>
         <button class="modal-close" onclick="closeEditServiceModal()">&times;</button>
       </div>
-      <form id="editServiceForm">
+      <form id="editServiceForm" method="POST" action="/api/admin/update-service">
         <div class="modal-body">
           <input type="hidden" id="editServiceId" name="id">
           <div class="form-group">
@@ -222,11 +221,10 @@
           <div class="form-group">
             <label class="form-label">Description</label>
             <textarea id="editServiceDescription" name="description" class="form-control" rows="3" required></textarea>
-          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline" onclick="closeEditServiceModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary" onclick="updateService(); return false;">Update</button>
+          <button type="submit" class="btn btn-primary">Update</button>
         </div>
       </form>
     </div>

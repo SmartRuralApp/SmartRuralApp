@@ -452,7 +452,6 @@ function initForms() {
       const originalText = submitBtn.innerHTML;
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
       submitBtn.disabled = true;
-      
       try {
         const response = await fetch('/api/admin/add-scheme', {
           method: 'POST',
@@ -474,7 +473,52 @@ function initForms() {
       }
     });
   }
+  // Edit Property Form
+  const editPropForm = document.getElementById('editPropertyForm');
+  if (editPropForm) {
+    editPropForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      await window.updateProperty();
+    });
+  }
+
+  // Edit Citizen Form
+  const editCitForm = document.getElementById('editCitizenForm');
+  if (editCitForm) {
+    editCitForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      await window.updateCitizen();
+    });
+  }
+
+  // Edit Tax Form
+  const editTaxForm = document.getElementById('editTaxForm');
+  if (editTaxForm) {
+    editTaxForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      await window.updateTaxRecord();
+    });
+  }
+
+  // Edit Service Form
+  const editServForm = document.getElementById('editServiceForm');
+  if (editServForm) {
+    editServForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      await window.updateService();
+    });
+  }
+
+  // Edit Scheme Form
+  const editSchForm = document.getElementById('editSchemeForm');
+  if (editSchForm) {
+    editSchForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      await window.updateScheme();
+    });
+  }
 }
+
 
 window.editTaxRecord = function(btn) {
   document.getElementById('editTaxId').value = btn.dataset.id;
@@ -882,8 +926,9 @@ function showAlert(message, type = 'info') {
     right: 20px;
     padding: 1rem 1.5rem;
     border-radius: var(--radius-sm);
+
     background: ${type === 'success' ? '#E8F5E9' : type === 'error' ? '#FFEBEE' : '#E3F2FD'};
-    color: ${type === 'success' ? '#2E7D32' : type === 'error' ? '#C62828' : '#1565C0};
+    color: ${type === 'success' ? '#2E7D32' : type === 'error' ? '#C62828' : '#1565C0'};
     border-left: 4px solid ${type === 'success' ? '#43A047' : type === 'error' ? '#E53935' : '#1565C0'};
     box-shadow: var(--shadow);
     z-index: 3000;
