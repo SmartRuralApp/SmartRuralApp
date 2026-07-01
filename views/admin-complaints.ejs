@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complaints Management - Admin | Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-landmark"></i>
+          <span>Panchayat Admin</span>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li>
+          <a href="/admin-dashboard">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-properties">
+            <i class="fas fa-city"></i>
+            <span>Properties</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-citizens">
+            <i class="fas fa-users"></i>
+            <span>Citizens</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-tax">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span>Tax Management</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-complaints" class="active">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Complaints</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-services">
+            <i class="fas fa-cogs"></i>
+            <span>Services</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-schemes">
+            <i class="fas fa-hand-holding-usd"></i>
+            <span>Schemes</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-ml-performance">
+            <i class="fas fa-chart-line"></i>
+            <span>ML Performance</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin-logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+      <div class="admin-header">
+        <div>
+          <h1>Citizen Complaints Management</h1>
+          <p class="text-muted">Review, update status, and override Machine Learning priority predictions.</p>
+        </div>
+      </div>
+
+      <!-- Complaints Table -->
+      <div class="card table-container">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-list-ul"></i> Citizen Complaints Feed</h3>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Property ID & Owner</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th>Ward</th>
+                  <th>ML Priority Rating</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (complaints.length === 0) { %>
+                  <tr>
+                    <td colspan="8" class="text-center text-muted py-4">
+                      <i class="fas fa-inbox fa-3x mb-3"></i><br>
+                      No complaints submitted yet
+                    </td>
+                  </tr>
+                <% } else { %>
+                  <% complaints.forEach(function(complaint) { %>
+                    <tr style="<%= complaint.is_duplicate ? 'background-color: #FFFDF0;' : '' %>">
+                      <td>
+                        <strong><%= complaint.property_id %></strong><br>
+                        <small class="text-muted"><%= complaint.owner_name %></small>
+                      </td>
+                      <td>
+                        <span class="status-badge active" style="background: #E8EAF6; color: #3F51B5;"><%= complaint.category %></span>
+                        <% if (complaint.admin_corrected) { %>
+                          <br><small class="text-success" style="font-weight: 600;"><i class="fas fa-check-circle"></i> Overridden</small>
+                        <% } %>
+                      </td>
+                      <td style="max-width: 250px;">
+                        <div style="font-size: 0.9rem; line-height: 1.3;"><%= complaint.description %></div>
+                        <% if (complaint.xai_explanation) { %>
+                          <div style="font-size: 0.75rem; color: #78909C; margin-top: 5px; font-style: italic;">
+                            <i class="fas fa-info-circle"></i> XAI: <%= complaint.xai_explanation %>
+                          </div>
+                        <% } %>
+                        <% if (complaint.is_duplicate) { %>
+                          <div class="mt-1">
+                            <span class="status-badge overdue" style="font-size: 0.75rem; padding: 2px 8px; background: #FFEBEE; color: #C62828;">
+                              <i class="fas fa-copy"></i> Duplicate of ID #<%= complaint.duplicate_of_id %>
+                            </span>
+                          </div>
+                        <% } %>
+                      </td>
+                      <td><%= complaint.ward %></td>
+                      <td>
+                        <span class="status-badge <%= complaint.priority === 'High' ? 'overdue' : complaint.priority === 'Medium' ? 'unpaid' : 'paid' %>">
+                          <%= complaint.priority %>
+                        </span>
+                        <% if (complaint.confidence_score) { %>
+                          <br><small class="text-muted">Conf: <%= Math.round(complaint.confidence_score * 100) %>%</small>
+                        <% } %>
+                      </td>
+                      <td>
+                        <span class="status-badge <%= complaint.status === 'Resolved' ? 'paid' : complaint.status === 'In Progress' ? 'unpaid' : 'inactive' %>">
+                          <%= complaint.status %>
+                        </span>
+                      </td>
+                      <td><small><%= new Date(complaint.created_at).toLocaleDateString('en-IN') %></small></td>
+                      <td>
+                        <div class="table-actions">
+                          <!-- Status Update -->
+                          <select class="form-control form-control-sm" style="width: auto; padding: 4px 8px;" onchange="updateStatus('<%= complaint.id %>', this.value)">
+                            <option value="Pending" <%= complaint.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                            <option value="In Progress" <%= complaint.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+                            <option value="Resolved" <%= complaint.status === 'Resolved' ? 'selected' : '' %>>Resolved</option>
+                          </select>
+                          
+                          <!-- Override Button -->
+                          <button class="btn btn-sm btn-outline" title="Override Prediction" onclick="openOverrideModal('<%= complaint.id %>', '<%= complaint.category %>', '<%= complaint.priority %>')">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  <% }); %>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Override Modal -->
+  <div class="modal-overlay" id="overrideModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Override ML Predictions</h3>
+        <button class="modal-close" onclick="closeOverrideModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="overrideForm">
+          <input type="hidden" id="overrideComplaintId">
+          <div class="form-group">
+            <label class="form-label" for="overrideCategory">Category</label>
+            <select class="form-control" id="overrideCategory" required>
+              <option value="Water Supply">Water Supply</option>
+              <option value="Road Damage">Road Damage</option>
+              <option value="Street Light">Street Light</option>
+              <option value="Sanitation">Sanitation</option>
+              <option value="Drainage">Drainage</option>
+              <option value="Electricity">Electricity</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="overridePriority">Priority Rating</label>
+            <select class="form-control" id="overridePriority" required>
+              <option value="High">High Priority</option>
+              <option value="Medium">Medium Priority</option>
+              <option value="Low">Low Priority</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeOverrideModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitOverride()">Apply Override</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/main.js?v=<%= Date.now() %>"></script>
+  <script>
+    const modal = document.getElementById("overrideModal");
+
+    function openOverrideModal(id, currentCategory, currentPriority) {
+      document.getElementById("overrideComplaintId").value = id;
+      document.getElementById("overrideCategory").value = currentCategory;
+      document.getElementById("overridePriority").value = currentPriority;
+      modal.classList.add("active");
+    }
+
+    function closeOverrideModal() {
+      modal.classList.remove("active");
+    }
+
+    function submitOverride() {
+      const id = document.getElementById("overrideComplaintId").value;
+      const category = document.getElementById("overrideCategory").value;
+      const priority = document.getElementById("overridePriority").value;
+
+      fetch('/api/admin/override-complaint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, category, priority })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          closeOverrideModal();
+          window.location.reload();
+        } else {
+          alert("Error: " + data.message);
+        }
+      });
+    }
+
+    function updateStatus(id, status) {
+      fetch('/api/admin/update-complaint-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) {
+          alert("Error updating status: " + data.error);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

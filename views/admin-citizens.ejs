@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Management - Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-landmark"></i>
+          <span>Panchayat Admin</span>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="/admin-properties"><i class="fas fa-city"></i> <span>Properties</span></a></li>
+        <li><a href="/admin-citizens" class="active"><i class="fas fa-users"></i> <span>Citizens</span></a></li>
+        <li><a href="/admin-tax"><i class="fas fa-file-invoice-dollar"></i> <span>Tax Management</span></a></li>
+        <li><a href="/admin-complaints"><i class="fas fa-exclamation-triangle"></i> <span>Complaints</span></a></li>
+        <li><a href="/admin-services"><i class="fas fa-cogs"></i> <span>Services</span></a></li>
+        <li><a href="/admin-schemes"><i class="fas fa-hand-holding-usd"></i> <span>Schemes</span></a></li>
+        <li><a href="/admin-ml-performance"><i class="fas fa-chart-line"></i> <span>ML Performance</span></a></li>
+        <li><a href="/admin-logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+      <div class="admin-header">
+        <div>
+          <h1>Citizen Profile Registry</h1>
+          <p class="text-muted">Manage demographics, login credentials, and scheme eligibility parameters.</p>
+        </div>
+      </div>
+
+      <!-- Add Citizen Form -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-user-plus"></i> Add New Citizen Profile</h3>
+        </div>
+
+        <div class="card-body">
+          <form id="citizenForm" method="POST" action="/api/admin/add-citizen">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Property ID Mapping</label>
+                <select name="propertyId" class="form-control" required>
+                  <option value="">-- Select Property ID --</option>
+                  <% properties.forEach(function(prop) { %>
+                    <option value="<%= prop.property_id %>" <%= prop.user_id ? 'disabled style="color: #999;"' : '' %>>
+                      <%= prop.property_id %> - <%= prop.owner_name %> <%= prop.user_id ? '(Already Registered)' : '' %>
+                    </option>
+                  <% }); %>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="name" class="form-control" placeholder="Citizen full name" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Mobile Phone Number</label>
+                <input type="tel" name="phone" class="form-control" placeholder="10-digit number" required pattern="[0-9]{10}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="e.g. name@example.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Password (For Citizen Portal)</label>
+                <input type="password" name="password" class="form-control" value="user123" required>
+              </div>
+            </div>
+            <div class="form-row" style="border-top: 1px dashed #EEE; padding-top: 15px; margin-top: 10px;">
+              <div class="form-group">
+                <label class="form-label">Age</label>
+                <input type="number" name="age" class="form-control" value="35" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Gender</label>
+                <select name="gender" class="form-control">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Occupation</label>
+                <select name="occupation" class="form-control">
+                  <option value="Agriculture">Agriculture / Farming</option>
+                  <option value="Laborer">Rural Laborer</option>
+                  <option value="Business">Self-Employed / Business</option>
+                  <option value="Student">Student</option>
+                  <option value="Other">Unemployed / Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Annual Income (₹)</label>
+                <input type="number" name="income" class="form-control" value="65000" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Land Size (Acres)</label>
+                <input type="number" name="landSize" class="form-control" value="1.5" step="0.1" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Farmer Status</label>
+                <select name="isFarmer" class="form-control">
+                  <option value="1">Yes (Registered Farmer)</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Student Status</label>
+                <select name="isStudent" class="form-control">
+                  <option value="0">No</option>
+                  <option value="1">Yes</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Disability Status</label>
+                <select name="disability" class="form-control">
+                  <option value="0">Normal</option>
+                  <option value="1">Physical Disability</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">
+              <i class="fas fa-save"></i> Save Citizen Profile
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Citizens list -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-users-cog"></i> Registered Citizen Profiles</h3>
+        </div>
+        <div class="table-container" style="box-shadow: none; overflow-x: auto;">
+          <table class="table" style="font-size: 0.85rem;">
+            <thead>
+              <tr>
+                <th>Property ID</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Age/Gender</th>
+                <th>Occupation</th>
+                <th>Annual Income</th>
+                <th>Landholdings</th>
+                <th>Status (F/S/D)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (citizens && citizens.length > 0) { %>
+                <% citizens.forEach(function(cit) { %>
+                  <tr>
+                    <td><strong><%= cit.property_id %></strong></td>
+                    <td><strong><%= cit.name %></strong></td>
+                    <td>
+                      <%= cit.phone %><br>
+                      <small class="text-muted"><%= cit.email || 'No email' %></small>
+                    </td>
+                    <td><%= cit.age %> yrs / <%= cit.gender %></td>
+                    <td><%= cit.occupation %></td>
+                    <td><strong>₹<%= cit.income.toLocaleString('en-IN') %></strong></td>
+                    <td><%= cit.land_size %> acres</td>
+                    <td>
+                      <span class="status-badge active" style="font-size: 0.7rem; padding: 2px 5px;"><%= cit.is_farmer ? 'F' : '' %><%= cit.is_student ? 'S' : '' %><%= cit.disability ? 'D' : '' %></span>
+                    </td>
+                    <td class="table-actions">
+                      <button class="btn btn-sm btn-outline" onclick="editCitizen(this)"
+                              data-id="<%= cit.id %>"
+                              data-property-id="<%= cit.property_id %>"
+                              data-name="<%= cit.name %>"
+                              data-phone="<%= cit.phone %>"
+                              data-email="<%= cit.email || '' %>"
+                              data-age="<%= cit.age %>"
+                              data-gender="<%= cit.gender %>"
+                              data-occupation="<%= cit.occupation %>"
+                              data-income="<%= cit.income %>"
+                              data-land-size="<%= cit.land_size %>"
+                              data-is-farmer="<%= cit.is_farmer %>"
+                              data-is-student="<%= cit.is_student %>"
+                              data-disability="<%= cit.disability %>">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-sm btn-danger" onclick="deleteCitizen(this)"
+                              data-id="<%= cit.id %>">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="9" class="text-center text-muted">No citizen profiles found</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Edit Citizen Modal -->
+  <div class="modal-overlay" id="editCitizenModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Citizen Profile</h3>
+        <button class="modal-close" onclick="closeEditCitizenModal()">&times;</button>
+      </div>
+      <form id="editCitizenForm" method="POST" action="/api/admin/update-citizen">
+        <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+          <input type="hidden" id="editCitId" name="id">
+          <div class="form-group">
+            <label class="form-label">Property ID</label>
+            <input type="text" id="editCitPropertyId" name="propertyId" class="form-control" readonly style="background: #EEE;">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="editCitName" name="name" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" id="editCitPhone" name="phone" class="form-control" required pattern="[0-9]{10}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="editCitEmail" name="email" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Age</label>
+            <input type="number" id="editCitAge" name="age" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Gender</label>
+            <select id="editCitGender" name="gender" class="form-control">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Occupation</label>
+            <select id="editCitOccupation" name="occupation" class="form-control">
+              <option value="Agriculture">Agriculture</option>
+              <option value="Laborer">Laborer</option>
+              <option value="Business">Business</option>
+              <option value="Student">Student</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Annual Income (₹)</label>
+            <input type="number" id="editCitIncome" name="income" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Land Size (Acres)</label>
+            <input type="number" id="editCitLandSize" name="landSize" class="form-control" step="0.1" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Farmer Status</label>
+            <select id="editCitIsFarmer" name="isFarmer" class="form-control">
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Student Status</label>
+            <select id="editCitIsStudent" name="isStudent" class="form-control">
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Disability Status</label>
+            <select id="editCitDisability" name="disability" class="form-control">
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeEditCitizenModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
+    </div>
+
+  <script src="/js/main.js?v=<%= Date.now() %>"></script>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Dashboard - Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body style="background-color: #F4F6F7;">
+
+  <!-- Header -->
+  <header class="header" style="background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+    <nav class="navbar">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-landmark"></i>
+        </div>
+        <span class="logo-text">Smart Grama Panchayat</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/tax-search"><i class="fas fa-search-dollar"></i> Tax Payment</a></li>
+        <li><a href="/services"><i class="fas fa-handshake"></i> Services</a></li>
+        <li><a href="/user-dashboard" class="active"><i class="fas fa-user-circle"></i> Portal Dashboard</a></li>
+        <li><a href="/user-logout" class="btn btn-outline btn-sm" style="margin-left: 15px;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Citizen Layout -->
+  <main class="container py-4" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    
+    <!-- Welcome Header -->
+    <div class="card mb-4" style="border-radius: 12px; background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%); color: white; padding: 25px; border: none; box-shadow: 0 6px 20px rgba(0,0,0,0.08);">
+      <div class="d-flex justify-between align-items-center flex-wrap" style="gap: 15px;">
+        <div>
+          <h1 style="color: white; font-weight: 700; margin-bottom: 5px;">Welcome, <%= session.user.name %>!</h1>
+          <p style="opacity: 0.9; margin: 0;"><i class="fas fa-id-card"></i> Property ID: <strong><%= session.user.property_id %></strong> | Registered Mobile: <%= session.user.phone %></p>
+        </div>
+        <div style="background: rgba(255, 255, 255, 0.15); padding: 12px 20px; border-radius: 8px; font-size: 0.9rem;">
+          <i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> <%= property ? property.address : 'N/A' %><br>
+          <i class="fas fa-building"></i> <strong>Type:</strong> <%= property ? property.property_type : 'Residential' %>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-layout">
+      <!-- LEFT COLUMN (Tax & Schemes) -->
+      <div class="col-left" style="display: flex; flex-direction: column; gap: 25px;">
+        
+        <!-- Property Tax Panel -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-file-invoice-dollar"></i> Outstanding Property Tax</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table" style="font-size: 0.9rem;">
+                <thead>
+                  <tr>
+                    <th>Year</th>
+                    <th>Tax Amount</th>
+                    <th>Due Date</th>
+                    <th>Default Risk (ML)</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (taxRecords.length === 0) { %>
+                    <tr>
+                      <td colspan="6" class="text-center text-muted">No tax bills found</td>
+                    </tr>
+                  <% } else { %>
+                    <% taxRecords.forEach(record => { %>
+                      <tr>
+                        <td><strong><%= record.year %></strong></td>
+                        <td><strong>₹<%= record.tax_amount.toLocaleString('en-IN') %></strong></td>
+                        <td><%= new Date(record.due_date).toLocaleDateString('en-IN') %></td>
+                        <td>
+                          <% if (record.status === 'Unpaid') { %>
+                            <span class="status-badge <%= record.predicted_status === 'High Risk' ? 'overdue' : record.predicted_status === 'Medium Risk' ? 'unpaid' : 'paid' %>" style="font-size: 0.75rem;">
+                              <%= record.predicted_status %>
+                            </span>
+                          <% } else { %>
+                            <span class="text-muted">—</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <span class="status-badge <%= record.status.toLowerCase() %>"><%= record.status %></span>
+                        </td>
+                        <td>
+                          <% if (record.status === 'Unpaid') { %>
+                            <button class="btn btn-primary btn-sm" onclick="payTaxInline('<%= record.id %>', '<%= record.tax_amount %>')">Pay Now</button>
+                          <% } else { %>
+                            <span class="text-success"><i class="fas fa-check-circle"></i> Clear</span>
+                          <% } %>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Government Schemes eligibility -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-hand-holding-heart"></i> AI Scheme Recommendation</h3>
+            <span class="status-badge active">Live Check</span>
+          </div>
+          <div class="card-body">
+            <p class="text-muted mb-3" style="font-size: 0.85rem;">Our AI model matches your demographic profile (Age, Landholdings, Student / Farmer status) against active welfare schemes to check eligibility.</p>
+            <% if (recommendedSchemes && recommendedSchemes.length > 0) { %>
+              <div class="schemes-list" style="display: flex; flex-direction: column; gap: 15px;">
+                <% recommendedSchemes.forEach(rec => { %>
+                  <div class="scheme-item" style="padding: 15px; border: 1px solid #EAEAEA; border-radius: var(--radius-sm); background: #FAF9F6; border-left: 4px solid var(--primary);">
+                    <div class="d-flex justify-between align-items-center mb-2 flex-wrap">
+                      <h4 style="margin: 0; color: var(--primary); font-family: 'Poppins', sans-serif;"><%= rec.scheme %></h4>
+                      <span class="status-badge active" style="font-size: 0.8rem; background: #E8F5E9; color: #2E7D32;">
+                        Match Score: <%= Math.round(rec.confidence * 100) %>%
+                      </span>
+                    </div>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 0.85rem; color: var(--text-secondary);">
+                      <% rec.reasons.forEach(r => { %>
+                        <li><%= r %></li>
+                      <% }); %>
+                    </ul>
+                  </div>
+                <% }); %>
+              </div>
+            <% } else { %>
+              <div class="text-center py-4 text-muted">
+                <i class="fas fa-user-tag fa-2x mb-2"></i>
+                <p>No matching schemes found for your current profile details.</p>
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Smart Notifications feed -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-bell"></i> Alerts & Notifications</h3>
+          </div>
+          <div class="card-body" style="max-height: 250px; overflow-y: auto;">
+            <% if (notifications && notifications.length > 0) { %>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <% notifications.forEach(function(n) { %>
+                  <div class="notif-item" data-id="<%= n.id %>" style="padding: 10px; border-radius: var(--radius-sm); background: #F9F9F9; border-left: 4px solid #4CAF50; position: relative;">
+                    <div class="d-flex justify-between" style="font-size: 0.8rem; font-weight:600; margin-bottom: 2px;">
+                      <span><%= n.title %></span>
+                      <small class="text-muted"><%= new Date(n.created_at).toLocaleDateString('en-IN') %></small>
+                    </div>
+                    <p style="font-size: 0.8rem; margin: 0; color: var(--text-secondary);"><%= n.message %></p>
+                    <button class="notif-dismiss" onclick="dismissNotif('<%= n.id %>', this)" style="position: absolute; top: 5px; right: 5px; background: none; border: none; cursor: pointer; color: #BBB;">&times;</button>
+                  </div>
+                <% }); %>
+              </div>
+            <% } else { %>
+              <p class="text-muted text-center py-3">No active notifications.</p>
+            <% } %>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN (Complaint Box & History) -->
+      <div class="col-right" style="display: flex; flex-direction: column; gap: 25px;">
+        
+        <!-- File Complaint Form -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-pen-alt"></i> Lodge a Complaint (AI-Assisted)</h3>
+          </div>
+          <div class="card-body">
+            
+            <!-- Realtime AI Warnings -->
+            <div id="complaintAlert" class="alert hidden" style="padding: 12px; border-radius: var(--radius-sm); margin-bottom: 15px; font-size: 0.85rem;"></div>
+
+            <form id="complaintForm">
+              <div class="form-group mb-3">
+                <label class="form-label" for="complaintDesc" style="font-weight:600;">Describe your grievance:</label>
+                <textarea id="complaintDesc" class="form-control" rows="4" placeholder="e.g. Street light on main road block B is not working since last Tuesday, it is dark and dangerous..." required></textarea>
+                <small class="text-muted">Explain the problem clearly. Minimum 10 characters.</small>
+              </div>
+
+              <div class="grid-2 mb-3">
+                <div class="form-group">
+                  <label class="form-label" for="complaintCategory" style="font-weight:600;">Category:</label>
+                  <div style="display: flex; gap: 8px;">
+                    <select id="complaintCategory" class="form-control" required style="flex:1;">
+                      <option value="">-- Choose Category --</option>
+                      <option value="Water Supply">Water Supply</option>
+                      <option value="Road Damage">Road Damage</option>
+                      <option value="Street Light">Street Light</option>
+                      <option value="Sanitation">Sanitation</option>
+                      <option value="Drainage">Drainage</option>
+                      <option value="Electricity">Electricity</option>
+                      <option value="Others">Others</option>
+                    </select>
+                    <button type="button" id="suggestCategoryBtn" class="btn btn-outline" style="padding: 5px 12px;" title="Let AI suggest category from description">
+                      <i class="fas fa-magic"></i> Suggest
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="complaintWard" style="font-weight:600;">Ward Number:</label>
+                  <select id="complaintWard" class="form-control" required>
+                    <option value="Ward 1">Ward 1</option>
+                    <option value="Ward 2">Ward 2</option>
+                    <option value="Ward 3">Ward 3</option>
+                    <option value="Ward 4">Ward 4</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" id="submitComplaintBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px;">
+                <i class="fas fa-paper-plane"></i> File Complaint
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Complaint History -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-history"></i> Filed Complaints History</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table" style="font-size: 0.85rem;">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Ward</th>
+                    <th>Priority (ML)</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (complaints.length === 0) { %>
+                    <tr>
+                      <td colspan="6" class="text-center text-muted">No complaints filed yet.</td>
+                    </tr>
+                  <% } else { %>
+                    <% complaints.forEach(c => { %>
+                      <tr style="<%= c.is_duplicate ? 'opacity: 0.75;' : '' %>">
+                        <td>
+                          <strong><%= c.category %></strong>
+                          <% if (c.is_duplicate) { %>
+                            <br><span class="text-danger" style="font-size:0.7rem; font-weight:600;"><i class="fas fa-copy"></i> Linked Duplicate</span>
+                          <% } %>
+                        </td>
+                        <td style="max-width: 180px;">
+                          <div><%= c.description %></div>
+                          <% if (c.xai_explanation) { %>
+                            <div style="font-size: 0.75rem; color: #90A4AE; margin-top: 4px; font-style: italic;"><i class="fas fa-info-circle"></i> <%= c.xai_explanation %></div>
+                          <% } %>
+                        </td>
+                        <td><%= c.ward %></td>
+                        <td>
+                          <span class="status-badge <%= c.priority === 'High' ? 'overdue' : c.priority === 'Medium' ? 'unpaid' : 'paid' %>" style="font-size: 0.75rem;">
+                            <%= c.priority %>
+                          </span>
+                        </td>
+                        <td>
+                          <span class="status-badge <%= c.status === 'Resolved' ? 'paid' : c.status === 'In Progress' ? 'unpaid' : 'inactive' %>" style="font-size: 0.75rem;">
+                            <%= c.status %>
+                          </span>
+                        </td>
+                        <td><small><%= new Date(c.created_at).toLocaleDateString('en-IN') %></small></td>
+                      </tr>
+                    <% }); %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- CSS layouts -->
+  <style>
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 25px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .notif-dismiss:hover {
+      color: #333 !important;
+    }
+    @media (max-width: 900px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script src="/js/main.js?v=<%= Date.now() %>"></script>
+  <!-- Include chatbot -->
+  <%- include('partials/chatbot') %>
+
+  <!-- Dashboard Logics -->
+  <script>
+    // Inline Tax Payment simulated
+    function payTaxInline(taxId, amount) {
+      if (confirm(`Do you want to pay Property Tax of ₹${amount} online?`)) {
+        fetch('/api/pay-tax', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            propertyId: '<%= session.user.property_id %>',
+            taxId: taxId,
+            amount: parseFloat(amount)
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = `/payment-success?txnId=${data.txnId}&amount=${amount}&propertyId=<%= session.user.property_id %>`;
+          } else {
+            alert("Payment failed: " + data.error);
+          }
+        });
+      }
+    }
+
+    // Dismiss smart notifications
+    function dismissNotif(id, btn) {
+      const item = btn.closest(".notif-item");
+      fetch('/api/notifications/read', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          item.remove();
+        }
+      });
+    }
+
+    // Suggest Category Button logic
+    const suggestBtn = document.getElementById("suggestCategoryBtn");
+    const descArea = document.getElementById("complaintDesc");
+    const catSelect = document.getElementById("complaintCategory");
+    const alertDiv = document.getElementById("complaintAlert");
+
+    suggestBtn.addEventListener("click", () => {
+      const desc = descArea.value.trim();
+      if (desc.length < 10) {
+        alert("Please enter a longer description first (minimum 10 characters) to analyze.");
+        return;
+      }
+      suggestBtn.disabled = true;
+      suggestBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+      fetch('/api/complaints/suggest-category', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: desc })
+      })
+      .then(res => res.json())
+      .then(data => {
+        suggestBtn.disabled = false;
+        suggestBtn.innerHTML = '<i class="fas fa-magic"></i> Suggest';
+        if (data.success) {
+          catSelect.value = data.category;
+          
+          alertDiv.className = "alert active";
+          alertDiv.style.backgroundColor = "#E8F5E9";
+          alertDiv.style.color = "#2E7D32";
+          alertDiv.innerHTML = `<i class="fas fa-check-circle"></i> AI suggested <strong>${data.category}</strong>. Reason: ${data.reasons.join(' ')}`;
+          alertDiv.classList.remove("hidden");
+        } else {
+          alert("Error: " + data.error);
+        }
+      })
+      .catch(err => {
+        suggestBtn.disabled = false;
+        suggestBtn.innerHTML = '<i class="fas fa-magic"></i> Suggest';
+        alert("Failed to analyze text: " + err.message);
+      });
+    });
+
+    // Complaint submission form
+    const complaintForm = document.getElementById("complaintForm");
+    complaintForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      
+      const desc = descArea.value.trim();
+      const cat = catSelect.value;
+      const ward = document.getElementById("complaintWard").value;
+
+      if (desc.length < 10) {
+        alert("Please enter at least 10 characters describing the issue.");
+        return;
+      }
+
+      const submitBtn = document.getElementById("submitComplaintBtn");
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+
+      fetch('/api/complaints', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: desc, category: cat, ward: ward })
+      })
+      .then(res => res.json())
+      .then(data => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> File Complaint';
+        if (data.success) {
+          alert(data.message);
+          window.location.reload();
+        } else {
+          alert("Error filing complaint: " + data.error);
+        }
+      })
+      .catch(err => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> File Complaint';
+        alert("Network error submission failed: " + err.message);
+      });
+    });
+  </script>
+</body>
+</html>

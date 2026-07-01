@@ -1,0 +1,188 @@
+{
+  "version": 2,
+  "last_trained": "2026-06-30 22:15:29",
+  "models": {
+    "complaint_category": {
+      "dataset_size": 166,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "confusion_matrix": [
+        [
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          5,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          5,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          5,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          10,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3
+        ]
+      ],
+      "classes": [
+        "Drainage",
+        "Electricity",
+        "Others",
+        "Road Damage",
+        "Sanitation",
+        "Street Light",
+        "Water Supply"
+      ]
+    },
+    "complaint_priority": {
+      "dataset_size": 166,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "confusion_matrix": [
+        [
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          9,
+          0
+        ],
+        [
+          0,
+          0,
+          10
+        ]
+      ],
+      "classes": [
+        "High",
+        "Low",
+        "Medium"
+      ]
+    },
+    "tax_defaulter": {
+      "dataset_size": 191,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "confusion_matrix": [
+        [
+          19,
+          0
+        ],
+        [
+          0,
+          20
+        ]
+      ],
+      "classes": [
+        "Non-Defaulter",
+        "Defaulter"
+      ]
+    },
+    "scheme_recommender": {
+      "dataset_size": 136,
+      "accuracy": 0.9286,
+      "precision": 0.9048,
+      "recall": 0.9286,
+      "f1_score": 0.9143,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          7,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          17,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "classes": [
+        "Divyangjan Pension",
+        "MGNREGA",
+        "PM Awas Yojana",
+        "PM Kisan",
+        "Post-Matric Scholarship"
+      ]
+    }
+  }
+}

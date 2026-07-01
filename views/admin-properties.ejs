@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Properties Management - Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-landmark"></i>
+          <span>Panchayat Admin</span>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+        <li><a href="/admin-properties" class="active"><i class="fas fa-city"></i> <span>Properties</span></a></li>
+        <li><a href="/admin-citizens"><i class="fas fa-users"></i> <span>Citizens</span></a></li>
+        <li><a href="/admin-tax"><i class="fas fa-file-invoice-dollar"></i> <span>Tax Management</span></a></li>
+        <li><a href="/admin-complaints"><i class="fas fa-exclamation-triangle"></i> <span>Complaints</span></a></li>
+        <li><a href="/admin-services"><i class="fas fa-cogs"></i> <span>Services</span></a></li>
+        <li><a href="/admin-schemes"><i class="fas fa-hand-holding-usd"></i> <span>Schemes</span></a></li>
+        <li><a href="/admin-ml-performance"><i class="fas fa-chart-line"></i> <span>ML Performance</span></a></li>
+        <li><a href="/admin-logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+      <div class="admin-header">
+        <div>
+          <h1>Properties Registry</h1>
+          <p class="text-muted">Panchayat Property & Housing Records Database</p>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-plus-circle"></i> Add New Property</h3>
+        </div>
+        <div class="card-body">
+          <form id="propertyForm" method="POST" action="/api/admin/add-property">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Property ID</label>
+                <input type="text" name="propertyId" class="form-control" placeholder="e.g. PROP006" required style="text-transform: uppercase;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Owner Name</label>
+                <input type="text" name="ownerName" class="form-control" placeholder="Full name of owner" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Property Type</label>
+                <select name="propertyType" class="form-control">
+                  <option value="Residential">Residential</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Agricultural">Agricultural</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Address</label>
+                <input type="text" name="address" class="form-control" placeholder="e.g. Block B, Temple Road" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">
+              <i class="fas fa-save"></i> Save Property
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Properties list -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-list"></i> Properties List</h3>
+        </div>
+        <div class="table-container" style="box-shadow: none;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Property ID</th>
+                <th>Owner Name</th>
+                <th>Address</th>
+                <th>Property Type</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (properties && properties.length > 0) { %>
+                <% properties.forEach(function(prop) { %>
+                  <tr>
+                    <td><%= prop.id %></td>
+                    <td><strong><%= prop.property_id %></strong></td>
+                    <td><%= prop.owner_name %></td>
+                    <td><%= prop.address %></td>
+                    <td><span class="status-badge active"><%= prop.property_type %></span></td>
+                    <td class="table-actions">
+                      <button class="btn btn-sm btn-outline" onclick="editProperty(this)"
+                              data-id="<%= prop.id %>"
+                              data-property-id="<%= prop.property_id %>"
+                              data-owner-name="<%= prop.owner_name %>"
+                              data-address="<%= prop.address %>"
+                              data-property-type="<%= prop.property_type %>">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-sm btn-danger" onclick="deleteProperty(this)"
+                              data-id="<%= prop.id %>">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="6" class="text-center text-muted">No properties in registry</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="editPropertyModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Property</h3>
+        <button class="modal-close" onclick="closeEditPropertyModal()">&times;</button>
+      </div>
+      <form id="editPropertyForm" method="POST" action="/api/admin/update-property">
+        <div class="modal-body">
+          <input type="hidden" id="editPropId" name="id">
+          <div class="form-group">
+            <label class="form-label">Property ID</label>
+            <input type="text" id="editPropertyIdField" name="propertyId" class="form-control" readonly style="background: #EEE;">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Owner Name</label>
+            <input type="text" id="editPropOwnerName" name="ownerName" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Property Type</label>
+            <select id="editPropType" name="propertyType" class="form-control">
+              <option value="Residential">Residential</option>
+              <option value="Commercial">Commercial</option>
+              <option value="Agricultural">Agricultural</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Address</label>
+            <input type="text" id="editPropAddress" name="address" class="form-control" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeEditPropertyModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/main.js?v=<%= Date.now() %>"></script>
+</body>
+</html>
