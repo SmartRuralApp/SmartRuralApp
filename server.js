@@ -424,11 +424,10 @@ app.get('/user-dashboard', async (req, res) => {
   }
   
   const user = req.session.user;
-  
-  const property = db.prepare('SELECT * FROM properties WHERE property_id = ?').get(user.property_id);
-  const taxRecords = db.prepare('SELECT * FROM tax_records WHERE property_id = ? ORDER BY year DESC').all() || [];
-  const payments = db.prepare('SELECT * FROM payments WHERE property_id = ? ORDER BY payment_date DESC').all() || [];
-  const complaints = db.prepare('SELECT * FROM complaints WHERE property_id = ? ORDER BY created_at DESC').all() || [];
+    const property = db.prepare('SELECT * FROM properties WHERE property_id = ?').get(user.property_id);
+  const taxRecords = db.prepare('SELECT * FROM tax_records WHERE property_id = ? ORDER BY year DESC').all(user.property_id) || [];
+  const payments = db.prepare('SELECT * FROM payments WHERE property_id = ? ORDER BY payment_date DESC').all(user.property_id) || [];
+  const complaints = db.prepare('SELECT * FROM complaints WHERE property_id = ? ORDER BY created_at DESC').all(user.property_id) || [];
   const notifications = db.prepare('SELECT * FROM notifications WHERE (user_id = ? OR role = "Citizen") ORDER BY created_at DESC LIMIT 10').all(user.property_id) || [];
   
   // Fetch appointments, schemes, and services
