@@ -18,61 +18,18 @@
           <span>Panchayat Admin</span>
         </div>
       </div>
-      <ul class="sidebar-menu">
-        <li>
-          <a href="/admin-dashboard">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin-properties">
-            <i class="fas fa-city"></i>
-            <span>Properties</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin-citizens">
-            <i class="fas fa-users"></i>
-            <span>Citizens</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin-tax">
-            <i class="fas fa-file-invoice-dollar"></i>
-            <span>Tax Management</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin-complaints" class="active">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span>Complaints</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin-services">
-            <i class="fas fa-cogs"></i>
-            <span>Services</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin-schemes">
-            <i class="fas fa-hand-holding-usd"></i>
-            <span>Schemes</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin-ml-performance">
-            <i class="fas fa-chart-line"></i>
-            <span>ML Performance</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin-logout">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-          </a>
-        </li>
+            <ul class="sidebar-menu">
+        <li><a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/admin-properties"><i class="fas fa-city"></i> Properties</a></li>
+        <li><a href="/admin-citizens"><i class="fas fa-users"></i> Citizens</a></li>
+        <li><a href="/admin-tax"><i class="fas fa-receipt"></i> Tax Management</a></li>
+        <li><a href="/admin-reminders"><i class="fas fa-bell"></i> SMS Reminders</a></li>
+        <li><a href="/admin-appointments"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+        <li><a href="/admin-complaints" class="active"><i class="fas fa-exclamation-triangle"></i> Complaints</a></li>
+        <li><a href="/admin-services"><i class="fas fa-cogs"></i> Services</a></li>
+        <li><a href="/admin-schemes"><i class="fas fa-hand-holding-usd"></i> Schemes</a></li>
+        <li><a href="/admin-ml-performance"><i class="fas fa-chart-line"></i> ML Performance</a></li>
+        <li><a href="/admin-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
       </ul>
     </aside>
 
@@ -143,13 +100,19 @@
                       </td>
                       <td><%= complaint.ward %></td>
                       <td>
-                        <span class="status-badge <%= complaint.priority === 'High' ? 'overdue' : complaint.priority === 'Medium' ? 'unpaid' : 'paid' %>">
+                        <span class="status-badge <%= complaint.priority === 'High' ? 'overdue' : complaint.priority === 'Medium' ? 'unpaid' : 'paid' %>" title="Admin Approved Priority">
                           <%= complaint.priority %>
                         </span>
+                        <% if (complaint.admin_corrected) { %>
+                          <div style="font-size: 0.75rem; color: #78909C; margin-top: 4px;">
+                            <i class="fas fa-brain"></i> ML predicted: <strong><%= complaint.predicted_priority %></strong>
+                          </div>
+                        <% } %>
                         <% if (complaint.confidence_score) { %>
                           <br><small class="text-muted">Conf: <%= Math.round(complaint.confidence_score * 100) %>%</small>
                         <% } %>
                       </td>
+
                       <td>
                         <span class="status-badge <%= complaint.status === 'Resolved' ? 'paid' : complaint.status === 'In Progress' ? 'unpaid' : 'inactive' %>">
                           <%= complaint.status %>
@@ -258,15 +221,22 @@
     }
 
     function updateStatus(id, status) {
+      const remarks = prompt("Enter resolution remarks or action taken updates (optional):");
+      if (remarks === null) {
+        window.location.reload();
+        return;
+      }
       fetch('/api/admin/update-complaint-status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, status })
+        body: JSON.stringify({ id, status, remarks })
       })
       .then(res => res.json())
       .then(data => {
         if (!data.success) {
           alert("Error updating status: " + data.error);
+        } else {
+          window.location.reload();
         }
       });
     }

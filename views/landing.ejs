@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Gram Panchayat Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #1B5E20 0%, #4CAF50 100%);
+      --glass-bg: rgba(255, 255, 255, 0.9);
+      --glass-border: rgba(255, 255, 255, 0.2);
+    }
+    body {
+      background: radial-gradient(circle at top right, #E8F5E9 0%, #C8E6C9 40%, #A5D6A7 100%);
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-x: hidden;
+    }
+    .landing-container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+    }
+    .landing-header {
+      text-align: center;
+      margin-bottom: 50px;
+      animation: fadeInDown 0.8s ease-out;
+    }
+    .landing-header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #1B5E20;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .landing-header p {
+      font-size: 1.1rem;
+      color: #37474F;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .portal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      width: 100%;
+      max-width: 900px;
+      animation: fadeInUp 0.8s ease-out;
+    }
+    .portal-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.07);
+      backdrop-filter: blur(10px);
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .portal-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: var(--primary-gradient);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .portal-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 22px 45px rgba(0,0,0,0.12);
+    }
+    .portal-card:hover::before {
+      transform: scaleX(1);
+    }
+    .portal-icon {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #E8F5E9;
+      color: #2E7D32;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      margin-bottom: 25px;
+      transition: all 0.4s ease;
+    }
+    .portal-card:hover .portal-icon {
+      background: #2E7D32;
+      color: white;
+      transform: rotateY(180deg);
+    }
+    .portal-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #1B5E20;
+      margin-bottom: 15px;
+    }
+    .portal-desc {
+      font-size: 0.95rem;
+      color: #546E7A;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    .portal-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .btn-citizen {
+      background: var(--primary-gradient);
+      color: white;
+      box-shadow: 0 4px 15px rgba(46, 125, 50, 0.2);
+    }
+    .btn-citizen:hover {
+      box-shadow: 0 6px 20px rgba(46, 125, 50, 0.35);
+      filter: brightness(1.05);
+    }
+    .btn-admin {
+      background: #37474F;
+      color: white;
+      box-shadow: 0 4px 15px rgba(55, 71, 79, 0.2);
+    }
+    .btn-admin:hover {
+      background: #263238;
+      box-shadow: 0 6px 20px rgba(55, 71, 79, 0.35);
+    }
+    .public-info-link {
+      margin-top: 40px;
+      font-size: 0.95rem;
+      color: #2E7D32;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.7);
+      padding: 8px 18px;
+      border-radius: 50px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+      animation: fadeInUp 1s ease-out;
+    }
+    .public-info-link:hover {
+      color: #1B5E20;
+      background: white;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+      transform: translateY(-1px);
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .portal-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+      .landing-header h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="landing-container">
+    <div class="landing-header">
+      <h1 id="portalMainTitle"><i class="fas fa-landmark"></i> Smart Gram Panchayat</h1>
+      <p>Seamless rural digital governance. Choose a portal below to access services or administrative tools.</p>
+    </div>
+
+    <div class="portal-grid">
+      <!-- Citizen Portal Card -->
+      <div class="portal-card" id="citizenPortalCard">
+        <div>
+          <div class="portal-icon"><i class="fas fa-users"></i></div>
+          <div class="portal-title">Citizen Portal</div>
+          <p class="portal-desc">
+            Check your property details, view outstanding taxes, book offline tax payment appointments, register and track complaints, and explore government welfare schemes and services.
+          </p>
+        </div>
+        <div style="display: flex; gap: 15px; width: 100%;">
+          <a href="/user-login" class="portal-btn btn-citizen" id="citizenPortalBtn" style="flex: 1; font-size: 0.95rem; gap: 6px;">
+            <i class="fas fa-sign-in-alt"></i> Citizen Login
+          </a>
+          <a href="/user-register" class="portal-btn btn-citizen" id="citizenRegisterBtn" style="flex: 1; font-size: 0.95rem; gap: 6px; background: linear-gradient(135deg, #1565C0 0%, #1E88E5 100%); box-shadow: 0 4px 15px rgba(21, 101, 192, 0.2);">
+            <i class="fas fa-user-plus"></i> Register
+          </a>
+        </div>
+      </div>
+
+      <!-- Admin Portal Card -->
+      <div class="portal-card" id="adminPortalCard">
+        <div>
+          <div class="portal-icon"><i class="fas fa-user-shield"></i></div>
+          <div class="portal-title">Administrative Portal</div>
+          <p class="portal-desc">
+            Authorized admin panel for managing properties, citizens, tax records, offline appointments, complaint resolutions, welfare scheme listings, and monitoring AI default risk predictions.
+          </p>
+        </div>
+        <a href="/admin-login" class="portal-btn btn-admin" id="adminPortalBtn">
+          <i class="fas fa-shield-alt"></i> Admin Sign In <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+
+    <a href="/home" class="public-info-link" id="publicPortalLink">
+      <i class="fas fa-globe"></i> View Public Information Page <i class="fas fa-angle-right"></i>
+    </a>
+  </div>
+
+  <footer class="footer" style="background: rgba(255,255,255,0.7); border-top: 1px solid rgba(0,0,0,0.05); padding: 15px 0; width: 100%;">
+    <div class="footer-content" style="max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 0.85rem; color: #455A64;">
+      <strong>Smart Gram Panchayat</strong>
+      <p style="margin: 0;">Digitizing Rural Governance | © 2026 All Rights Reserved</p>
+    </div>
+  </footer>
+
+</body>
+</html>

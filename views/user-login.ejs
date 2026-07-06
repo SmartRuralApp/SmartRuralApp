@@ -45,19 +45,17 @@
           <span><%= error %></span>
         </div>
       <% } %>
-
       <form action="/user-login" method="POST">
-        <!-- Property ID input -->
+        <!-- Username input -->
         <div class="form-group mb-3">
-          <label class="form-label" for="propertyId" style="font-weight: 600;"><i class="fas fa-home"></i> Property ID</label>
-          <input type="text" id="propertyId" name="propertyId" class="form-control" placeholder="e.g. PROP001" required style="text-transform: uppercase;">
-          <small class="text-muted" style="font-size: 0.75rem;">Found on your tax bills or registry certificates.</small>
+          <label class="form-label" for="username" style="font-weight: 600;"><i class="fas fa-user"></i> Username / Property ID</label>
+          <input type="text" id="username" name="username" class="form-control" placeholder="e.g. ramesh or PROP001" required>
         </div>
 
-        <!-- Phone input -->
+        <!-- Password input -->
         <div class="form-group mb-4">
-          <label class="form-label" for="phone" style="font-weight: 600;"><i class="fas fa-mobile-alt"></i> Registered Mobile Number</label>
-          <input type="tel" id="phone" name="phone" class="form-control" placeholder="e.g. 9876543210" required pattern="[0-9]{10}" title="Ten digit mobile number.">
+          <label class="form-label" for="password" style="font-weight: 600;"><i class="fas fa-lock"></i> Password / Mobile No.</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Enter password or mobile" required>
         </div>
 
         <!-- Submit Button -->
@@ -66,12 +64,17 @@
         </button>
       </form>
 
+      <div style="margin-top: 20px; text-align: center; font-size: 0.9rem;">
+        <span class="text-muted">New citizen? </span>
+        <a href="/user-register" style="color: var(--primary); font-weight: 600; text-decoration: none;">Register Account</a>
+      </div>
+
       <!-- Note block -->
       <div style="margin-top: 25px; padding-top: 20px; border-top: 1px dashed #EEE; text-align: center;">
-        <span class="text-muted" style="font-size: 0.8rem;"><i class="fas fa-info-circle"></i> Demo Credentials:</span><br>
+        <span class="text-muted" style="font-size: 0.8rem;"><i class="fas fa-info-circle"></i> Seeded Accounts (Username / Pass):</span><br>
         <div style="font-size: 0.8rem; background: #F9F9F9; padding: 8px; border-radius: 6px; display: inline-block; text-align: left; margin-top: 5px;">
-          • Property: <strong>PROP001</strong> | Mobile: <strong>9876543210</strong><br>
-          • Property: <strong>PROP002</strong> | Mobile: <strong>9876543211</strong>
+          • Ramesh: <strong>ramesh</strong> / <strong>user123</strong><br>
+          • Lakshmi: <strong>lakshmi</strong> / <strong>user123</strong>
         </div>
       </div>
     </div>

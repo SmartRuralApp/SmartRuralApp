@@ -125,6 +125,54 @@ def local_nlp(query, context):
             else:
                 return "Panchayat services include Birth/Death Certificates, Water Connection, and Building Permissions. Apply directly via the Services portal."
 
+    # Schemes
+    if any(k in query_lower for k in ["scheme", "welfare", "subsidy", "pension", "farmer"]) or \
+       any(k in query_lower for k in ["ಯೋಜನೆ", "ಪಿಂಚಣಿ", "ಸಹಾಯಧನ"]):
+        schemes = context.get('schemes', [])
+        if len(schemes) > 0:
+            lines = [f"• {s['title']} (Eligibility: {s.get('eligibility', 'N/A')})" for s in schemes]
+            if is_kannada:
+                return f"ಲಭ್ಯವಿರುವ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು:\n" + "\n".join(lines)
+            else:
+                return f"Available Government Schemes:\n" + "\n".join(lines)
+        else:
+            if is_kannada:
+                return "ಪ್ರಸ್ತುತ ಯಾವುದೇ ಸಕ್ರಿಯ ಯೋಜನೆಗಳಿಲ್ಲ."
+            else:
+                return "No active welfare schemes found at this moment."
+
+    # Appointments
+    if any(k in query_lower for k in ["appointment", "booking", "slot", "schedule", "reschedule"]) or \
+       any(k in query_lower for k in ["ಅಪಾಯಿಂಟ್ಮೆಂಟ್", "ಭೇಟಿ", "ದಿನಾಂಕ"]):
+        appts = context.get('appointments', [])
+        if len(appts) > 0:
+            lines = [f"• Slot: {a['appointment_date']} ({a['appointment_time']}) - Status: {a['status']}" for a in appts]
+            if is_kannada:
+                return f"ನಿಮ್ಮ ಕಚೇರಿ ಭೇಟಿ ಅಪಾಯಿಂಟ್ಮೆಂಟ್ ವಿವರಗಳು:\n" + "\n".join(lines)
+            else:
+                return f"Your offline appointment details:\n" + "\n".join(lines)
+        else:
+            if is_kannada:
+                return "ನಿಮಗೆ ಯಾವುದೇ ಸಕ್ರಿಯ ಅಪಾಯಿಂಟ್ಮೆಂಟ್‌ಗಳು ನಿಗದಿಯಾಗಿಲ್ಲ. ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ನಿಗದಿಪಡಿಸಿ."
+            else:
+                return "You have no active appointments scheduled. You can book a slot in your dashboard."
+
+    # Complaints status tracking
+    if any(k in query_lower for k in ["my complaint", "complaint status", "complaints tracker"]) or \
+       any(k in query_lower for k in ["ದೂರಿನ ಸ್ಥಿತಿ", "ನನ್ನ ದೂರುಗಳು"]):
+        compls = context.get('complaints', [])
+        if len(compls) > 0:
+            lines = [f"• Category: {c['category']} - Status: {c['status']} (Priority: {c['priority']})" for c in compls]
+            if is_kannada:
+                return f"ನಿಮ್ಮ ದೂರುಗಳ ಪ್ರಗತಿ:\n" + "\n".join(lines)
+            else:
+                return f"Your registered complaints progress:\n" + "\n".join(lines)
+        else:
+            if is_kannada:
+                return "ನಿಮ್ಮ ಖಾತೆಗೆ ಯಾವುದೇ ದೂರುಗಳು ನೋಂದಾಯಿಸಲ್ಪಟ್ಟಿಲ್ಲ."
+            else:
+                return "No complaints registered under your account."
+
     # Complaints filing
     if any(k in query_lower for k in ["complaint", "file", "register", "report", "issue"]) or \
        any(k in query_lower for k in ["ದೂರು", "ಸಲ್ಲಿಸಲು", "ನೋಂದಣಿ"]):

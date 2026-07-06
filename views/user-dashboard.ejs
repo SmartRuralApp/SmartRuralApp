@@ -39,9 +39,12 @@
           <h1 style="color: white; font-weight: 700; margin-bottom: 5px;">Welcome, <%= session.user.name %>!</h1>
           <p style="opacity: 0.9; margin: 0;"><i class="fas fa-id-card"></i> Property ID: <strong><%= session.user.property_id %></strong> | Registered Mobile: <%= session.user.phone %></p>
         </div>
-        <div style="background: rgba(255, 255, 255, 0.15); padding: 12px 20px; border-radius: 8px; font-size: 0.9rem;">
-          <i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> <%= property ? property.address : 'N/A' %><br>
-          <i class="fas fa-building"></i> <strong>Type:</strong> <%= property ? property.property_type : 'Residential' %>
+        <div style="background: rgba(255, 255, 255, 0.15); padding: 12px 20px; border-radius: 8px; font-size: 0.9rem; line-height: 1.5; min-width: 250px;">
+          <i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> <%= property ? property.address : (session.user.address || 'N/A') %><br>
+          <i class="fas fa-map-signs"></i> <strong>Ward:</strong> <%= session.user.ward || 'Ward 1' %><br>
+          <i class="fas fa-envelope"></i> <strong>Email:</strong> <%= session.user.email || 'N/A' %><br>
+          <i class="fas fa-fingerprint"></i> <strong>Aadhaar:</strong> <%= session.user.aadhaar || 'N/A' %><br>
+          <i class="fas fa-briefcase"></i> <strong>Profile:</strong> <%= session.user.occupation || 'N/A' %> (Age: <%= session.user.age %>, <%= session.user.gender %>)
         </div>
       </div>
     </div>
@@ -91,9 +94,11 @@
                         <td>
                           <span class="status-badge <%= record.status.toLowerCase() %>"><%= record.status %></span>
                         </td>
+
+
                         <td>
                           <% if (record.status === 'Unpaid') { %>
-                            <button class="btn btn-primary btn-sm" onclick="payTaxInline('<%= record.id %>', '<%= record.tax_amount %>')">Pay Now</button>
+                            <button class="btn btn-primary btn-sm" onclick="scrollToAppointment('<%= record.id %>')">Book Offline Payment</button>
                           <% } else { %>
                             <span class="text-success"><i class="fas fa-check-circle"></i> Clear</span>
                           <% } %>
@@ -104,6 +109,107 @@
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+
+        <!-- Offline Payment Appointments Panel -->
+        <div class="card" id="appointmentsCard">
+          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Offline Tax Payment Appointments</h3>
+            <span class="status-badge" style="background:#E1F5FE; color:#0288D1;"><i class="fas fa-phone-alt"></i> Office: +91 80 2843 1234</span>
+          </div>
+          <div class="card-body">
+            
+            <% 
+              const unpaidRecords = taxRecords.filter(r => r.status === 'Unpaid');
+              if (unpaidRecords.length > 0) { 
+            %>
+              <form id="appointmentForm" style="background: #F9F9F9; padding: 20px; border-radius: var(--radius-sm); margin-bottom: 25px; border-left: 4px solid var(--primary);">
+                <h4 style="margin-top:0; color:var(--primary);"><i class="fas fa-calendar-plus"></i> Schedule Offline Payment</h4>
+                <p class="text-muted" style="font-size:0.8rem; margin-bottom: 15px;">Book an appointment slot to clear your outstanding taxes at the Panchayat Office.</p>
+                
+                <div class="form-group mb-3">
+                  <label class="form-label" for="apptTaxRecord" style="font-weight:600;">Select Outstanding Tax Year:</label>
+                  <select id="apptTaxRecord" class="form-control" required>
+                    <% unpaidRecords.forEach(record => { %>
+                      <option value="<%= record.id %>"><%= record.year %> (Amount: ₹<%= record.tax_amount.toLocaleString('en-IN') %>)</option>
+                    <% }); %>
+                  </select>
+                </div>
+
+                <div class="grid-2 mb-3">
+                  <div class="form-group">
+                    <label class="form-label" for="apptDate" style="font-weight:600;">Appointment Date:</label>
+                    <input type="date" id="apptDate" class="form-control" required min="<%= new Date(Date.now() + 86400000).toISOString().split('T')[0] %>">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="apptTime" style="font-weight:600;">Preferred Time Slot:</label>
+                    <select id="apptTime" class="form-control" required>
+                      <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                      <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+                      <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+                      <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
+                      <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+                      <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button type="submit" id="bookApptBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">
+                  <i class="fas fa-calendar-check"></i> Book Appointment Slot
+                </button>
+              </form>
+            <% } else { %>
+              <div class="alert paid" style="padding: 12px; margin-bottom: 20px; border-radius: 8px; background-color: #E8F5E9; color: #2E7D32; display: flex; align-items: center; gap: 10px; font-size: 0.9rem;">
+                <i class="fas fa-check-circle"></i>
+                <span>All your property tax records are cleared. No pending payments are due!</span>
+              </div>
+            <% } %>
+
+            <!-- Scheduled Appointments List -->
+            <h4 style="font-family:'Poppins',sans-serif; color:var(--primary); margin-top:20px; border-bottom:1px solid #EEE; padding-bottom:10px;"><i class="fas fa-history"></i> Appointment History</h4>
+            <div class="table-responsive mt-2">
+              <table class="table" style="font-size: 0.85rem;">
+                <thead>
+                  <tr>
+                    <th>Year</th>
+                    <th>Tax Amount</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (appointments.length === 0) { %>
+                    <tr>
+                      <td colspan="5" class="text-center text-muted">No appointments scheduled yet.</td>
+                    </tr>
+                  <% } else { %>
+                    <% appointments.forEach(appt => { %>
+                      <tr>
+                        <td><%= appt.year %></td>
+                        <td>₹<%= appt.tax_amount.toLocaleString('en-IN') %></td>
+                        <td><strong><%= appt.appointment_date %></strong><br><small class="text-muted"><%= appt.appointment_time %></small></td>
+                        <td>
+                          <span class="status-badge <%= appt.status === 'Approved' ? 'paid' : appt.status === 'Pending' ? 'unpaid' : appt.status === 'Completed' ? 'active' : 'inactive' %>" style="font-size: 0.75rem;">
+                            <%= appt.status %>
+                          </span>
+                        </td>
+                        <td>
+                          <% if (appt.status === 'Pending' || appt.status === 'Approved') { %>
+                            <button class="btn btn-outline btn-sm" onclick="openRescheduleModal('<%= appt.id %>', '<%= appt.appointment_date %>', '<%= appt.appointment_time %>')" style="padding: 3px 8px; font-size:0.75rem; margin-bottom:4px; display:block; width:100%; text-align:center;"><i class="fas fa-edit"></i> Reschedule</button>
+                            <button class="btn btn-outline btn-sm overdue" onclick="cancelAppointment('<%= appt.id %>')" style="padding: 3px 8px; font-size:0.75rem; display:block; width:100%; text-align:center; background-color: #FFEBEE; color: #C62828; border-color: #FFCDD2;"><i class="fas fa-times"></i> Cancel</button>
+                          <% } else { %>
+                            <span class="text-muted">—</span>
+                          <% } %>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+
           </div>
         </div>
 
@@ -264,6 +370,9 @@
                           <% if (c.xai_explanation) { %>
                             <div style="font-size: 0.75rem; color: #90A4AE; margin-top: 4px; font-style: italic;"><i class="fas fa-info-circle"></i> <%= c.xai_explanation %></div>
                           <% } %>
+                          <% if (c.admin_remarks) { %>
+                            <div style="font-size: 0.75rem; color: #2E7D32; margin-top: 4px; font-weight: 600;"><i class="fas fa-comment-dots"></i> Remarks: <%= c.admin_remarks %></div>
+                          <% } %>
                         </td>
                         <td><%= c.ward %></td>
                         <td>
@@ -285,16 +394,90 @@
             </div>
           </div>
         </div>
+      </div> <!-- Close col-right -->
+    </div> <!-- Close grid-layout -->
 
+    <!-- Government Services and Schemes Details Grid -->
+    <div style="margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+      <!-- Services Card -->
+      <div class="card" id="servicesCard">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-handshake"></i> Panchayat Services Directory</h3>
+        </div>
+        <div class="card-body">
+          <p class="text-muted mb-3" style="font-size:0.85rem;">Official certificate applications, utility connections, permissions, and request forms handled by the Panchayat department.</p>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <% services.forEach(service => { %>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#F9F9F9; border-radius:8px; border-left:3px solid #2E7D32;">
+                <div>
+                  <strong style="font-size:0.9rem;"><i class="fas fa-<%= service.icon || 'cogs' %> text-success" style="margin-right:6px;"></i> <%= service.title %></strong>
+                  <div class="text-muted" style="font-size:0.8rem; margin-top:2px;"><%= service.processing_time || '7 Working Days' %> processing duration</div>
+                </div>
+                <a href="/services/<%= service.id %>" class="btn btn-outline btn-sm" style="padding:4px 10px; font-size:0.8rem;">Read More</a>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schemes Card -->
+      <div class="card" id="schemesCard">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-handholding-heart"></i> Welfare Schemes Directory</h3>
+        </div>
+        <div class="card-body">
+          <p class="text-muted mb-3" style="font-size:0.85rem;">Explore welfare programs, agricultural subsidies, pensions, and financial aid systems offered by the State and Central government.</p>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <% schemes.forEach(scheme => { %>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#F9F9F9; border-radius:8px; border-left:3px solid #1B5E20;">
+                <div>
+                  <strong style="font-size:0.9rem;"><i class="fas fa-hand-holding-usd text-success" style="margin-right:6px;"></i> <%= scheme.title %></strong>
+                  <div class="text-muted" style="font-size:0.8rem; margin-top:2px;"><%= scheme.target_criteria %></div>
+                </div>
+                <a href="/schemes/<%= scheme.id %>" class="btn btn-outline btn-sm" style="padding:4px 10px; font-size:0.8rem;">Read More</a>
+              </div>
+            <% }); %>
+          </div>
+        </div>
       </div>
     </div>
 
   </main>
 
-  <!-- CSS layouts -->
+  <!-- Reschedule Modal -->
+  <div id="rescheduleModal" class="modal hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+    <div class="card" style="width: 100%; max-width: 450px; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+      <h3 style="color: var(--primary); font-family: 'Poppins', sans-serif; margin-top: 0; border-bottom: 1px solid #EEE; padding-bottom: 10px;"><i class="fas fa-calendar-alt"></i> Reschedule Appointment</h3>
+      <form id="rescheduleForm">
+        <input type="hidden" id="rescheduleApptId">
+        
+        <div class="form-group mb-3">
+          <label class="form-label" for="rescheduleDate" style="font-weight:600;">New Appointment Date:</label>
+          <input type="date" id="rescheduleDate" class="form-control" required min="<%= new Date(Date.now() + 86400000).toISOString().split('T')[0] %>">
+        </div>
+        
+        <div class="form-group mb-4">
+          <label class="form-label" for="rescheduleTime" style="font-weight:600;">Preferred Time Slot:</label>
+          <select id="rescheduleTime" class="form-control" required>
+            <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+            <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+            <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+            <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
+            <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+            <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center; padding: 10px;">Save Changes</button>
+          <button type="button" onclick="closeRescheduleModal()" class="btn btn-outline" style="flex: 1; justify-content: center; padding: 10px;">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <style>
     .grid-layout {
-      display: grid;
       grid-template-columns: 1.1fr 0.9fr;
       gap: 25px;
     }
@@ -321,27 +504,112 @@
   <%- include('partials/chatbot') %>
 
   <!-- Dashboard Logics -->
-  <script>
-    // Inline Tax Payment simulated
-    function payTaxInline(taxId, amount) {
-      if (confirm(`Do you want to pay Property Tax of ₹${amount} online?`)) {
-        fetch('/api/pay-tax', {
+    // Scroll and pre-select tax record for booking appointment
+    function scrollToAppointment(recordId) {
+      const selectEl = document.getElementById('apptTaxRecord');
+      if (selectEl) {
+        selectEl.value = recordId;
+      }
+      const formEl = document.getElementById('appointmentsCard');
+      if (formEl) {
+        formEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Appointment Booking submission
+    const apptForm = document.getElementById('appointmentForm');
+    if (apptForm) {
+      apptForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const taxRecordId = document.getElementById('apptTaxRecord').value;
+        const appointmentDate = document.getElementById('apptDate').value;
+        const appointmentTime = document.getElementById('apptTime').value;
+
+        const bookBtn = document.getElementById('bookApptBtn');
+        bookBtn.disabled = true;
+        bookBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Booking Slot...';
+
+        fetch('/api/appointments/book', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            propertyId: '<%= session.user.property_id %>',
-            taxId: taxId,
-            amount: parseFloat(amount)
-          })
+          body: JSON.stringify({ taxRecordId, appointmentDate, appointmentTime })
+        })
+        .then(res => res.json())
+        .then(data => {
+          bookBtn.disabled = false;
+          bookBtn.innerHTML = '<i class="fas fa-calendar-check"></i> Book Appointment Slot';
+          if (data.success) {
+            alert(data.message);
+            window.location.reload();
+          } else {
+            alert("Booking failed: " + (data.error || data.message));
+          }
+        })
+        .catch(err => {
+          bookBtn.disabled = false;
+          bookBtn.innerHTML = '<i class="fas fa-calendar-check"></i> Book Appointment Slot';
+          alert("Network error: " + err.message);
+        });
+      });
+    }
+
+    // Rescheduling helpers
+    function openRescheduleModal(apptId, date, time) {
+      document.getElementById('rescheduleApptId').value = apptId;
+      document.getElementById('rescheduleDate').value = date;
+      document.getElementById('rescheduleTime').value = time;
+      document.getElementById('rescheduleModal').classList.remove('hidden');
+    }
+
+    function closeRescheduleModal() {
+      document.getElementById('rescheduleModal').classList.add('hidden');
+    }
+
+    // Reschedule form submission
+    const rescheduleForm = document.getElementById('rescheduleForm');
+    if (rescheduleForm) {
+      rescheduleForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const appointmentId = document.getElementById('rescheduleApptId').value;
+        const newDate = document.getElementById('rescheduleDate').value;
+        const newTime = document.getElementById('rescheduleTime').value;
+
+        fetch('/api/appointments/reschedule', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ appointmentId, newDate, newTime })
         })
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            window.location.href = `/payment-success?txnId=${data.txnId}&amount=${amount}&propertyId=<%= session.user.property_id %>`;
+            alert(data.message);
+            window.location.reload();
           } else {
-            alert("Payment failed: " + data.error);
+            alert("Reschedule failed: " + (data.error || data.message));
           }
-        });
+        })
+        .catch(err => alert("Network error: " + err.message));
+      });
+    }
+
+    // Cancel appointment
+    function cancelAppointment(appointmentId) {
+      if (confirm("Are you sure you want to cancel this tax payment appointment?")) {
+        fetch('/api/appointments/cancel', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ appointmentId })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert(data.message);
+            window.location.reload();
+          } else {
+            alert("Cancellation failed: " + (data.error || data.message));
+          }
+        })
+        .catch(err => alert("Network error: " + err.message));
       }
     }
 

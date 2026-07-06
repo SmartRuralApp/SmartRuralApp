@@ -197,12 +197,11 @@
     function displaySMSLogs(logs) {
       const tbody = document.getElementById('smsLogs');
       document.getElementById('smsCount').textContent = logs.length;
-      
       tbody.innerHTML = logs.map(log => `
         <tr>
           <td>${log.property_id}</td>
           <td>${log.phone}</td>
-          <td><span class="status-badge ${log.status === 'Sent' ? 'success' : 'error'}">${log.status}</span></td>
+          <td><span class="status-badge ${log.status === 'Sent' ? 'paid' : log.status === 'Simulated' ? 'unpaid' : 'overdue'}">${log.status}</span></td>
           <td>${new Date(log.sent_at).toLocaleString('en-IN')}</td>
         </tr>
       `).join('');

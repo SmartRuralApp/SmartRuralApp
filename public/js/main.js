@@ -165,15 +165,14 @@ function displaySearchResults(results) {
         
         <div class="d-flex justify-between align-center mt-3" style="flex-wrap: wrap; gap: 1rem;">
           <div>
-            <span class="tax-label">Tax Amount</span>
             <span class="tax-amount">₹${record.tax_amount.toLocaleString('en-IN')}</span>
           </div>
           <div class="d-flex align-center gap-2">
             <span class="status-badge ${statusClass}">${record.status}</span>
             ${record.status === 'Unpaid' ? 
-              `<button class="btn btn-success" onclick="openPaymentModal('${record.property_id}', ${record.id}, ${record.tax_amount})">
-                <i class="fas fa-credit-card"></i> Pay Now
-              </button>` : 
+              `<a class="btn btn-primary" href="/user-login" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fas fa-calendar-check"></i> Book Offline Payment
+              </a>` :
               `<button class="btn btn-outline" disabled>
                 <i class="fas fa-check"></i> Paid
               </button>`
@@ -555,7 +554,6 @@ window.editProperty = function(btn) {
   const modal = document.getElementById('editPropertyModal');
   if (modal) modal.classList.add('active');
 };
-
 // Edit Citizen
 window.editCitizen = function(btn) {
   document.getElementById('editCitId').value = btn.dataset.id;
@@ -571,6 +569,10 @@ window.editCitizen = function(btn) {
   document.getElementById('editCitIsFarmer').value = btn.dataset.isFarmer;
   document.getElementById('editCitIsStudent').value = btn.dataset.isStudent;
   document.getElementById('editCitDisability').value = btn.dataset.disability;
+  document.getElementById('editCitAddress').value = btn.dataset.address || '';
+  document.getElementById('editCitWard').value = btn.dataset.ward || 'Ward 1';
+  document.getElementById('editCitAadhaar').value = btn.dataset.aadhaar || '';
+  document.getElementById('editCitUsername').value = btn.dataset.username || '';
   
   const modal = document.getElementById('editCitizenModal');
   if (modal) modal.classList.add('active');

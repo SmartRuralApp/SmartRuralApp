@@ -67,35 +67,46 @@ def predict_category(description):
         "reasons": reasons
     }
 
-# ----------------- Priority Prediction -----------------
-def predict_priority(description, category, ward):
+def predict_priority(description, category, ward, similar_count=0, is_duplicate=0):
     model = load_pkl('complaint_priority_model.pkl')
     vec = load_pkl('complaint_priority_vectorizer.pkl')
     
     if not model or not vec:
-        return {"priority": "Medium", "confidence": 1.0, "reasons": ["Default baseline priority"]}
+        pred = "Medium"
+        confidence = 1.0
+        reasons = ["Default baseline priority"]
+    else:
+        vec_desc = vec.transform([description])
+        pred = model.predict(vec_desc)[0]
+        probs = model.predict_proba(vec_desc)[0]
+        confidence = float(np.max(probs))
         
-    vec_desc = vec.transform([description])
-    pred = model.predict(vec_desc)[0]
-    probs = model.predict_proba(vec_desc)[0]
-    confidence = float(np.max(probs))
-    
-    # XAI Reasons
-    reasons = []
-    desc_lower = description.lower()
-    
-    if pred == "High":
-        matched_k = [k for k in HIGH_PRIO_KEYWORDS if k in desc_lower]
-        if matched_k:
-            reasons.append(f"High-severity threat warning keywords detected: {', '.join(matched_k[:3])}.")
-        if category in ["Electricity", "Water Supply", "Drainage"]:
-            reasons.append(f"Critical public utility category ('{category}') increases urgency rating.")
-        if not reasons:
-            reasons.append("Semantic analysis indicates immediate resolution is required.")
-    elif pred == "Medium":
-        reasons.append("The issue requires prompt maintenance, but does not present an immediate safety hazard.")
-    else: # Low
-        reasons.append("Request is classified as general public inquiry, request for new installations, or routine sweeping.")
+        # XAI Reasons
+        reasons = []
+        desc_lower = description.lower()
+        
+        if pred == "High":
+            matched_k = [k for k in HIGH_PRIO_KEYWORDS if k in desc_lower]
+            if matched_k:
+                reasons.append(f"High-severity threat warning keywords detected: {', '.join(matched_k[:3])}.")
+            if category in ["Electricity", "Water Supply", "Drainage"]:
+                reasons.append(f"Critical public utility category ('{category}') increases urgency rating.")
+            if not reasons:
+                reasons.append("Semantic analysis indicates immediate resolution is required.")
+        elif pred == "Medium":
+            reasons.append("The issue requires prompt maintenance, but does not present an immediate safety hazard.")
+        else: # Low
+            reasons.append("Request is classified as general public inquiry, request for new installations, or routine sweeping.")
+            
+    # Location frequency and duplicate escalation logic
+    if similar_count >= 2:
+        pred = "High"
+        confidence = 1.0
+        reasons = [f"Upgraded to High priority because multiple citizens ({similar_count + 1}) reported similar issues in the same area ({ward}) recently."]
+    elif is_duplicate == 1:
+        pred = "High"
+        confidence = 0.95
+        reasons = [f"Upgraded to High priority as this is a confirmed duplicate of an active issue in {ward}."]
         
     return {
         "priority": pred,
@@ -254,13 +265,14 @@ def main():
     if task == "--predict-category":
         desc = data.get("description", "")
         result = predict_category(desc)
-        
     elif task == "--predict-priority":
         desc = data.get("description", "")
         cat = data.get("category", "Others")
         ward = data.get("ward", "Ward 1")
-        result = predict_priority(desc, cat, ward)
-        
+        similar = int(data.get("similar_count", 0))
+        is_dup = int(data.get("is_duplicate", 0))
+        result = predict_priority(desc, cat, ward, similar, is_dup)
+
     elif task == "--recommend-schemes":
         age = int(data.get("age", 30))
         gender = data.get("gender", "Male")

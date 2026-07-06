@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointment Management - Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-landmark"></i>
+          <span>Panchayat Admin</span>
+        </div>
+      </div>
+            <ul class="sidebar-menu">
+        <li><a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/admin-properties"><i class="fas fa-city"></i> Properties</a></li>
+        <li><a href="/admin-citizens"><i class="fas fa-users"></i> Citizens</a></li>
+        <li><a href="/admin-tax"><i class="fas fa-receipt"></i> Tax Management</a></li>
+        <li><a href="/admin-reminders"><i class="fas fa-bell"></i> SMS Reminders</a></li>
+        <li><a href="/admin-appointments" class="active"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+        <li><a href="/admin-complaints"><i class="fas fa-exclamation-triangle"></i> Complaints</a></li>
+        <li><a href="/admin-services"><i class="fas fa-cogs"></i> Services</a></li>
+        <li><a href="/admin-schemes"><i class="fas fa-hand-holding-usd"></i> Schemes</a></li>
+        <li><a href="/admin-ml-performance"><i class="fas fa-chart-line"></i> ML Performance</a></li>
+        <li><a href="/admin-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+      <div class="admin-header">
+        <div>
+          <h1>Appointment Management</h1>
+          <p class="text-muted">Review, approve, and resolve scheduled offline tax payment appointments</p>
+        </div>
+      </div>
+
+      <!-- Stats Summary -->
+      <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px;">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#FFF9C4; color:#F57F17;"><i class="fas fa-hourglass-half"></i></div>
+          <div class="stat-info">
+            <h3><%= stats.pending %></h3>
+            <p>Pending Approval</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#E1F5FE; color:#0288D1;"><i class="fas fa-check-circle"></i></div>
+          <div class="stat-info">
+            <h3><%= stats.approved %></h3>
+            <p>Approved Slots</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#E8F5E9; color:#2E7D32;"><i class="fas fa-handshake"></i></div>
+          <div class="stat-info">
+            <h3><%= stats.completed %></h3>
+            <p>Completed Payments</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#FFEBEE; color:#C62828;"><i class="fas fa-times-circle"></i></div>
+          <div class="stat-info">
+            <h3><%= stats.cancelled %></h3>
+            <p>Cancelled / Rejected</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appointments List Table -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-list"></i> Active Appointments Queue</h3>
+        </div>
+        <div class="card-body">
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Property ID</th>
+                  <th>Citizen Name</th>
+                  <th>Tax Year</th>
+                  <th>Amount</th>
+                  <th>Date & Time</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (appointments.length === 0) { %>
+                  <tr>
+                    <td colspan="7" class="text-center text-muted">No appointments found in the queue.</td>
+                  </tr>
+                <% } else { %>
+                  <% appointments.forEach(appt => { %>
+                    <tr>
+                      <td><strong><%= appt.property_id %></strong></td>
+                      <td><%= appt.name || 'N/A' %></td>
+                      <td><%= appt.year %></td>
+                      <td><strong>₹<%= appt.tax_amount.toLocaleString('en-IN') %></strong></td>
+                      <td><%= appt.appointment_date %> <br><small class="text-muted"><%= appt.appointment_time %></small></td>
+                      <td>
+                        <span class="status-badge <%= appt.status === 'Approved' ? 'paid' : appt.status === 'Pending' ? 'unpaid' : appt.status === 'Completed' ? 'active' : 'inactive' %>">
+                          <%= appt.status %>
+                        </span>
+                      </td>
+                      <td>
+                        <% if (appt.status === 'Pending') { %>
+                          <button class="btn btn-sm btn-primary" onclick="updateStatus('<%= appt.id %>', 'Approved')"><i class="fas fa-check"></i> Approve</button>
+                          <button class="btn btn-sm btn-outline overdue" onclick="updateStatus('<%= appt.id %>', 'Rejected')" style="background-color: #FFEBEE; color: #C62828;"><i class="fas fa-ban"></i> Reject</button>
+                          <button class="btn btn-sm btn-outline" onclick="openAdminRescheduleModal('<%= appt.id %>', '<%= appt.appointment_date %>', '<%= appt.appointment_time %>')"><i class="fas fa-edit"></i> Move</button>
+                        <% } else if (appt.status === 'Approved') { %>
+                          <button class="btn btn-sm btn-primary" onclick="updateStatus('<%= appt.id %>', 'Completed')" style="background: #2E7D32;"><i class="fas fa-handshake"></i> Complete Payment</button>
+                          <button class="btn btn-sm btn-outline" onclick="openAdminRescheduleModal('<%= appt.id %>', '<%= appt.appointment_date %>', '<%= appt.appointment_time %>')"><i class="fas fa-edit"></i> Reschedule</button>
+                        <% } else { %>
+                          <span class="text-muted">No actions</span>
+                        <% } %>
+                      </td>
+                    </tr>
+                  <% }); %>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Reschedule Modal -->
+  <div id="adminRescheduleModal" class="modal hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+    <div class="card" style="width: 100%; max-width: 450px; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+      <h3 style="color: var(--primary); font-family: 'Poppins', sans-serif; margin-top: 0; border-bottom: 1px solid #EEE; padding-bottom: 10px;"><i class="fas fa-calendar-alt"></i> Reschedule Slot</h3>
+      <form id="adminRescheduleForm">
+        <input type="hidden" id="adminRescheduleApptId">
+        
+        <div class="form-group mb-3">
+          <label class="form-label" for="adminRescheduleDate" style="font-weight:600;">New Appointment Date:</label>
+          <input type="date" id="adminRescheduleDate" class="form-control" required min="<%= new Date(Date.now() + 86400000).toISOString().split('T')[0] %>">
+        </div>
+        
+        <div class="form-group mb-4">
+          <label class="form-label" for="adminRescheduleTime" style="font-weight:600;">Preferred Time Slot:</label>
+          <select id="adminRescheduleTime" class="form-control" required>
+            <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+            <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+            <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+            <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
+            <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+            <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center; padding: 10px;">Save Changes</button>
+          <button type="button" onclick="closeAdminRescheduleModal()" class="btn btn-outline" style="flex: 1; justify-content: center; padding: 10px;">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    async function updateStatus(appointmentId, status) {
+      if (confirm(`Are you sure you want to mark this appointment status as '${status}'?`)) {
+        try {
+          const res = await fetch('/api/admin/update-appointment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ appointmentId, status })
+          });
+          const result = await res.json();
+          if (result.success) {
+            alert(result.message);
+            window.location.reload();
+          } else {
+            alert("Error updating appointment: " + result.error);
+          }
+        } catch (error) {
+          alert("Network error updating status: " + error.message);
+        }
+      }
+    }
+
+    function openAdminRescheduleModal(apptId, date, time) {
+      document.getElementById('adminRescheduleApptId').value = apptId;
+      document.getElementById('adminRescheduleDate').value = date;
+      document.getElementById('adminRescheduleTime').value = time;
+      document.getElementById('adminRescheduleModal').classList.remove('hidden');
+    }
+
+    function closeAdminRescheduleModal() {
+      document.getElementById('adminRescheduleModal').classList.add('hidden');
+    }
+
+    const form = document.getElementById('adminRescheduleForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const appointmentId = document.getElementById('adminRescheduleApptId').value;
+      const newDate = document.getElementById('adminRescheduleDate').value;
+      const newTime = document.getElementById('adminRescheduleTime').value;
+
+      try {
+        const res = await fetch('/api/admin/update-appointment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ appointmentId, status: 'Approved', newDate, newTime })
+        });
+        const result = await res.json();
+        if (result.success) {
+          alert("Appointment rescheduled and approved successfully!");
+          window.location.reload();
+        } else {
+          alert("Error rescheduling: " + result.error);
+        }
+      } catch (error) {
+        alert("Network error rescheduling: " + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

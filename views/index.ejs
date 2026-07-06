@@ -114,6 +114,58 @@
           <a href="/services" class="btn btn-outline mt-2">View Updates</a>
         </div>
       </div>
+
+      <!-- Government Services and Schemes Details Grid -->
+      <div class="grid-layout-directory" style="margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 40px;">
+        <!-- Services Card -->
+        <div class="card" id="servicesCard" style="border: 1px solid #E0E0E0; border-radius:12px; background:white; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+          <div class="card-header" style="background:#F5F5F5; padding:15px; border-bottom:1px solid #EEE; border-top-left-radius:12px; border-top-right-radius:12px;">
+            <h3 class="card-title" style="margin:0; font-family:'Poppins',sans-serif; color:var(--primary); font-size:1.1rem;"><i class="fas fa-handshake"></i> Panchayat Services Directory</h3>
+          </div>
+          <div class="card-body" style="padding:20px;">
+            <p class="text-muted mb-3" style="font-size:0.85rem; margin-bottom:15px;">Official certificate applications, utility connections, permissions, and request forms handled by the Panchayat department.</p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <% services.forEach(service => { %>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#F9F9F9; border-radius:8px; border-left:3px solid #2E7D32;">
+                  <div>
+                    <strong style="font-size:0.9rem;"><i class="fas fa-<%= service.icon || 'cogs' %> text-success" style="margin-right:6px;"></i> <%= service.title %></strong>
+                    <div class="text-muted" style="font-size:0.8rem; margin-top:2px;"><%= service.processing_time || '7 Working Days' %> processing duration</div>
+                  </div>
+                  <a href="/services/<%= service.id %>" class="btn btn-outline btn-sm" style="padding:4px 10px; font-size:0.8rem; text-decoration:none;">Read More</a>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schemes Card -->
+        <div class="card" id="schemesCard" style="border: 1px solid #E0E0E0; border-radius:12px; background:white; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+          <div class="card-header" style="background:#F5F5F5; padding:15px; border-bottom:1px solid #EEE; border-top-left-radius:12px; border-top-right-radius:12px;">
+            <h3 class="card-title" style="margin:0; font-family:'Poppins',sans-serif; color:var(--primary); font-size:1.1rem;"><i class="fas fa-hand-holding-heart"></i> Welfare Schemes Directory</h3>
+          </div>
+          <div class="card-body" style="padding:20px;">
+            <p class="text-muted mb-3" style="font-size:0.85rem; margin-bottom:15px;">Explore welfare programs, agricultural subsidies, pensions, and financial aid systems offered by the State and Central government.</p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <% schemes.forEach(scheme => { %>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#F9F9F9; border-radius:8px; border-left:3px solid #1B5E20;">
+                  <div>
+                    <strong style="font-size:0.9rem;"><i class="fas fa-hand-holding-usd text-success" style="margin-right:6px;"></i> <%= scheme.title %></strong>
+                    <div class="text-muted" style="font-size:0.8rem; margin-top:2px;"><%= scheme.target_criteria %></div>
+                  </div>
+                  <a href="/schemes/<%= scheme.id %>" class="btn btn-outline btn-sm" style="padding:4px 10px; font-size:0.8rem; text-decoration:none;">Read More</a>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <style>
+        @media (max-width: 768px) {
+          .grid-layout-directory {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      </style>
     </div>
   </main>
 
