@@ -99,15 +99,24 @@ def predict_priority(description, category, ward, similar_count=0, is_duplicate=
             reasons.append("Request is classified as general public inquiry, request for new installations, or routine sweeping.")
             
     # Location frequency and duplicate escalation logic
-    if similar_count >= 2:
+    total_similar = similar_count + 1
+    if total_similar >= 4:
+        pred = "Critical"
+        confidence = 1.0
+        reasons = [f"Upgraded to Critical priority because multiple citizens ({total_similar}) reported similar issues in {ward} recently."]
+    elif total_similar >= 2:
         pred = "High"
         confidence = 1.0
-        reasons = [f"Upgraded to High priority because multiple citizens ({similar_count + 1}) reported similar issues in the same area ({ward}) recently."]
+        reasons = [f"Upgraded to High priority because multiple citizens ({total_similar}) reported similar issues in {ward} recently."]
     elif is_duplicate == 1:
         pred = "High"
         confidence = 0.95
         reasons = [f"Upgraded to High priority as this is a confirmed duplicate of an active issue in {ward}."]
-        
+    elif total_similar == 1:
+        if pred == "Low":
+            pred = "Medium"
+            reasons.append("Adjusted to baseline Medium priority for single reports.")
+            
     return {
         "priority": pred,
         "confidence": round(confidence, 2),
@@ -166,25 +175,34 @@ def recommend_schemes(age, gender, occupation, income, land_size, is_farmer, is_
     return {"recommendations": recs}
 
 # ----------------- Tax Defaulter Risk -----------------
-def predict_defaulter(property_type, tax_amount, year, history_paid_ratio, late_payments):
+def predict_defaulter(property_type, tax_amount, year, history_paid_ratio, late_payments, status="Unpaid"):
+    if status.lower() == 'paid':
+        return {
+            "risk": "No Risk",
+            "probability": 0.0,
+            "reasons": ["Tax is fully paid; no default risk."]
+        }
+
     model = load_pkl('tax_defaulter_model.pkl')
     
     if not model:
         return {"risk": "Low Risk", "probability": 0.0, "reasons": ["Default baseline tax risk"]}
         
-    # Features: property_type, tax_amount, history_paid_ratio, late_payments
-    # Note: property_type should be encoded (Residential=0, Commercial=1)
     p_type_enc = 1 if property_type.lower() == 'commercial' else 0
-    
     features = np.array([[p_type_enc, tax_amount, history_paid_ratio, late_payments]])
     
-    # Model predict defaulter prob (defaulter = 1)
     probs = model.predict_proba(features)[0]
     classes = model.classes_
     
     defaulter_idx = np.where(classes == 1)[0][0]
     prob_defaulter = float(probs[defaulter_idx])
     
+    # Realistic logic adjustments
+    if status.lower() == 'overdue':
+        prob_defaulter = max(prob_defaulter, 0.75) # Minimum 75% for Overdue (High Risk)
+    elif status.lower() == 'unpaid':
+        prob_defaulter = max(prob_defaulter, 0.45) # Minimum 45% for Unpaid (Medium Risk)
+
     # Categorize Risk
     if prob_defaulter < 0.35:
         risk = "Low Risk"
@@ -193,16 +211,20 @@ def predict_defaulter(property_type, tax_amount, year, history_paid_ratio, late_
     else:
         risk = "High Risk"
         
-    # XAI Reasons
     reasons = []
+    if status.lower() == 'overdue':
+        reasons.append("Status is Overdue, indicating high likelihood of default.")
+    elif status.lower() == 'unpaid':
+        reasons.append("Status is Unpaid, representing moderate delinquency risk.")
+
     if late_payments > 1:
-        reasons.append(f"History of previous late payments (count: {late_payments}) indicates high tendency of delay.")
+        reasons.append(f"History of previous late payments (count: {late_payments}) indicates tendency of delay.")
     if history_paid_ratio < 0.6:
         reasons.append(f"Previous tax compliance ratio is low ({history_paid_ratio:.1%}).")
     if tax_amount > 4000:
         reasons.append(f"Significant outstanding tax amount (₹{tax_amount}) increases payment resistance.")
     if not reasons:
-        reasons.append("Compliance history and tax metrics match typical low-risk profiles.")
+        reasons.append("Compliance history and tax metrics match typical profiles.")
         
     return {
         "risk": risk,
@@ -290,7 +312,8 @@ def main():
         year = int(data.get("year", 2026))
         hist_ratio = float(data.get("history_paid_ratio", 1.0))
         late_pays = int(data.get("late_payments", 0))
-        result = predict_defaulter(p_type, amount, year, hist_ratio, late_pays)
+        status = data.get("status", "Unpaid")
+        result = predict_defaulter(p_type, amount, year, hist_ratio, late_pays, status)
         
     elif task == "--detect-duplicate":
         desc = data.get("description", "")

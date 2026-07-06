@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "last_trained": "2026-06-30 22:15:29",
+  "version": 3,
+  "last_trained": "2026-07-06 13:09:29",
   "models": {
     "complaint_category": {
       "dataset_size": 166,

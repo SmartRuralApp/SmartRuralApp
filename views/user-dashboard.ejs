@@ -376,7 +376,7 @@
                         </td>
                         <td><%= c.ward %></td>
                         <td>
-                          <span class="status-badge <%= c.priority === 'High' ? 'overdue' : c.priority === 'Medium' ? 'unpaid' : 'paid' %>" style="font-size: 0.75rem;">
+                          <span class="status-badge <%= (c.priority === 'Critical' || c.priority === 'High') ? 'overdue' : c.priority === 'Medium' ? 'unpaid' : 'paid' %>" style="font-size: 0.75rem; <%= c.priority === 'Critical' ? 'background: #4A148C; color: white;' : '' %>">
                             <%= c.priority %>
                           </span>
                         </td>

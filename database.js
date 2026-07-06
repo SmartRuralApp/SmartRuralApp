@@ -49,6 +49,7 @@ async function initDatabase() {
       payment_probability REAL DEFAULT 100.0,
       admin_corrected INTEGER DEFAULT 0,
       xai_explanation TEXT,
+      override_status TEXT,
       FOREIGN KEY (property_id) REFERENCES properties(property_id)
     )
   `);
@@ -128,7 +129,10 @@ async function initDatabase() {
       phone TEXT NOT NULL,
       message TEXT NOT NULL,
       status TEXT DEFAULT 'Sent',
-      sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      citizen_name TEXT,
+      tax_status TEXT,
+      error_message TEXT
     )
   `);
   
@@ -246,6 +250,18 @@ async function initDatabase() {
 
   try {
     db.run("ALTER TABLE sms_logs ADD COLUMN citizen_name TEXT");
+  } catch(e) {}
+
+  try {
+    db.run("ALTER TABLE sms_logs ADD COLUMN tax_status TEXT");
+  } catch(e) {}
+
+  try {
+    db.run("ALTER TABLE sms_logs ADD COLUMN error_message TEXT");
+  } catch(e) {}
+
+  try {
+    db.run("ALTER TABLE tax_records ADD COLUMN override_status TEXT");
   } catch(e) {}
 
   const remindersCols = [

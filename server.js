@@ -77,6 +77,42 @@ function runMLInference(task, data) {
   });
 }
 
+async function recalculateTaxML(recordId) {
+  try {
+    const record = db.prepare('SELECT * FROM tax_records WHERE id = ?').get(recordId);
+    if (!record) return;
+
+    const property = db.prepare('SELECT * FROM properties WHERE property_id = ?').get(record.property_id);
+    const property_type = property ? property.property_type : 'Residential';
+
+    const totalTaxes = db.prepare('SELECT COUNT(*) as count FROM tax_records WHERE property_id = ?').get(record.property_id).count || 0;
+    const unpaidTaxes = db.prepare("SELECT COUNT(*) as count FROM tax_records WHERE property_id = ? AND status IN ('Unpaid', 'Overdue')").get(record.property_id).count || 0;
+    const history_paid_ratio = totalTaxes > 0 ? (totalTaxes - unpaidTaxes) / totalTaxes : 1.0;
+    const late_payments = unpaidTaxes;
+
+    const mlResult = await runMLInference('--predict-defaulter', {
+      property_type,
+      tax_amount: record.tax_amount,
+      year: record.year,
+      history_paid_ratio,
+      late_payments,
+      status: record.status
+    });
+
+    db.prepare(`
+      UPDATE tax_records 
+      SET predicted_status = ?, payment_probability = ?, xai_explanation = ?
+      WHERE id = ?
+    `).run(mlResult.risk, mlResult.probability, mlResult.reasons.join(' | '), recordId);
+    
+    saveDatabase();
+  } catch (error) {
+    console.error("Error recalculating Tax ML:", error.message);
+  }
+}
+
+
+
 // Create notification in database
 function createNotification(userId, role, title, message, type) {
   try {
@@ -667,22 +703,20 @@ app.post('/api/complaints/suggest-category', async (req, res) => {
 app.post('/api/complaints', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ success: false, error: 'Unauthorized' });
-  }
-  const { category, description, ward } = req.body;
+  }  const { category, description, ward } = req.body;
   const propertyId = req.session.user.property_id;
 
   try {
-    // 1. Commit complaint to database immediately (Standard fallback values)
-    db.prepare(`
+    const catResult = await runMLInference('--predict-category', { description });
+    const predictedCategory = catResult.category || category;
+    const catConfidence = catResult.confidence || 1.0;
+
+    const insertResult = db.prepare(`
       INSERT INTO complaints (property_id, category, description, ward, priority, predicted_priority, predicted_category, confidence_score, is_duplicate, duplicate_of_id, xai_explanation)
-      VALUES (?, ?, ?, ?, 'Medium', 'Medium', ?, 1.0, 0, NULL, 'Grievance lodged in Panchayat records.')
-    `).run(propertyId, category, description, ward, category);
+      VALUES (?, ?, ?, ?, 'Medium', 'Medium', ?, ?, 0, NULL, 'Grievance lodged in Panchayat records.')
+    `).run(propertyId, category, description, ward, predictedCategory, catConfidence);
+    const complaintId = insertResult.lastInsertRowid;
 
-    // Retrieve last inserted record row ID
-    const lastRow = db.prepare('SELECT id FROM complaints WHERE property_id = ? ORDER BY id DESC LIMIT 1').get(propertyId);
-    const complaintId = lastRow ? lastRow.id : null;
-
-    // Default return payload
     let priority = 'Medium';
     let isDuplicate = 0;
     let duplicateOfId = null;
@@ -692,7 +726,8 @@ app.post('/api/complaints', async (req, res) => {
       const existing = db.prepare(`
         SELECT id, description FROM complaints
         WHERE category = ? AND ward = ? AND status != 'Resolved' AND id != ?
-      `).all(category, ward, complaintId) || [];
+      `).all(predictedCategory, ward, complaintId) || [];
+
 
       const dupResult = await runMLInference('--detect-duplicate', {
         description,
@@ -1098,20 +1133,21 @@ app.get('/admin-tax', requireAdmin, (req, res) => {
 
   res.render('admin-tax', { session: req.session, taxRecords });
 });
-
 app.post('/api/admin/override-tax-prediction', requireAdmin, (req, res) => {
   const { id, risk } = req.body;
   try {
     db.prepare(`
       UPDATE tax_records 
-      SET predicted_status = ?, admin_corrected = 1, xai_explanation = 'Predicted status manually corrected by administrator.'
+      SET override_status = ?, admin_corrected = ?
       WHERE id = ?
-    `).run(risk, id);
+    `).run(risk || null, risk ? 1 : 0, id);
+    saveDatabase();
     res.json({ success: true });
   } catch (error) {
     res.json({ success: false, error: error.message });
   }
 });
+
 
 app.get('/admin-complaints', requireAdmin, (req, res) => {
   const complaints = db.prepare(`
@@ -1121,7 +1157,18 @@ app.get('/admin-complaints', requireAdmin, (req, res) => {
     ORDER BY c.created_at DESC
   `).all() || [];
 
-  res.render('admin-complaints', { session: req.session, complaints });
+  const duplicatesAnalysis = db.prepare(`
+    SELECT c.id as original_id, c.ward, c.status, c.priority, c.category,
+           COUNT(d.id) as duplicates_count, 
+           GROUP_CONCAT(d.id, ', ') as linked_ids,
+           GROUP_CONCAT(p.owner_name, ', ') as affected_citizens
+    FROM complaints c
+    JOIN complaints d ON c.id = d.duplicate_of_id
+    LEFT JOIN properties p ON d.property_id = p.property_id
+    GROUP BY c.id
+  `).all() || [];
+
+  res.render('admin-complaints', { session: req.session, complaints, duplicatesAnalysis });
 });
 
 app.post('/api/admin/override-complaint', requireAdmin, (req, res) => {
@@ -1142,14 +1189,29 @@ app.post('/api/admin/update-complaint-status', requireAdmin, (req, res) => {
   try {
     db.prepare('UPDATE complaints SET status = ?, admin_remarks = ? WHERE id = ?').run(status, remarks || null, id);
     
-    const complaint = db.prepare('SELECT property_id, category FROM complaints WHERE id = ?').get(id);
-    if (complaint) {
+    const original = db.prepare('SELECT * FROM complaints WHERE id = ?').get(id);
+    if (original) {
       createNotification(
-        complaint.property_id, 'Citizen',
+        original.property_id, 'Citizen',
         'Complaint Status Updated',
-        `Your complaint (ID: #${id}, Category: ${complaint.category}) has been updated to '${status}'. Remarks: ${remarks || 'None'}.`,
+        `Your complaint (ID: #${id}, Category: ${original.category}) has been updated to '${status}'. Remarks: ${remarks || 'None'}.`,
         'Complaint'
       );
+
+      if (status === 'Resolved') {
+        const duplicates = db.prepare('SELECT * FROM complaints WHERE duplicate_of_id = ?').all(id) || [];
+        for (const dup of duplicates) {
+          db.prepare('UPDATE complaints SET status = ?, admin_remarks = ? WHERE id = ?').run('Resolved', `Resolved via link to Original Complaint #${id}: ${remarks || 'None'}.`, dup.id);
+          
+          createNotification(
+            dup.property_id, 'Citizen',
+            'Linked Complaint Resolved',
+            `The original issue (ID: #${id}) linked to your complaint (ID: #${dup.id}, Category: ${dup.category}) has been resolved. Your complaint status is now 'Resolved'.`,
+            'Complaint'
+          );
+        }
+      }
+      saveDatabase();
     }
     
     res.json({ success: true });
@@ -1413,10 +1475,13 @@ app.post('/api/admin/add-tax', requireAdmin, (req, res) => {
         VALUES (?, ?, ?, 'Residential')
       `).run(propertyId.toUpperCase(), ownerName || 'Citizen', 'Panchayat Area');
     }
-    db.prepare(`
+    const insertResult = db.prepare(`
       INSERT INTO tax_records (property_id, tax_amount, due_date, year, status)
       VALUES (?, ?, ?, ?, 'Unpaid')
     `).run(propertyId.toUpperCase(), parseFloat(taxAmount), dueDate, parseInt(year));
+    
+    await recalculateTaxML(insertResult.lastInsertRowid);
+    
     res.json({ success: true, message: 'Tax record saved successfully!' });
   } catch (error) {
     res.json({ success: false, message: error.message });
@@ -1433,17 +1498,13 @@ app.post('/api/admin/update-tax', requireAdmin, (req, res) => {
         return res.json({ success: false, message: `A tax record already exists for Property ID ${current.property_id} and Year ${year}.` });
       }
     }
-    if (status === 'Paid') {
-      db.prepare(`
-        UPDATE tax_records SET tax_amount = ?, due_date = ?, year = ?, status = ?, predicted_status = 'No Risk', payment_probability = 0.0
-        WHERE id = ?
-      `).run(taxAmount, dueDate, year, status, id);
-    } else {
-      db.prepare(`
-        UPDATE tax_records SET tax_amount = ?, due_date = ?, year = ?, status = ?
-        WHERE id = ?
-      `).run(taxAmount, dueDate, year, status, id);
-    }
+    db.prepare(`
+      UPDATE tax_records SET tax_amount = ?, due_date = ?, year = ?, status = ?
+      WHERE id = ?
+    `).run(taxAmount, dueDate, year, status, id);
+    
+    await recalculateTaxML(id);
+    
     res.json({ success: true, message: 'Tax record updated successfully!' });
   } catch (error) {
     res.json({ success: false, message: error.message });
@@ -1460,11 +1521,15 @@ app.post('/api/admin/delete-tax', requireAdmin, (req, res) => {
     res.json({ success: false, message: error.message });
   }
 });
-
 // ==================== SMS REMINDERS ROUTES ====================
 
 app.get('/admin-reminders', requireAdmin, (req, res) => {
-  res.render('admin-reminders', { session: req.session });
+  const twilioSid = process.env.TWILIO_ACCOUNT_SID;
+  const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+  const twilioFrom = process.env.TWILIO_PHONE_NUMBER;
+  const fast2smsKey = process.env.FAST2SMS_API_KEY;
+  const isRealSMS = !!((twilioSid && twilioAuthToken && twilioFrom && twilioSid.trim() !== '' && !twilioSid.includes('YOUR_')) || (fast2smsKey && fast2smsKey.trim() !== '' && !fast2smsKey.includes('YOUR_')));
+  res.render('admin-reminders', { session: req.session, isRealSMS });
 });
 
 app.get('/api/admin/pending-reminders', requireAdmin, (req, res) => {
@@ -1473,7 +1538,7 @@ app.get('/api/admin/pending-reminders', requireAdmin, (req, res) => {
       SELECT tr.*, p.owner_name
       FROM tax_records tr
       JOIN properties p ON tr.property_id = p.property_id
-      WHERE tr.status = 'Unpaid'
+      WHERE tr.status != 'Paid'
     `).all() || [];
 
     const pendingReminders = [];
@@ -1521,7 +1586,6 @@ app.get('/api/admin/sms-logs', requireAdmin, (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
-// Helper function to send SMS via Gateway or Simulation
 async function sendSMSGateway(phone, citizenName, propertyId, message) {
   const twilioSid = process.env.TWILIO_ACCOUNT_SID;
   const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
@@ -1546,14 +1610,14 @@ async function sendSMSGateway(phone, citizenName, propertyId, message) {
       });
       const result = await response.json();
       if (response.ok) {
-        return 'Sent';
+        return { status: 'Sent', error: null };
       } else {
         console.error('Twilio Error:', result);
-        return 'Failed';
+        return { status: 'Failed', error: result.message || JSON.stringify(result) };
       }
     } catch (err) {
       console.error('Twilio Fetch Error:', err);
-      return 'Failed';
+      return { status: 'Failed', error: err.message };
     }
   } else if (fast2smsKey && fast2smsKey.trim() !== '' && !fast2smsKey.includes('YOUR_')) {
     try {
@@ -1572,19 +1636,20 @@ async function sendSMSGateway(phone, citizenName, propertyId, message) {
       });
       const result = await response.json();
       if (result.return) {
-        return 'Sent';
+        return { status: 'Sent', error: null };
       } else {
         console.error('Fast2SMS Error:', result);
-        return 'Failed';
+        return { status: 'Failed', error: result.message || JSON.stringify(result) };
       }
     } catch (err) {
       console.error('Fast2SMS Fetch Error:', err);
-      return 'Failed';
+      return { status: 'Failed', error: err.message };
     }
   }
 
+
   console.log(`[SMS SIMULATION] To: ${phone} | Citizen: ${citizenName} | Property: ${propertyId} | Msg:\n${message}`);
-  return 'Simulated';
+  return { status: 'Simulation', error: null };
 }
 
 app.post('/api/admin/send-reminder', requireAdmin, async (req, res) => {
@@ -1594,32 +1659,27 @@ app.post('/api/admin/send-reminder', requireAdmin, async (req, res) => {
     const phone = user ? user.phone : '9876543210';
     const name = user ? user.name : 'Citizen';
     
-    const taxRecord = db.prepare("SELECT * FROM tax_records WHERE property_id = ? AND status = 'Unpaid' ORDER BY year DESC LIMIT 1").get(propertyId);
+    const taxRecord = db.prepare("SELECT * FROM tax_records WHERE property_id = ? AND status != 'Paid' ORDER BY year DESC LIMIT 1").get(propertyId);
     if (!taxRecord) {
-      return res.json({ success: false, message: 'No unpaid tax records found for this property.' });
+      return res.json({ success: false, message: 'No pending tax records found for this property.' });
     }
 
-    const contactNumber = process.env.PANCHAYAT_CONTACT_NUMBER || '+91 80 2843 1234';
     const msg = `Dear ${name},
 
-Our records indicate that your Gram Panchayat Property Tax for Property ID ${propertyId} is still pending.
+Our records show that your Gram Panchayat Property Tax for Property ID ${propertyId} is pending.
 
-For details such as the outstanding amount, due date, and property information, please visit the Smart Gram Panchayat application.
+Please log in to the Smart Gram Panchayat application to view the outstanding amount, due date, and payment details.
 
-To complete your tax payment, kindly schedule a convenient date and time through the application and visit the Gram Panchayat Office on your scheduled appointment.
+To make an offline payment, please schedule an appointment through the application or contact the Gram Panchayat Office.
 
-For further assistance, please contact the Gram Panchayat Office at ${contactNumber}.
-
-Thank you.
-
-Smart Gram Panchayat`;
+Thank you.`;
     
-    const status = await sendSMSGateway(phone, name, propertyId, msg);
+    const smsResult = await sendSMSGateway(phone, name, propertyId, msg);
 
     db.prepare(`
-      INSERT INTO sms_logs (property_id, phone, message, status, citizen_name)
-      VALUES (?, ?, ?, ?, ?)
-    `).run(propertyId, phone, msg, status, name);
+      INSERT INTO sms_logs (property_id, phone, message, status, citizen_name, tax_status, error_message)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(propertyId, phone, msg, smsResult.status, name, taxRecord.status, smsResult.error);
     
     // Also log in reminders table
     db.prepare(`
@@ -1631,65 +1691,68 @@ Smart Gram Panchayat`;
     createNotification(
       propertyId, 'Citizen',
       'Tax Payment Reminder',
-      `Tax reminder message sent (Status: ${status}). Due: ${taxRecord.due_date}`,
+      `Tax reminder message sent (Status: ${smsResult.status}). Due: ${taxRecord.due_date}`,
       'Tax'
     );
 
-    res.json({ success: true, message: `SMS reminder sent successfully to ${phone} (Status: ${status})!` });
+    res.json({ success: true, message: `SMS reminder sent successfully to ${phone} (Status: ${smsResult.status})!` });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
 });
 
+
 app.post('/api/admin/send-bulk-reminder', requireAdmin, async (req, res) => {
   const { reminderType } = req.body;
   try {
-    const unpaid = db.prepare(`
+    const pendingRecords = db.prepare(`
       SELECT tr.*, p.owner_name
       FROM tax_records tr
       JOIN properties p ON tr.property_id = p.property_id
-      WHERE tr.status = 'Unpaid'
+      WHERE tr.status != 'Paid'
     `).all() || [];
 
     let sentCount = 0;
-    const contactNumber = process.env.PANCHAYAT_CONTACT_NUMBER || '+91 80 2843 1234';
 
-    for (const record of unpaid) {
+    for (const record of pendingRecords) {
+      // Prevent duplicate SMS reminders from being sent repeatedly on the same day in bulk mode
+      const duplicate = db.prepare(`
+        SELECT COUNT(*) as count FROM sms_logs 
+        WHERE property_id = ? AND date(sent_at) = date('now')
+      `).get(record.property_id).count > 0;
+      
+      if (duplicate) continue;
+
       const user = db.prepare('SELECT * FROM users WHERE property_id = ?').get(record.property_id);
       const phone = user ? user.phone : '9876543210';
       const name = user ? user.name : record.owner_name || 'Citizen';
 
       const msg = `Dear ${name},
 
-Our records indicate that your Gram Panchayat Property Tax for Property ID ${record.property_id} is still pending.
+Our records show that your Gram Panchayat Property Tax for Property ID ${record.property_id} is pending.
 
-For details such as the outstanding amount, due date, and property information, please visit the Smart Gram Panchayat application.
+Please log in to the Smart Gram Panchayat application to view the outstanding amount, due date, and payment details.
 
-To complete your tax payment, kindly schedule a convenient date and time through the application and visit the Gram Panchayat Office on your scheduled appointment.
+To make an offline payment, please schedule an appointment through the application or contact the Gram Panchayat Office.
 
-For further assistance, please contact the Gram Panchayat Office at ${contactNumber}.
+Thank you.`;
 
-Thank you.
-
-Smart Gram Panchayat`;
-
-      const status = await sendSMSGateway(phone, name, record.property_id, msg);
+      const smsResult = await sendSMSGateway(phone, name, record.property_id, msg);
 
       db.prepare(`
-        INSERT INTO sms_logs (property_id, phone, message, status, citizen_name)
-        VALUES (?, ?, ?, ?, ?)
-      `).run(record.property_id, phone, msg, status, name);
+        INSERT INTO sms_logs (property_id, phone, message, status, citizen_name, tax_status, error_message)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).run(record.property_id, phone, msg, smsResult.status, name, record.status, smsResult.error);
 
       db.prepare(`
         INSERT INTO reminders (property_id, tax_record_id, reminder_type, reminder_days, reminder_date, sent, sent_date, sms_sent)
         VALUES (?, ?, 'Tax Payment', ?, ?, 1, datetime('now'), 1)
       `).run(record.property_id, record.id, reminderType, record.due_date);
 
-      // Create notification
       createNotification(
         record.property_id, 'Citizen',
         'Tax Payment Reminder',
-        `Tax reminder message sent (Status: ${status}). Due: ${record.due_date}`,
+        `Tax reminder message sent (Status: ${smsResult.status}). Due: ${record.due_date}`,
         'Tax'
       );
 
@@ -1701,6 +1764,7 @@ Smart Gram Panchayat`;
     res.json({ success: false, message: error.message });
   }
 });
+
 // ==================== CHATBOT API ====================
 
 app.post('/api/chat', async (req, res) => {
