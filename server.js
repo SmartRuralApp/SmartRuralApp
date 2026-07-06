@@ -1457,7 +1457,7 @@ app.post('/api/admin/delete-service', requireAdmin, (req, res) => {
   }
 });
 
-app.post('/api/admin/add-tax', requireAdmin, (req, res) => {
+app.post('/api/admin/add-tax', requireAdmin, async (req, res) => {
   const { propertyId, taxAmount, dueDate, year, ownerName } = req.body;
   if (!propertyId || !taxAmount || !dueDate || !year) {
     return res.json({ success: false, message: 'All fields are required' });
@@ -1488,7 +1488,7 @@ app.post('/api/admin/add-tax', requireAdmin, (req, res) => {
   }
 });
 
-app.post('/api/admin/update-tax', requireAdmin, (req, res) => {
+app.post('/api/admin/update-tax', requireAdmin, async (req, res) => {
   const { id, taxAmount, dueDate, year, status } = req.body;
   try {
     const current = db.prepare('SELECT property_id FROM tax_records WHERE id = ?').get(id);
