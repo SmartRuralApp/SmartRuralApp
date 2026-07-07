@@ -91,11 +91,9 @@
                         <td>
                           <span class="status-badge <%= record.status.toLowerCase() %>"><%= record.status %></span>
                         </td>
-
-
                         <td>
-                          <% if (record.status === 'Unpaid') { %>
-                            <button class="btn btn-primary btn-sm" onclick="scrollToAppointment('<%= record.id %>')">Book Offline Payment</button>
+                          <% if (record.status === 'Unpaid' || record.status === 'Overdue') { %>
+                            <a href="/tax-search" class="btn btn-primary btn-sm"><i class="fas fa-credit-card"></i> Pay Online</a>
                           <% } else { %>
                             <span class="text-success"><i class="fas fa-check-circle"></i> Clear</span>
                           <% } %>
@@ -109,106 +107,7 @@
           </div>
         </div>
 
-        <!-- Offline Payment Appointments Panel -->
-        <div class="card" id="appointmentsCard">
-          <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-            <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Offline Tax Payment Appointments</h3>
-            <span class="status-badge" style="background:#E1F5FE; color:#0288D1;"><i class="fas fa-phone-alt"></i> Office: +91 80 2843 1234</span>
-          </div>
-          <div class="card-body">
-            
-            <% 
-              const unpaidRecords = taxRecords.filter(r => r.status === 'Unpaid');
-              if (unpaidRecords.length > 0) { 
-            %>
-              <form id="appointmentForm" style="background: #F9F9F9; padding: 20px; border-radius: var(--radius-sm); margin-bottom: 25px; border-left: 4px solid var(--primary);">
-                <h4 style="margin-top:0; color:var(--primary);"><i class="fas fa-calendar-plus"></i> Schedule Offline Payment</h4>
-                <p class="text-muted" style="font-size:0.8rem; margin-bottom: 15px;">Book an appointment slot to clear your outstanding taxes at the Panchayat Office.</p>
-                
-                <div class="form-group mb-3">
-                  <label class="form-label" for="apptTaxRecord" style="font-weight:600;">Select Outstanding Tax Year:</label>
-                  <select id="apptTaxRecord" class="form-control" required>
-                    <% unpaidRecords.forEach(record => { %>
-                      <option value="<%= record.id %>"><%= record.year %> (Amount: ₹<%= record.tax_amount.toLocaleString('en-IN') %>)</option>
-                    <% }); %>
-                  </select>
-                </div>
 
-                <div class="grid-2 mb-3">
-                  <div class="form-group">
-                    <label class="form-label" for="apptDate" style="font-weight:600;">Appointment Date:</label>
-                    <input type="date" id="apptDate" class="form-control" required min="<%= new Date(Date.now() + 86400000).toISOString().split('T')[0] %>">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="apptTime" style="font-weight:600;">Preferred Time Slot:</label>
-                    <select id="apptTime" class="form-control" required>
-                      <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
-                      <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
-                      <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
-                      <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
-                      <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
-                      <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
-                    </select>
-                  </div>
-                </div>
-
-                <button type="submit" id="bookApptBtn" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px;">
-                  <i class="fas fa-calendar-check"></i> Book Appointment Slot
-                </button>
-              </form>
-            <% } else { %>
-              <div class="alert paid" style="padding: 12px; margin-bottom: 20px; border-radius: 8px; background-color: #E8F5E9; color: #2E7D32; display: flex; align-items: center; gap: 10px; font-size: 0.9rem;">
-                <i class="fas fa-check-circle"></i>
-                <span>All your property tax records are cleared. No pending payments are due!</span>
-              </div>
-            <% } %>
-
-            <!-- Scheduled Appointments List -->
-            <h4 style="font-family:'Poppins',sans-serif; color:var(--primary); margin-top:20px; border-bottom:1px solid #EEE; padding-bottom:10px;"><i class="fas fa-history"></i> Appointment History</h4>
-            <div class="table-responsive mt-2">
-              <table class="table" style="font-size: 0.85rem;">
-                <thead>
-                  <tr>
-                    <th>Year</th>
-                    <th>Tax Amount</th>
-                    <th>Date & Time</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% if (appointments.length === 0) { %>
-                    <tr>
-                      <td colspan="5" class="text-center text-muted">No appointments scheduled yet.</td>
-                    </tr>
-                  <% } else { %>
-                    <% appointments.forEach(appt => { %>
-                      <tr>
-                        <td><%= appt.year %></td>
-                        <td>₹<%= appt.tax_amount.toLocaleString('en-IN') %></td>
-                        <td><strong><%= appt.appointment_date %></strong><br><small class="text-muted"><%= appt.appointment_time %></small></td>
-                        <td>
-                          <span class="status-badge <%= appt.status === 'Approved' ? 'paid' : appt.status === 'Pending' ? 'unpaid' : appt.status === 'Completed' ? 'active' : 'inactive' %>" style="font-size: 0.75rem;">
-                            <%= appt.status %>
-                          </span>
-                        </td>
-                        <td>
-                          <% if (appt.status === 'Pending' || appt.status === 'Approved') { %>
-                            <button class="btn btn-outline btn-sm" onclick="openRescheduleModal('<%= appt.id %>', '<%= appt.appointment_date %>', '<%= appt.appointment_time %>')" style="padding: 3px 8px; font-size:0.75rem; margin-bottom:4px; display:block; width:100%; text-align:center;"><i class="fas fa-edit"></i> Reschedule</button>
-                            <button class="btn btn-outline btn-sm overdue" onclick="cancelAppointment('<%= appt.id %>')" style="padding: 3px 8px; font-size:0.75rem; display:block; width:100%; text-align:center; background-color: #FFEBEE; color: #C62828; border-color: #FFCDD2;"><i class="fas fa-times"></i> Cancel</button>
-                          <% } else { %>
-                            <span class="text-muted">—</span>
-                          <% } %>
-                        </td>
-                      </tr>
-                    <% }); %>
-                  <% } %>
-                </tbody>
-              </table>
-            </div>
-
-          </div>
-        </div>
 
         <!-- Government Schemes eligibility -->
         <div class="card">
@@ -376,6 +275,16 @@
                           <span class="status-badge <%= (c.priority === 'Critical' || c.priority === 'High') ? 'overdue' : c.priority === 'Medium' ? 'unpaid' : 'paid' %>" style="font-size: 0.75rem; <%= c.priority === 'Critical' ? 'background: #4A148C; color: white;' : '' %>">
                             <%= c.priority %>
                           </span>
+                          <% if (c.priority !== c.predicted_priority) { %>
+                            <div style="font-size: 0.7rem; color: #78909C; margin-top: 4px;">
+                              <i class="fas fa-brain"></i> ML: <strong><%= c.predicted_priority %></strong>
+                            </div>
+                          <% } %>
+                          <% if (c.confidence_score) { %>
+                            <div style="font-size: 0.7rem; color: #78909C; margin-top: 2px;">
+                              Conf: <%= Math.round(c.confidence_score * 100) %>%
+                            </div>
+                          <% } %>
                         </td>
                         <td>
                           <span class="status-badge <%= c.status === 'Resolved' ? 'paid' : c.status === 'In Progress' ? 'unpaid' : 'inactive' %>" style="font-size: 0.75rem;">
@@ -441,37 +350,7 @@
 
   </main>
 
-  <!-- Reschedule Modal -->
-  <div id="rescheduleModal" class="modal hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
-    <div class="card" style="width: 100%; max-width: 450px; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-      <h3 style="color: var(--primary); font-family: 'Poppins', sans-serif; margin-top: 0; border-bottom: 1px solid #EEE; padding-bottom: 10px;"><i class="fas fa-calendar-alt"></i> Reschedule Appointment</h3>
-      <form id="rescheduleForm">
-        <input type="hidden" id="rescheduleApptId">
-        
-        <div class="form-group mb-3">
-          <label class="form-label" for="rescheduleDate" style="font-weight:600;">New Appointment Date:</label>
-          <input type="date" id="rescheduleDate" class="form-control" required min="<%= new Date(Date.now() + 86400000).toISOString().split('T')[0] %>">
-        </div>
-        
-        <div class="form-group mb-4">
-          <label class="form-label" for="rescheduleTime" style="font-weight:600;">Preferred Time Slot:</label>
-          <select id="rescheduleTime" class="form-control" required>
-            <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
-            <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
-            <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
-            <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
-            <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
-            <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
-          </select>
-        </div>
 
-        <div style="display: flex; gap: 10px;">
-          <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center; padding: 10px;">Save Changes</button>
-          <button type="button" onclick="closeRescheduleModal()" class="btn btn-outline" style="flex: 1; justify-content: center; padding: 10px;">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <style>
     .grid-layout {
@@ -502,115 +381,7 @@
 
   <!-- Dashboard Logics -->
   <script>
-    // Scroll and pre-select tax record for booking appointment
-    function scrollToAppointment(recordId) {
-      const selectEl = document.getElementById('apptTaxRecord');
-      if (selectEl) {
-        selectEl.value = recordId;
-      }
-      const formEl = document.getElementById('appointmentsCard');
-      if (formEl) {
-        formEl.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-
-    // Appointment Booking submission
-    const apptForm = document.getElementById('appointmentForm');
-    if (apptForm) {
-      apptForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const taxRecordId = document.getElementById('apptTaxRecord').value;
-        const appointmentDate = document.getElementById('apptDate').value;
-        const appointmentTime = document.getElementById('apptTime').value;
-
-        const bookBtn = document.getElementById('bookApptBtn');
-        bookBtn.disabled = true;
-        bookBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Booking Slot...';
-
-        fetch('/api/appointments/book', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ taxRecordId, appointmentDate, appointmentTime })
-        })
-        .then(res => res.json())
-        .then(data => {
-          bookBtn.disabled = false;
-          bookBtn.innerHTML = '<i class="fas fa-calendar-check"></i> Book Appointment Slot';
-          if (data.success) {
-            alert(data.message);
-            window.location.reload();
-          } else {
-            alert("Booking failed: " + (data.error || data.message));
-          }
-        })
-        .catch(err => {
-          bookBtn.disabled = false;
-          bookBtn.innerHTML = '<i class="fas fa-calendar-check"></i> Book Appointment Slot';
-          alert("Network error: " + err.message);
-        });
-      });
-    }
-
-    // Rescheduling helpers
-    function openRescheduleModal(apptId, date, time) {
-      document.getElementById('rescheduleApptId').value = apptId;
-      document.getElementById('rescheduleDate').value = date;
-      document.getElementById('rescheduleTime').value = time;
-      document.getElementById('rescheduleModal').classList.remove('hidden');
-    }
-
-    function closeRescheduleModal() {
-      document.getElementById('rescheduleModal').classList.add('hidden');
-    }
-
-    // Reschedule form submission
-    const rescheduleForm = document.getElementById('rescheduleForm');
-    if (rescheduleForm) {
-      rescheduleForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const appointmentId = document.getElementById('rescheduleApptId').value;
-        const newDate = document.getElementById('rescheduleDate').value;
-        const newTime = document.getElementById('rescheduleTime').value;
-
-        fetch('/api/appointments/reschedule', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ appointmentId, newDate, newTime })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert(data.message);
-            window.location.reload();
-          } else {
-            alert("Reschedule failed: " + (data.error || data.message));
-          }
-        })
-        .catch(err => alert("Network error: " + err.message));
-      });
-    }
-
-    // Cancel appointment
-    function cancelAppointment(appointmentId) {
-      if (confirm("Are you sure you want to cancel this tax payment appointment?")) {
-        fetch('/api/appointments/cancel', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ appointmentId })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert(data.message);
-            window.location.reload();
-          } else {
-            alert("Cancellation failed: " + (data.error || data.message));
-          }
-        })
-        .catch(err => alert("Network error: " + err.message));
-      }
-    }
-
+    // Appointments script logic removed
     // Dismiss smart notifications
     function dismissNotif(id, btn) {
       const item = btn.closest(".notif-item");

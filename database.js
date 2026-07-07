@@ -195,22 +195,8 @@ async function initDatabase() {
       contact_details TEXT
     )
   `);
-
-  // Appointments table (NEW)
-  db.run(`
-    CREATE TABLE IF NOT EXISTS appointments (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      property_id TEXT NOT NULL,
-      tax_record_id INTEGER NOT NULL,
-      appointment_date DATE NOT NULL,
-      appointment_time TEXT NOT NULL,
-      status TEXT DEFAULT 'Pending',
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (property_id) REFERENCES properties(property_id),
-      FOREIGN KEY (tax_record_id) REFERENCES tax_records(id)
-    )
-  `);
-
+  // Appointments table (DELETED)
+  db.run(`DROP TABLE IF EXISTS appointments`);
   // Run migrations in case database already exists
   const taxCols = [
     { name: 'predicted_status', type: "TEXT DEFAULT 'Low Risk'" },
@@ -550,6 +536,11 @@ function prepare(sql) {
       try {
         const boundParams = (params.length === 1 && Array.isArray(params[0])) ? params[0] : params;
         console.log('SQL GET:', sql, boundParams);
+        
+        if (sql.toLowerCase().includes('last_insert_rowid')) {
+          return { id: global.lastInsertRowId || 0 };
+        }
+
         const stmt = db.prepare(sql);
         const result = stmt.getAsObject(boundParams);
         stmt.free();
@@ -564,11 +555,20 @@ function prepare(sql) {
       try {
         const boundParams = (params.length === 1 && Array.isArray(params[0])) ? params[0] : params;
         console.log('SQL RUN:', sql, boundParams);
-        const stmt = db.prepare(sql);
-        stmt.run(boundParams);
-        stmt.free();
+        db.run(sql, boundParams);
+        
+        // Cache last insert row ID before database serialization resets it
+        try {
+          const res = db.exec("SELECT last_insert_rowid() AS id");
+          if (res && res.length > 0 && res[0].values && res[0].values.length > 0) {
+            global.lastInsertRowId = res[0].values[0][0];
+          }
+        } catch (e) {
+          console.error("Failed to fetch last_insert_rowid:", e.message);
+        }
+
         saveDatabase();
-        return { changes: 1 };
+        return { changes: 1, lastInsertRowid: global.lastInsertRowId || 0 };
       } catch (e) {
         console.error('SQL Error:', e.message, sql, params);
         throw e;
@@ -581,5 +581,6 @@ function prepare(sql) {
 module.exports = {
   init: initDatabase,
   prepare: prepare,
-  getDb: () => db
+  getDb: () => db,
+  saveDatabase: saveDatabase
 };

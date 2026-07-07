@@ -1,39 +1,39 @@
 {
-  "version": 3,
-  "last_trained": "2026-07-06 13:09:29",
+  "version": 7,
+  "last_trained": "2026-07-07 15:48:02",
   "models": {
     "complaint_category": {
-      "dataset_size": 166,
-      "accuracy": 1.0,
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1_score": 1.0,
+      "dataset_size": 200,
+      "accuracy": 0.95,
+      "precision": 0.9561,
+      "recall": 0.95,
+      "f1_score": 0.9466,
       "confusion_matrix": [
         [
-          4,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
-        [
-          0,
-          5,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
-        [
-          0,
-          0,
           2,
           0,
           0,
           0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          5,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          9,
+          0,
+          0,
+          0,
           0
         ],
         [
@@ -50,8 +50,17 @@
           0,
           0,
           0,
-          5,
+          9,
           0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          2,
           0
         ],
         [
@@ -60,17 +69,8 @@
           0,
           0,
           0,
-          10,
-          0
-        ],
-        [
           0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          3
+          6
         ]
       ],
       "classes": [
@@ -84,26 +84,26 @@
       ]
     },
     "complaint_priority": {
-      "dataset_size": 166,
-      "accuracy": 1.0,
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1_score": 1.0,
+      "dataset_size": 200,
+      "accuracy": 0.95,
+      "precision": 0.9611,
+      "recall": 0.95,
+      "f1_score": 0.9513,
       "confusion_matrix": [
         [
-          15,
+          7,
           0,
           0
         ],
         [
           0,
-          9,
+          18,
           0
         ],
         [
+          2,
           0,
-          0,
-          10
+          13
         ]
       ],
       "classes": [
@@ -113,19 +113,19 @@
       ]
     },
     "tax_defaulter": {
-      "dataset_size": 191,
-      "accuracy": 1.0,
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1_score": 1.0,
+      "dataset_size": 200,
+      "accuracy": 0.95,
+      "precision": 0.95,
+      "recall": 0.95,
+      "f1_score": 0.95,
       "confusion_matrix": [
         [
-          19,
-          0
+          22,
+          1
         ],
         [
-          0,
-          20
+          1,
+          16
         ]
       ],
       "classes": [
@@ -134,51 +134,52 @@
       ]
     },
     "scheme_recommender": {
-      "dataset_size": 136,
-      "accuracy": 0.9286,
-      "precision": 0.9048,
-      "recall": 0.9286,
-      "f1_score": 0.9143,
+      "dataset_size": 200,
+      "accuracy": 0.95,
+      "precision": 0.9512,
+      "recall": 0.95,
+      "f1_score": 0.9461,
       "confusion_matrix": [
         [
+          5,
           0,
           0,
           1,
+          0
+        ],
+        [
+          0,
+          9,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          3,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          20,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
           0,
           1
-        ],
-        [
-          0,
-          7,
-          0,
-          0,
-          0
-        ],
-        [
-          0,
-          0,
-          2,
-          0,
-          0
-        ],
-        [
-          0,
-          0,
-          0,
-          17,
-          0
-        ],
-        [
-          0,
-          0,
-          0,
-          0,
-          0
         ]
       ],
       "classes": [
         "Divyangjan Pension",
         "MGNREGA",
+        "No Scheme",
         "PM Awas Yojana",
         "PM Kisan",
         "Post-Matric Scholarship"

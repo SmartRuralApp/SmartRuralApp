@@ -23,6 +23,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const { exec } = require('child_process');
 const db = require('./database');
+const { saveDatabase } = db;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -466,15 +467,7 @@ app.get('/user-dashboard', async (req, res) => {
   const complaints = db.prepare('SELECT * FROM complaints WHERE property_id = ? ORDER BY created_at DESC').all(user.property_id) || [];
   const notifications = db.prepare('SELECT * FROM notifications WHERE (user_id = ? OR role = "Citizen") ORDER BY created_at DESC LIMIT 10').all(user.property_id) || [];
   
-  // Fetch appointments, schemes, and services
-  const appointments = db.prepare(`
-    SELECT a.*, tr.year, tr.tax_amount 
-    FROM appointments a 
-    JOIN tax_records tr ON a.tax_record_id = tr.id 
-    WHERE a.property_id = ? 
-    ORDER BY a.appointment_date DESC
-  `).all(user.property_id) || [];
-  
+  // Fetch schemes and services
   const services = db.prepare('SELECT * FROM services WHERE status = "Active"').all() || [];
   const schemes = db.prepare('SELECT * FROM government_schemes').all() || [];
 
@@ -521,163 +514,11 @@ app.get('/user-dashboard', async (req, res) => {
     complaints,
     notifications,
     recommendedSchemes,
-    appointments,
     services,
     schemes
   });
 });
-
-// ==================== APPOINTMENT ENDPOINTS ====================
-
-app.post('/api/appointments/book', async (req, res) => {
-  if (!req.session.user) {
-    return res.json({ success: false, error: 'Unauthorized login required.' });
-  }
-  const { taxRecordId, appointmentDate, appointmentTime } = req.body;
-  const propertyId = req.session.user.property_id;
-
-  try {
-    // 1. Check if the corresponding tax record is already 'Paid'
-    const taxRecord = db.prepare('SELECT * FROM tax_records WHERE id = ?').get(taxRecordId);
-    if (!taxRecord) {
-      return res.json({ success: false, error: 'Tax record not found.' });
-    }
-    if (taxRecord.status === 'Paid') {
-      return res.json({ success: false, error: 'This tax record is already Paid. Booking is disabled.' });
-    }
-
-    // 2. Check if there is already an active appointment (status = 'Pending' or 'Approved') for the same tax record
-    const activeAppt = db.prepare("SELECT * FROM appointments WHERE tax_record_id = ? AND status IN ('Pending', 'Approved')").get(taxRecordId);
-    if (activeAppt) {
-      return res.json({ success: false, error: 'An active appointment already exists for this tax record.' });
-    }
-
-    // 3. Check if the selected date and time slot is already booked (double-booking prevention)
-    const slotBooked = db.prepare("SELECT * FROM appointments WHERE appointment_date = ? AND appointment_time = ? AND status IN ('Pending', 'Approved')").get(appointmentDate, appointmentTime);
-    if (slotBooked) {
-      return res.json({ success: false, error: 'The selected date and time slot is already booked. Please choose another.' });
-    }
-
-    // 4. Save the appointment in the SQLite database
-    db.prepare(`
-      INSERT INTO appointments (property_id, tax_record_id, appointment_date, appointment_time, status)
-      VALUES (?, ?, ?, ?, 'Pending')
-    `).run(propertyId, taxRecordId, appointmentDate, appointmentTime);
-    saveDatabase();
-
-    // 5. Notify the citizen and admin
-    createNotification(
-      propertyId, 'Citizen',
-      'Appointment Booked',
-      `Your tax payment appointment for ${appointmentDate} at ${appointmentTime} is requested and pending approval.`,
-      'Tax'
-    );
-
-    createNotification(
-      'admin', 'Admin',
-      'New Appointment Request',
-      `Citizen has scheduled an appointment for Property ID ${propertyId} on ${appointmentDate} at ${appointmentTime}.`,
-      'System'
-    );
-
-    res.json({ success: true, message: 'Appointment booked successfully!' });
-  } catch (error) {
-    res.json({ success: false, error: error.message });
-  }
-});
-
-app.post('/api/appointments/reschedule', async (req, res) => {
-  if (!req.session.user) {
-    return res.json({ success: false, error: 'Unauthorized login required.' });
-  }
-  const { appointmentId, newDate, newTime } = req.body;
-  const propertyId = req.session.user.property_id;
-
-  try {
-    const appt = db.prepare('SELECT * FROM appointments WHERE id = ? AND property_id = ?').get(appointmentId, propertyId);
-    if (!appt) {
-      return res.json({ success: false, error: 'Appointment not found or unauthorized.' });
-    }
-
-    // Only allow rescheduling before approval (or allow anytime if pending/approved)
-    if (appt.status !== 'Pending' && appt.status !== 'Approved') {
-      return res.json({ success: false, error: 'Only pending or approved appointments can be rescheduled.' });
-    }
-
-    // Check if the selected date and time slot is already booked
-    const slotBooked = db.prepare("SELECT * FROM appointments WHERE appointment_date = ? AND appointment_time = ? AND id != ? AND status IN ('Pending', 'Approved')").get(newDate, newTime, appointmentId);
-    if (slotBooked) {
-      return res.json({ success: false, error: 'The selected date and time slot is already booked. Please choose another.' });
-    }
-
-    db.prepare(`
-      UPDATE appointments 
-      SET appointment_date = ?, appointment_time = ?, status = 'Pending'
-      WHERE id = ?
-    `).run(newDate, newTime, appointmentId);
-    saveDatabase();
-
-    createNotification(
-      propertyId, 'Citizen',
-      'Appointment Rescheduled',
-      `Your appointment was rescheduled to ${newDate} at ${newTime} (Pending approval).`,
-      'Tax'
-    );
-
-    createNotification(
-      'admin', 'Admin',
-      'Appointment Rescheduled',
-      `Property ID ${propertyId} rescheduled appointment to ${newDate} at ${newTime}.`,
-      'System'
-    );
-
-    res.json({ success: true, message: 'Appointment rescheduled successfully!' });
-  } catch (error) {
-    res.json({ success: false, error: error.message });
-  }
-});
-
-app.post('/api/appointments/cancel', async (req, res) => {
-  if (!req.session.user) {
-    return res.json({ success: false, error: 'Unauthorized login required.' });
-  }
-  const { appointmentId } = req.body;
-  const propertyId = req.session.user.property_id;
-
-  try {
-    const appt = db.prepare('SELECT * FROM appointments WHERE id = ? AND property_id = ?').get(appointmentId, propertyId);
-    if (!appt) {
-      return res.json({ success: false, error: 'Appointment not found.' });
-    }
-
-    if (appt.status !== 'Pending' && appt.status !== 'Approved') {
-      return res.json({ success: false, error: 'Only pending or approved appointments can be cancelled.' });
-    }
-
-    db.prepare(`
-      UPDATE appointments SET status = 'Cancelled' WHERE id = ?
-    `).run(appointmentId);
-    saveDatabase();
-
-    createNotification(
-      propertyId, 'Citizen',
-      'Appointment Cancelled',
-      `Your offline tax payment appointment scheduled for ${appt.appointment_date} has been cancelled.`,
-      'Tax'
-    );
-
-    createNotification(
-      'admin', 'Admin',
-      'Appointment Cancelled',
-      `Appointment for Property ID ${propertyId} on ${appt.appointment_date} was cancelled by the citizen.`,
-      'System'
-    );
-
-    res.json({ success: true, message: 'Appointment cancelled successfully!' });
-  } catch (error) {
-    res.json({ success: false, error: error.message });
-  }
-});
+// Appointments endpoints removed
 
 app.post('/api/notifications/read', (req, res) => {
   const { id } = req.body;
@@ -842,10 +683,7 @@ app.get('/admin-dashboard', requireAdmin, (req, res) => {
       SELECT COUNT(*) as count FROM users
     `).get() || { count: 0 };
 
-    const todayDate = new Date().toISOString().split('T')[0];
-    const todayAppointments = db.prepare(`
-      SELECT COUNT(*) as count FROM appointments WHERE appointment_date = ?
-    `).get(todayDate) || { count: 0 };
+
 
     const totalComplaints = db.prepare(`
       SELECT COUNT(*) as count FROM complaints
@@ -929,7 +767,6 @@ app.get('/admin-dashboard', requireAdmin, (req, res) => {
         pending: pendingCount.count || 0,
         properties: totalProperties.count || 0,
         citizens: totalCitizens.count || 0,
-        todayAppointments: todayAppointments.count || 0,
         totalComplaints: totalComplaints.count || 0,
         highPriorityComplaints: highPriorityComplaints.count || 0,
         activeSchemes: activeSchemes.count || 0,
@@ -1198,7 +1035,16 @@ app.post('/api/admin/delete-complaint', requireAdmin, (req, res) => {
 app.post('/api/admin/update-complaint-status', requireAdmin, (req, res) => {
   const { id, status, remarks } = req.body;
   try {
-    db.prepare('UPDATE complaints SET status = ?, admin_remarks = ? WHERE id = ?').run(status, remarks || null, id);
+    let activePriority = 'Medium';
+    if (status === 'Pending') {
+      activePriority = 'High';
+    } else if (status === 'In Progress') {
+      activePriority = 'Medium';
+    } else if (status === 'Resolved') {
+      activePriority = 'Low';
+    }
+
+    db.prepare('UPDATE complaints SET status = ?, admin_remarks = ?, priority = ? WHERE id = ?').run(status, remarks || null, activePriority, id);
     
     const original = db.prepare('SELECT * FROM complaints WHERE id = ?').get(id);
     if (original) {
@@ -1212,7 +1058,12 @@ app.post('/api/admin/update-complaint-status', requireAdmin, (req, res) => {
       if (status === 'Resolved') {
         const duplicates = db.prepare('SELECT * FROM complaints WHERE duplicate_of_id = ?').all(id) || [];
         for (const dup of duplicates) {
-          db.prepare('UPDATE complaints SET status = ?, admin_remarks = ? WHERE id = ?').run('Resolved', `Resolved via link to Original Complaint #${id}: ${remarks || 'None'}.`, dup.id);
+          db.prepare('UPDATE complaints SET status = ?, admin_remarks = ?, priority = ? WHERE id = ?').run(
+            'Resolved',
+            `Resolved via link to Original Complaint #${id}: ${remarks || 'None'}.`,
+            'Low',
+            dup.id
+          );
           
           createNotification(
             dup.property_id, 'Citizen',
@@ -1312,119 +1163,7 @@ app.post('/api/admin/retrain', requireAdmin, async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
-
-app.get('/admin-appointments', requireAdmin, (req, res) => {
-  try {
-    const appointments = db.prepare(`
-      SELECT a.*, p.owner_name as name, tr.year, tr.tax_amount 
-      FROM appointments a
-      JOIN properties p ON a.property_id = p.property_id
-      JOIN tax_records tr ON a.tax_record_id = tr.id
-      ORDER BY a.appointment_date DESC
-    `).all() || [];
-
-    const pending = db.prepare("SELECT COUNT(*) as count FROM appointments WHERE status = 'Pending'").get().count || 0;
-    const approved = db.prepare("SELECT COUNT(*) as count FROM appointments WHERE status = 'Approved'").get().count || 0;
-    const completed = db.prepare("SELECT COUNT(*) as count FROM appointments WHERE status = 'Completed'").get().count || 0;
-    const cancelled = db.prepare("SELECT COUNT(*) as count FROM appointments WHERE status IN ('Cancelled', 'Rejected')").get().count || 0;
-
-    res.render('admin-appointments', {
-      session: req.session,
-      appointments,
-      stats: { pending, approved, completed, cancelled }
-    });
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
-app.post('/api/admin/update-appointment', requireAdmin, async (req, res) => {
-  const { appointmentId, status, newDate, newTime } = req.body;
-
-  try {
-    const appt = db.prepare('SELECT * FROM appointments WHERE id = ?').get(appointmentId);
-    if (!appt) {
-      return res.json({ success: false, error: 'Appointment not found.' });
-    }
-
-    if (newDate && newTime) {
-      // Admin rescheduling the slot
-      const slotBooked = db.prepare("SELECT * FROM appointments WHERE appointment_date = ? AND appointment_time = ? AND id != ? AND status IN ('Pending', 'Approved')").get(newDate, newTime, appointmentId);
-      if (slotBooked) {
-        return res.json({ success: false, error: 'The selected slot is already booked.' });
-      }
-
-      db.prepare(`
-        UPDATE appointments 
-        SET appointment_date = ?, appointment_time = ?, status = ?
-        WHERE id = ?
-      `).run(newDate, newTime, status, appointmentId);
-      saveDatabase();
-
-      createNotification(
-        appt.property_id, 'Citizen',
-        'Appointment Rescheduled by Admin',
-        `Your appointment has been rescheduled to ${newDate} at ${newTime} (Status: ${status}).`,
-        'Tax'
-      );
-
-      return res.json({ success: true, message: 'Appointment rescheduled and updated successfully!' });
-    }
-
-    // Standard status update
-    if (status === 'Completed') {
-      const taxRecord = db.prepare('SELECT * FROM tax_records WHERE id = ?').get(appt.tax_record_id);
-      if (!taxRecord) {
-        return res.json({ success: false, error: 'Corresponding tax record not found.' });
-      }
-
-      // Update tax to Paid and reset risk
-      db.prepare("UPDATE tax_records SET status = 'Paid', predicted_status = 'No Risk', payment_probability = 0.0 WHERE id = ?").run(appt.tax_record_id);
-
-      // Record payment
-      const txnId = generateTransactionId();
-      db.prepare(`
-        INSERT INTO payments (property_id, tax_record_id, amount, transaction_id)
-        VALUES (?, ?, ?, ?)
-      `).run(appt.property_id, appt.tax_record_id, taxRecord.tax_amount, txnId);
-
-      // Update appointment status
-      db.prepare("UPDATE appointments SET status = 'Completed' WHERE id = ?").run(appointmentId);
-      saveDatabase();
-
-      // Notify citizen
-      createNotification(
-        appt.property_id, 'Citizen',
-        'Payment Completed',
-        `Your offline tax payment of ₹${taxRecord.tax_amount.toLocaleString('en-IN')} for Property ID ${appt.property_id} has been processed successfully. Your appointment is completed. Thank you.`,
-        'Tax'
-      );
-
-      // Notify admin
-      createNotification(
-        'admin', 'Admin',
-        'Appointment Completed',
-        `Appointment for Property ID ${appt.property_id} has been completed and payment processed.`,
-        'System'
-      );
-    } else {
-      // Just approve / reject / cancel
-      db.prepare("UPDATE appointments SET status = ? WHERE id = ?").run(status, appointmentId);
-      saveDatabase();
-
-      createNotification(
-        appt.property_id, 'Citizen',
-        `Appointment ${status}`,
-        `Your offline tax payment appointment is now ${status}.`,
-        'Tax'
-      );
-    }
-
-    res.json({ success: true, message: `Appointment marked as '${status}' successfully!` });
-  } catch (error) {
-    res.json({ success: false, error: error.message });
-  }
-});
+// Admin appointments endpoints removed
 
 // Admin services management
 app.get('/admin-services', requireAdmin, (req, res) => {
@@ -1656,10 +1395,8 @@ async function sendSMSGateway(phone, citizenName, propertyId, message) {
       return { status: 'Failed', error: err.message };
     }
   }
-
-
-  console.log(`[SMS SIMULATION] To: ${phone} | Citizen: ${citizenName} | Property: ${propertyId} | Msg:\n${message}`);
-  return { status: 'Simulation', error: null };
+  console.error(`[SMS FAILED] Twilio or Fast2SMS credentials not configured in environment.`);
+  return { status: 'Failed', error: 'Missing Twilio / Fast2SMS credentials in environment configuration.' };
 }
 
 app.post('/api/admin/send-reminder', requireAdmin, async (req, res) => {
@@ -1669,7 +1406,7 @@ app.post('/api/admin/send-reminder', requireAdmin, async (req, res) => {
     const phone = user ? user.phone : '9876543210';
     const name = user ? user.name : 'Citizen';
     
-    const taxRecord = db.prepare("SELECT * FROM tax_records WHERE property_id = ? AND status != 'Paid' ORDER BY year DESC LIMIT 1").get(propertyId);
+    const taxRecord = db.prepare("SELECT * FROM tax_records WHERE property_id = ? AND status IN ('Unpaid', 'Overdue') ORDER BY year DESC LIMIT 1").get(propertyId);
     if (!taxRecord) {
       return res.json({ success: false, message: 'No pending tax records found for this property.' });
     }
@@ -1680,7 +1417,7 @@ Our records show that your Gram Panchayat Property Tax for Property ID ${propert
 
 Please log in to the Smart Gram Panchayat application to view the outstanding amount, due date, and payment details.
 
-To make an offline payment, please schedule an appointment through the application or contact the Gram Panchayat Office.
+To make an offline payment, please contact or visit the Gram Panchayat Office.
 
 Thank you.`;
     
@@ -1706,16 +1443,13 @@ Thank you.`;
     );
 
     let responseMsg = `SMS reminder sent successfully to ${phone} (Real Gateway).`;
-    if (smsResult.status === 'Simulation') {
-      responseMsg = `SMS reminder simulated successfully to ${phone} (Simulation Mode - No API credentials configured).`;
-    } else if (smsResult.status === 'Failed') {
+    if (smsResult.status === 'Failed') {
       responseMsg = `Failed to send SMS to ${phone}. Error: ${smsResult.error || 'Unknown Gateway Error'}`;
     }
-    res.json({ success: smsResult.status !== 'Failed', message: responseMsg });
+    res.json({ success: smsResult.status === 'Sent', message: responseMsg });
   } catch (error) {
     res.json({ success: false, message: error.message });
-  }
-});
+  }});
 
 app.post('/api/admin/send-bulk-reminder', requireAdmin, async (req, res) => {
   const { reminderType } = req.body;
@@ -1724,7 +1458,7 @@ app.post('/api/admin/send-bulk-reminder', requireAdmin, async (req, res) => {
       SELECT tr.*, p.owner_name
       FROM tax_records tr
       JOIN properties p ON tr.property_id = p.property_id
-      WHERE tr.status != 'Paid'
+      WHERE tr.status IN ('Unpaid', 'Overdue')
     `).all() || [];
 
     let sentCount = 0;
@@ -1743,17 +1477,15 @@ app.post('/api/admin/send-bulk-reminder', requireAdmin, async (req, res) => {
       const name = user ? user.name : record.owner_name || 'Citizen';
 
       const msg = `Dear ${name},
-
 Our records show that your Gram Panchayat Property Tax for Property ID ${record.property_id} is pending.
 
-Please log in to the Smart Gram Panchayat application to view the outstanding amount, due date, and payment details.
+      Please log in to the Smart Gram Panchayat application to view the outstanding amount, due date, and payment details.
 
-To make an offline payment, please schedule an appointment through the application or contact the Gram Panchayat Office.
+      To make an offline payment, please contact or visit the Gram Panchayat Office.
 
-Thank you.`;
+      Thank you.`;
 
       const smsResult = await sendSMSGateway(phone, name, record.property_id, msg);
-
       db.prepare(`
         INSERT INTO sms_logs (property_id, phone, message, status, citizen_name, tax_status, error_message)
         VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -1797,8 +1529,8 @@ app.post('/api/chat', async (req, res) => {
       { title: 'Tax Payment Reminder', message: 'Please pay your property taxes before the due date to avoid fines.' }
     ];
     
-    let taxInfo = null;
-    let appointments = [];
+
+        let taxInfo = null;
     let complaints = [];
     let property = null;
     let taxRecords = [];
@@ -1811,8 +1543,6 @@ app.post('/api/chat', async (req, res) => {
         WHERE tr.property_id = ? AND tr.status = 'Unpaid'
         ORDER BY tr.year DESC LIMIT 1
       `).get(propertyId);
-
-      appointments = db.prepare('SELECT * FROM appointments WHERE property_id = ?').all() || [];
       complaints = db.prepare('SELECT * FROM complaints WHERE property_id = ?').all() || [];
       property = db.prepare('SELECT * FROM properties WHERE property_id = ?').get(propertyId);
       taxRecords = db.prepare('SELECT * FROM tax_records WHERE property_id = ?').all() || [];
@@ -1823,7 +1553,6 @@ app.post('/api/chat', async (req, res) => {
       schemes,
       announcements,
       tax_info: taxInfo,
-      appointments,
       complaints,
       property,
       tax_records: taxRecords,

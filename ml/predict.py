@@ -98,7 +98,14 @@ def predict_priority(description, category, ward, similar_count=0, is_duplicate=
         else: # Low
             reasons.append("Request is classified as general public inquiry, request for new installations, or routine sweeping.")
             
-    # Location frequency and duplicate escalation logic
+    # Business Rules (Emergency override & Location frequency / Duplicate escalation)
+    desc_lower = description.lower()
+    has_emergency_keyword = any(k in desc_lower for k in ["burst", "danger", "wire", "manhole", "overflow", "sparking", "fallen", "accident"])
+    if has_emergency_keyword and pred != "High" and pred != "Critical":
+        pred = "High"
+        confidence = 0.98
+        reasons = ["Automatically set to High Priority based on emergency keyword detection (e.g. wire, burst, overflow, manhole, etc.)."]
+        
     total_similar = similar_count + 1
     if total_similar >= 4:
         pred = "Critical"
@@ -112,11 +119,7 @@ def predict_priority(description, category, ward, similar_count=0, is_duplicate=
         pred = "High"
         confidence = 0.95
         reasons = [f"Upgraded to High priority as this is a confirmed duplicate of an active issue in {ward}."]
-    elif total_similar == 1:
-        if pred == "Low":
-            pred = "Medium"
-            reasons.append("Adjusted to baseline Medium priority for single reports.")
-            
+
     return {
         "priority": pred,
         "confidence": round(confidence, 2),
