@@ -711,12 +711,11 @@ app.post('/api/complaints', async (req, res) => {
     const predictedCategory = catResult.category || category;
     const catConfidence = catResult.confidence || 1.0;
 
-    const insertResult = db.prepare(`
+    db.prepare(`
       INSERT INTO complaints (property_id, category, description, ward, priority, predicted_priority, predicted_category, confidence_score, is_duplicate, duplicate_of_id, xai_explanation)
       VALUES (?, ?, ?, ?, 'Medium', 'Medium', ?, ?, 0, NULL, 'Grievance lodged in Panchayat records.')
     `).run(propertyId, category, description, ward, predictedCategory, catConfidence);
-    const complaintId = insertResult.lastInsertRowid;
-
+    const complaintId = db.prepare('SELECT last_insert_rowid() AS id').get().id;
     let priority = 'Medium';
     let isDuplicate = 0;
     let duplicateOfId = null;
@@ -1491,9 +1490,8 @@ app.post('/api/admin/add-tax', requireAdmin, async (req, res) => {
       INSERT INTO tax_records (property_id, tax_amount, due_date, year, status)
       VALUES (?, ?, ?, ?, 'Unpaid')
     `).run(propertyId.toUpperCase(), parseFloat(taxAmount), dueDate, parseInt(year));
-    
-    await recalculateTaxML(insertResult.lastInsertRowid);
-    
+    const lastId = db.prepare('SELECT last_insert_rowid() AS id').get().id;
+    await recalculateTaxML(lastId);    
     res.json({ success: true, message: 'Tax record saved successfully!' });
   } catch (error) {
     res.json({ success: false, message: error.message });
