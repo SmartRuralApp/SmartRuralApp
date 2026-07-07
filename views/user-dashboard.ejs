@@ -83,13 +83,10 @@
                         <td><strong>₹<%= record.tax_amount.toLocaleString('en-IN') %></strong></td>
                         <td><%= new Date(record.due_date).toLocaleDateString('en-IN') %></td>
                         <td>
-                          <% if (record.status === 'Unpaid') { %>
-                            <span class="status-badge <%= record.predicted_status === 'High Risk' ? 'overdue' : record.predicted_status === 'Medium Risk' ? 'unpaid' : 'paid' %>" style="font-size: 0.75rem;">
-                              <%= record.predicted_status %>
-                            </span>
-                          <% } else { %>
-                            <span class="text-muted">—</span>
-                          <% } %>
+                          <% const displayRisk = record.override_status || record.predicted_status || 'No Risk'; %>
+                          <span class="status-badge <%= displayRisk === 'High Risk' ? 'overdue' : (displayRisk === 'Medium Risk' || displayRisk === 'Low Risk') ? 'unpaid' : 'paid' %>" style="font-size: 0.75rem;">
+                            <%= displayRisk %>
+                          </span>
                         </td>
                         <td>
                           <span class="status-badge <%= record.status.toLowerCase() %>"><%= record.status %></span>

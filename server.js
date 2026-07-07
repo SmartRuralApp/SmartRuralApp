@@ -725,9 +725,8 @@ app.post('/api/complaints', async (req, res) => {
     try {
       const existing = db.prepare(`
         SELECT id, description FROM complaints
-        WHERE category = ? AND ward = ? AND status != 'Resolved' AND id != ?
+        WHERE category = ? AND ward = ? AND status != 'Resolved' AND id != ? AND is_duplicate = 0
       `).all(predictedCategory, ward, complaintId) || [];
-
 
       const dupResult = await runMLInference('--detect-duplicate', {
         description,
@@ -1178,12 +1177,25 @@ app.post('/api/admin/override-complaint', requireAdmin, (req, res) => {
       UPDATE complaints 
       SET category = ?, priority = ?, admin_corrected = 1, xai_explanation = 'Complaint priority/category manually corrected by administrator.'
       WHERE id = ?
-    `).run(category, priority, id);
+    `).run(category, priority, parseInt(id));
+    saveDatabase();
     res.json({ success: true });
   } catch (error) {
     res.json({ success: false, error: error.message });
   }
 });
+
+app.post('/api/admin/delete-complaint', requireAdmin, (req, res) => {
+  const { id } = req.body;
+  try {
+    db.prepare('DELETE FROM complaints WHERE id = ?').run(parseInt(id));
+    saveDatabase();
+    res.json({ success: true, message: 'Complaint deleted successfully!' });
+  } catch (error) {
+    res.json({ success: false, error: error.message });
+  }
+});
+
 app.post('/api/admin/update-complaint-status', requireAdmin, (req, res) => {
   const { id, status, remarks } = req.body;
   try {
@@ -1695,12 +1707,17 @@ Thank you.`;
       'Tax'
     );
 
-    res.json({ success: true, message: `SMS reminder sent successfully to ${phone} (Status: ${smsResult.status})!` });
+    let responseMsg = `SMS reminder sent successfully to ${phone} (Real Gateway).`;
+    if (smsResult.status === 'Simulation') {
+      responseMsg = `SMS reminder simulated successfully to ${phone} (Simulation Mode - No API credentials configured).`;
+    } else if (smsResult.status === 'Failed') {
+      responseMsg = `Failed to send SMS to ${phone}. Error: ${smsResult.error || 'Unknown Gateway Error'}`;
+    }
+    res.json({ success: smsResult.status !== 'Failed', message: responseMsg });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
 });
-
 
 app.post('/api/admin/send-bulk-reminder', requireAdmin, async (req, res) => {
   const { reminderType } = req.body;
@@ -1774,8 +1791,8 @@ app.post('/api/chat', async (req, res) => {
     propertyId = req.session.user.property_id;
   }
   try {
-    const services = db.prepare('SELECT title, description, eligibility, benefits FROM services WHERE status = "Active"').all() || [];
-    const schemes = db.prepare('SELECT title, target_criteria, benefits, eligibility FROM government_schemes').all() || [];
+    const services = db.prepare('SELECT * FROM services WHERE status = "Active"').all() || [];
+    const schemes = db.prepare('SELECT * FROM government_schemes').all() || [];
     
     const announcements = [
       { title: 'Gram Sabha Meeting', message: 'A meeting is scheduled for tomorrow at 10 AM regarding water supply.' },

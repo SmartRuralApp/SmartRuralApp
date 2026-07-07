@@ -165,23 +165,23 @@
                           <span class="status-badge <%= record.status.toLowerCase() %>"><%= record.status %></span>
                         </td>
                         <td>
-                          <% if (record.status === 'Unpaid' || record.status === 'Overdue') { %>
-                            <div style="display: flex; flex-direction: column; gap: 4px;">
-                              <div>
-                                <% const displayRisk = record.override_status || record.predicted_status; %>
-                                <span class="status-badge <%= displayRisk === 'High Risk' ? 'overdue' : displayRisk === 'Medium Risk' ? 'unpaid' : 'paid' %>">
-                                  <%= displayRisk %> (<%= Math.round(record.payment_probability) %>%)
-                                </span>
-                                <% if (record.override_status) { %>
-                                  <small class="text-success" title="Admin Overridden: ML model predicted <%= record.predicted_status %>"><i class="fas fa-check-circle"></i></small>
-                                  <div style="font-size:0.75rem; color:#666; margin-top:2px;">(ML: <%= record.predicted_status %>)</div>
-                                <% } %>
-                              </div>
-                              <% if (record.xai_explanation) { %>
-                                <small class="text-muted" style="font-size: 0.73rem; font-style: italic; line-height: 1.1; margin-top: 2px;">
-                                  <i class="fas fa-info-circle"></i> <%= record.xai_explanation %>
-                                </small>
+                          <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <div>
+                              <% const displayRisk = record.override_status || record.predicted_status || 'No Risk'; %>
+                              <span class="status-badge <%= displayRisk === 'High Risk' ? 'overdue' : (displayRisk === 'Medium Risk' || displayRisk === 'Low Risk') ? 'unpaid' : 'paid' %>">
+                                <%= displayRisk %> (<%= Math.round(record.payment_probability || 0) %>%)
+                              </span>
+                              <% if (record.override_status) { %>
+                                <small class="text-success" title="Admin Overridden: ML model predicted <%= record.predicted_status %>"><i class="fas fa-check-circle"></i></small>
+                                <div style="font-size:0.75rem; color:#666; margin-top:2px;">(ML: <%= record.predicted_status %>)</div>
                               <% } %>
+                            </div>
+                            <% if (record.xai_explanation) { %>
+                              <small class="text-muted" style="font-size: 0.73rem; font-style: italic; line-height: 1.1; margin-top: 2px;">
+                                <i class="fas fa-info-circle"></i> <%= record.xai_explanation %>
+                              </small>
+                            <% } %>
+                            <% if (record.status !== 'Paid') { %>
                               <!-- Override Select -->
                               <select class="form-control form-control-sm" style="width: auto; font-size: 0.75rem; margin-top: 4px; padding: 2px 5px;" onchange="overrideTaxRisk('<%= record.id %>', this.value)">
                                 <option value="">Override Risk...</option>
@@ -189,10 +189,8 @@
                                 <option value="Medium Risk" <%= record.override_status === 'Medium Risk' ? 'selected' : '' %>>Medium Risk</option>
                                 <option value="High Risk" <%= record.override_status === 'High Risk' ? 'selected' : '' %>>High Risk</option>
                               </select>
-                            </div>
-                          <% } else { %>
-                            <span class="text-muted">—</span>
-                          <% } %>
+                            <% } %>
+                          </div>
                         </td>
                         <td><small><%= new Date(record.created_at).toLocaleDateString('en-IN') %></small></td>
                         <td>

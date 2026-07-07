@@ -193,46 +193,45 @@ def predict_defaulter(property_type, tax_amount, year, history_paid_ratio, late_
     
     probs = model.predict_proba(features)[0]
     classes = model.classes_
-    
     defaulter_idx = np.where(classes == 1)[0][0]
     prob_defaulter = float(probs[defaulter_idx])
     
     # Realistic logic adjustments
-    if status.lower() == 'overdue':
-        prob_defaulter = max(prob_defaulter, 0.75) # Minimum 75% for Overdue (High Risk)
-    elif status.lower() == 'unpaid':
-        prob_defaulter = max(prob_defaulter, 0.45) # Minimum 45% for Unpaid (Medium Risk)
-
-    # Categorize Risk
-    if prob_defaulter < 0.35:
-        risk = "Low Risk"
-    elif prob_defaulter <= 0.70:
-        risk = "Medium Risk"
-    else:
+    if status.lower() == 'paid':
+        risk = "No Risk"
+        prob_percent = 0.0
+    elif status.lower() == 'overdue':
         risk = "High Risk"
-        
+        prob_percent = max(75.0, prob_defaulter * 100)
+    else:
+        risk = "Medium Risk"
+        prob_percent = max(45.0, min(70.0, prob_defaulter * 100))
+
     reasons = []
     if status.lower() == 'overdue':
         reasons.append("Status is Overdue, indicating high likelihood of default.")
     elif status.lower() == 'unpaid':
         reasons.append("Status is Unpaid, representing moderate delinquency risk.")
+    elif status.lower() == 'paid':
+        reasons.append("Tax is fully paid; no default risk.")
 
-    if late_payments > 1:
-        reasons.append(f"History of previous late payments (count: {late_payments}) indicates tendency of delay.")
-    if history_paid_ratio < 0.6:
-        reasons.append(f"Previous tax compliance ratio is low ({history_paid_ratio:.1%}).")
-    if tax_amount > 4000:
-        reasons.append(f"Significant outstanding tax amount (₹{tax_amount}) increases payment resistance.")
+    if status.lower() != 'paid':
+        if late_payments > 1:
+            reasons.append(f"History of previous late payments (count: {late_payments}) indicates tendency of delay.")
+        if history_paid_ratio < 0.6:
+            reasons.append(f"Previous tax compliance ratio is low ({history_paid_ratio:.1%}).")
+        if tax_amount > 4000:
+            reasons.append(f"Significant outstanding tax amount (₹{tax_amount}) increases payment resistance.")
+    
     if not reasons:
         reasons.append("Compliance history and tax metrics match typical profiles.")
         
     return {
         "risk": risk,
-        "probability": round(prob_defaulter * 100, 2),
+        "probability": round(prob_percent, 2),
         "reasons": reasons
     }
 
-# ----------------- Duplicate Complaint Detection -----------------
 def detect_duplicate(description, category, existing_complaints):
     # existing_complaints: list of dicts with {"id": ..., "description": ...}
     if not existing_complaints or len(existing_complaints) == 0:

@@ -201,8 +201,12 @@
                             <button class="btn btn-sm btn-outline" title="Override Prediction" onclick="openOverrideModal('<%= complaint.id %>', '<%= complaint.category %>', '<%= complaint.priority %>')">
                               <i class="fas fa-edit"></i>
                             </button>
-                          </div>
-                        </td>
+
+                            <!-- Delete Button -->
+                            <button class="btn btn-sm btn-danger-outline" style="padding: 4px 8px; border: 1px solid #c62828; color: #c62828; background: transparent; border-radius: 4px; cursor: pointer;" title="Delete Complaint" onclick="deleteComplaint('<%= complaint.id %>')">
+                              <i class="fas fa-trash-alt"></i>
+                            </button>
+                          </div>                        </td>
                       </tr>
                     <% }); %>
                   <% } %>
@@ -287,6 +291,22 @@
           window.location.reload();
         } else {
           alert("Error: " + data.message);
+        }
+      });
+    }
+    function deleteComplaint(id) {
+      if (!confirm("Are you sure you want to delete this complaint permanently?")) return;
+      fetch('/api/admin/delete-complaint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.reload();
+        } else {
+          alert("Error deleting complaint: " + data.error);
         }
       });
     }
