@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Registration - Smart Grama Panchayat</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body style="background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
+
+  <!-- Header / Navigation -->
+  <header class="header" style="background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); width:100%;">
+    <nav class="navbar">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-landmark"></i>
+        </div>
+        <span class="logo-text">Smart Grama Panchayat</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/tax-search"><i class="fas fa-search-dollar"></i> Tax Payment</a></li>
+        <li><a href="/services"><i class="fas fa-handshake"></i> Services</a></li>
+        <li><a href="/user-login" class="active"><i class="fas fa-user"></i> Citizen Portal</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Registration Main Content -->
+  <main style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px;">
+    <div class="card" style="width: 100%; max-width: 650px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 30px; background: white;">
+      <div class="text-center mb-4">
+        <div style="width: 70px; height: 70px; background: #E8F5E9; color: #2E7D32; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 2rem;">
+          <i class="fas fa-user-plus"></i>
+        </div>
+        <h2 style="font-weight: 700; color: var(--primary); font-family: 'Poppins', sans-serif;">Citizen Registration</h2>
+        <p class="text-muted" style="font-size: 0.9rem;">Register to access your digital citizen dashboard and panchayat services.</p>
+      </div>
+
+      <% if (error) { %>
+        <div class="alert overdue" style="padding: 12px; margin-bottom: 20px; border-radius: 8px; background-color: #FFEBEE; color: #C62828; display: flex; align-items: center; gap: 10px; font-size: 0.9rem;">
+          <i class="fas fa-exclamation-circle"></i>
+          <span><%= error %></span>
+        </div>
+      <% } %>
+
+      <% if (success) { %>
+        <div class="alert paid" style="padding: 12px; margin-bottom: 20px; border-radius: 8px; background-color: #E8F5E9; color: #2E7D32; display: flex; align-items: center; gap: 10px; font-size: 0.9rem;">
+          <i class="fas fa-check-circle"></i>
+          <span><%= success %></span>
+        </div>
+      <% } %>
+
+      <form action="/user-register" method="POST" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <!-- Full Name -->
+        <div class="form-group">
+          <label class="form-label" for="name" style="font-weight: 600;"><i class="fas fa-id-card"></i> Full Name</label>
+          <input type="text" id="name" name="name" class="form-control" placeholder="John Doe" required>
+        </div>
+
+        <!-- Age -->
+        <div class="form-group">
+          <label class="form-label" for="age" style="font-weight: 600;"><i class="fas fa-birthday-cake"></i> Age</label>
+          <input type="number" id="age" name="age" class="form-control" placeholder="e.g. 28" required min="18" max="120">
+        </div>
+
+        <!-- Gender -->
+        <div class="form-group">
+          <label class="form-label" for="gender" style="font-weight: 600;"><i class="fas fa-venus-mars"></i> Gender</label>
+          <select id="gender" name="gender" class="form-control" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+
+        <!-- Mobile Number -->
+        <div class="form-group">
+          <label class="form-label" for="phone" style="font-weight: 600;"><i class="fas fa-mobile-alt"></i> Mobile Number</label>
+          <input type="tel" id="phone" name="phone" class="form-control" placeholder="10-digit number" required pattern="[0-9]{10}">
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label" for="email" style="font-weight: 600;"><i class="fas fa-envelope"></i> Email Address</label>
+          <input type="email" id="email" name="email" class="form-control" placeholder="john@example.com" required>
+        </div>
+
+        <!-- Property ID (Dropdown) -->
+        <div class="form-group">
+          <label class="form-label" for="propertyId" style="font-weight: 600;"><i class="fas fa-home"></i> Property ID</label>
+          <select id="propertyId" name="propertyId" class="form-control" required>
+            <option value="" disabled selected>Select Property ID</option>
+            <% properties.forEach(function(prop) { %>
+              <option value="<%= prop.property_id %>"><%= prop.property_id %> - <%= prop.owner_name %></option>
+            <% }); %>
+          </select>
+        </div>
+
+        <!-- Address -->
+        <div class="form-group" style="grid-column: span 2;">
+          <label class="form-label" for="address" style="font-weight: 600;"><i class="fas fa-map-marker-alt"></i> Residential Address</label>
+          <input type="text" id="address" name="address" class="form-control" placeholder="House no, Street name, Block" required>
+        </div>
+
+        <!-- Ward -->
+        <div class="form-group">
+          <label class="form-label" for="ward" style="font-weight: 600;"><i class="fas fa-map-signs"></i> Ward</label>
+          <select id="ward" name="ward" class="form-control" required>
+            <option value="Ward 1">Ward 1</option>
+            <option value="Ward 2">Ward 2</option>
+            <option value="Ward 3">Ward 3</option>
+            <option value="Ward 4">Ward 4</option>
+            <option value="Ward 5">Ward 5</option>
+          </select>
+        </div>
+
+        <!-- Occupation -->
+        <div class="form-group">
+          <label class="form-label" for="occupation" style="font-weight: 600;"><i class="fas fa-briefcase"></i> Occupation</label>
+          <select id="occupation" name="occupation" class="form-control" required>
+            <option value="Agriculture">Agriculture</option>
+            <option value="Laborer">Laborer</option>
+            <option value="Student">Student</option>
+            <option value="Business">Business</option>
+            <option value="Salaried">Salaried</option>
+            <option value="Unemployed">Unemployed</option>
+          </select>
+        </div>
+
+        <!-- Aadhaar -->
+        <div class="form-group">
+          <label class="form-label" for="aadhaar" style="font-weight: 600;"><i class="fas fa-fingerprint"></i> Aadhaar Number (Optional)</label>
+          <input type="text" id="aadhaar" name="aadhaar" class="form-control" placeholder="12-digit number" pattern="[0-9]{12}">
+        </div>
+
+        <!-- Username -->
+        <div class="form-group">
+          <label class="form-label" for="username" style="font-weight: 600;"><i class="fas fa-user-circle"></i> Chosen Username</label>
+          <input type="text" id="username" name="username" class="form-control" placeholder="e.g. johndoe" required>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group" style="grid-column: span 2;">
+          <label class="form-label" for="password" style="font-weight: 600;"><i class="fas fa-lock"></i> Account Password</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Minimum 6 characters" required minlength="6">
+        </div>
+
+        <!-- Submit Button -->
+        <div style="grid-column: span 2; margin-top: 10px;">
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600;">
+            <i class="fas fa-user-plus"></i> Submit Registration
+          </button>
+        </div>
+      </form>
+
+      <div style="margin-top: 20px; text-align: center; font-size: 0.9rem;">
+        <span class="text-muted">Already registered? </span>
+        <a href="/user-login" style="color: var(--primary); font-weight: 600; text-decoration: none;">Citizen Sign In</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" style="background: white; border-top: 1px solid #E0E0E0; width:100%; padding: 15px 0;">
+    <div class="footer-content" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+      <div class="footer-logo" style="color: var(--primary); font-weight: 700;">Smart Grama Panchayat</div>
+      <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Digitizing Rural Governance | © 2026 All Rights Reserved</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -67,36 +67,59 @@ def predict_category(description):
         "reasons": reasons
     }
 
-# ----------------- Priority Prediction -----------------
-def predict_priority(description, category, ward):
+def predict_priority(description, category, ward, similar_count=0, is_duplicate=0):
     model = load_pkl('complaint_priority_model.pkl')
     vec = load_pkl('complaint_priority_vectorizer.pkl')
     
     if not model or not vec:
-        return {"priority": "Medium", "confidence": 1.0, "reasons": ["Default baseline priority"]}
+        pred = "Medium"
+        confidence = 1.0
+        reasons = ["Default baseline priority"]
+    else:
+        vec_desc = vec.transform([description])
+        pred = model.predict(vec_desc)[0]
+        probs = model.predict_proba(vec_desc)[0]
+        confidence = float(np.max(probs))
         
-    vec_desc = vec.transform([description])
-    pred = model.predict(vec_desc)[0]
-    probs = model.predict_proba(vec_desc)[0]
-    confidence = float(np.max(probs))
-    
-    # XAI Reasons
-    reasons = []
+        # XAI Reasons
+        reasons = []
+        desc_lower = description.lower()
+        
+        if pred == "High":
+            matched_k = [k for k in HIGH_PRIO_KEYWORDS if k in desc_lower]
+            if matched_k:
+                reasons.append(f"High-severity threat warning keywords detected: {', '.join(matched_k[:3])}.")
+            if category in ["Electricity", "Water Supply", "Drainage"]:
+                reasons.append(f"Critical public utility category ('{category}') increases urgency rating.")
+            if not reasons:
+                reasons.append("Semantic analysis indicates immediate resolution is required.")
+        elif pred == "Medium":
+            reasons.append("The issue requires prompt maintenance, but does not present an immediate safety hazard.")
+        else: # Low
+            reasons.append("Request is classified as general public inquiry, request for new installations, or routine sweeping.")
+            
+    # Business Rules (Emergency override & Location frequency / Duplicate escalation)
     desc_lower = description.lower()
-    
-    if pred == "High":
-        matched_k = [k for k in HIGH_PRIO_KEYWORDS if k in desc_lower]
-        if matched_k:
-            reasons.append(f"High-severity threat warning keywords detected: {', '.join(matched_k[:3])}.")
-        if category in ["Electricity", "Water Supply", "Drainage"]:
-            reasons.append(f"Critical public utility category ('{category}') increases urgency rating.")
-        if not reasons:
-            reasons.append("Semantic analysis indicates immediate resolution is required.")
-    elif pred == "Medium":
-        reasons.append("The issue requires prompt maintenance, but does not present an immediate safety hazard.")
-    else: # Low
-        reasons.append("Request is classified as general public inquiry, request for new installations, or routine sweeping.")
+    has_emergency_keyword = any(k in desc_lower for k in ["burst", "danger", "wire", "manhole", "overflow", "sparking", "fallen", "accident"])
+    if has_emergency_keyword and pred != "High" and pred != "Critical":
+        pred = "High"
+        confidence = 0.98
+        reasons = ["Automatically set to High Priority based on emergency keyword detection (e.g. wire, burst, overflow, manhole, etc.)."]
         
+    total_similar = similar_count + 1
+    if total_similar >= 4:
+        pred = "Critical"
+        confidence = 1.0
+        reasons = [f"Upgraded to Critical priority because multiple citizens ({total_similar}) reported similar issues in {ward} recently."]
+    elif total_similar >= 2:
+        pred = "High"
+        confidence = 1.0
+        reasons = [f"Upgraded to High priority because multiple citizens ({total_similar}) reported similar issues in {ward} recently."]
+    elif is_duplicate == 1:
+        pred = "High"
+        confidence = 0.95
+        reasons = [f"Upgraded to High priority as this is a confirmed duplicate of an active issue in {ward}."]
+
     return {
         "priority": pred,
         "confidence": round(confidence, 2),
@@ -155,51 +178,63 @@ def recommend_schemes(age, gender, occupation, income, land_size, is_farmer, is_
     return {"recommendations": recs}
 
 # ----------------- Tax Defaulter Risk -----------------
-def predict_defaulter(property_type, tax_amount, year, history_paid_ratio, late_payments):
+def predict_defaulter(property_type, tax_amount, year, history_paid_ratio, late_payments, status="Unpaid"):
+    if status.lower() == 'paid':
+        return {
+            "risk": "No Risk",
+            "probability": 0.0,
+            "reasons": ["Tax is fully paid; no default risk."]
+        }
+
     model = load_pkl('tax_defaulter_model.pkl')
     
     if not model:
         return {"risk": "Low Risk", "probability": 0.0, "reasons": ["Default baseline tax risk"]}
         
-    # Features: property_type, tax_amount, history_paid_ratio, late_payments
-    # Note: property_type should be encoded (Residential=0, Commercial=1)
     p_type_enc = 1 if property_type.lower() == 'commercial' else 0
-    
     features = np.array([[p_type_enc, tax_amount, history_paid_ratio, late_payments]])
     
-    # Model predict defaulter prob (defaulter = 1)
     probs = model.predict_proba(features)[0]
     classes = model.classes_
-    
     defaulter_idx = np.where(classes == 1)[0][0]
     prob_defaulter = float(probs[defaulter_idx])
     
-    # Categorize Risk
-    if prob_defaulter < 0.35:
-        risk = "Low Risk"
-    elif prob_defaulter <= 0.70:
-        risk = "Medium Risk"
-    else:
+    # Realistic logic adjustments
+    if status.lower() == 'paid':
+        risk = "No Risk"
+        prob_percent = 0.0
+    elif status.lower() == 'overdue':
         risk = "High Risk"
-        
-    # XAI Reasons
+        prob_percent = max(75.0, prob_defaulter * 100)
+    else:
+        risk = "Medium Risk"
+        prob_percent = max(45.0, min(70.0, prob_defaulter * 100))
+
     reasons = []
-    if late_payments > 1:
-        reasons.append(f"History of previous late payments (count: {late_payments}) indicates high tendency of delay.")
-    if history_paid_ratio < 0.6:
-        reasons.append(f"Previous tax compliance ratio is low ({history_paid_ratio:.1%}).")
-    if tax_amount > 4000:
-        reasons.append(f"Significant outstanding tax amount (₹{tax_amount}) increases payment resistance.")
+    if status.lower() == 'overdue':
+        reasons.append("Status is Overdue, indicating high likelihood of default.")
+    elif status.lower() == 'unpaid':
+        reasons.append("Status is Unpaid, representing moderate delinquency risk.")
+    elif status.lower() == 'paid':
+        reasons.append("Tax is fully paid; no default risk.")
+
+    if status.lower() != 'paid':
+        if late_payments > 1:
+            reasons.append(f"History of previous late payments (count: {late_payments}) indicates tendency of delay.")
+        if history_paid_ratio < 0.6:
+            reasons.append(f"Previous tax compliance ratio is low ({history_paid_ratio:.1%}).")
+        if tax_amount > 4000:
+            reasons.append(f"Significant outstanding tax amount (₹{tax_amount}) increases payment resistance.")
+    
     if not reasons:
-        reasons.append("Compliance history and tax metrics match typical low-risk profiles.")
+        reasons.append("Compliance history and tax metrics match typical profiles.")
         
     return {
         "risk": risk,
-        "probability": round(prob_defaulter * 100, 2),
+        "probability": round(prob_percent, 2),
         "reasons": reasons
     }
 
-# ----------------- Duplicate Complaint Detection -----------------
 def detect_duplicate(description, category, existing_complaints):
     # existing_complaints: list of dicts with {"id": ..., "description": ...}
     if not existing_complaints or len(existing_complaints) == 0:
@@ -254,13 +289,14 @@ def main():
     if task == "--predict-category":
         desc = data.get("description", "")
         result = predict_category(desc)
-        
     elif task == "--predict-priority":
         desc = data.get("description", "")
         cat = data.get("category", "Others")
         ward = data.get("ward", "Ward 1")
-        result = predict_priority(desc, cat, ward)
-        
+        similar = int(data.get("similar_count", 0))
+        is_dup = int(data.get("is_duplicate", 0))
+        result = predict_priority(desc, cat, ward, similar, is_dup)
+
     elif task == "--recommend-schemes":
         age = int(data.get("age", 30))
         gender = data.get("gender", "Male")
@@ -278,7 +314,8 @@ def main():
         year = int(data.get("year", 2026))
         hist_ratio = float(data.get("history_paid_ratio", 1.0))
         late_pays = int(data.get("late_payments", 0))
-        result = predict_defaulter(p_type, amount, year, hist_ratio, late_pays)
+        status = data.get("status", "Unpaid")
+        result = predict_defaulter(p_type, amount, year, hist_ratio, late_pays, status)
         
     elif task == "--detect-duplicate":
         desc = data.get("description", "")

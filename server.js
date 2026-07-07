@@ -1,10 +1,29 @@
+const fs = require('fs');
+const path = require('path');
+
+// Load environment variables
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  const envConfig = fs.readFileSync(envPath, 'utf8');
+  envConfig.split('\n').forEach(line => {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith('#')) {
+      const parts = trimmed.split('=');
+      const key = parts[0].trim();
+      const val = parts.slice(1).join('=').trim().replace(/(^['"]|['"]$)/g, '');
+      if (key) {
+        process.env[key] = val;
+      }
+    }
+  });
+}
+
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const path = require('path');
 const { exec } = require('child_process');
-const fs = require('fs');
 const db = require('./database');
+const { saveDatabase } = db;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -59,6 +78,42 @@ function runMLInference(task, data) {
   });
 }
 
+async function recalculateTaxML(recordId) {
+  try {
+    const record = db.prepare('SELECT * FROM tax_records WHERE id = ?').get(recordId);
+    if (!record) return;
+
+    const property = db.prepare('SELECT * FROM properties WHERE property_id = ?').get(record.property_id);
+    const property_type = property ? property.property_type : 'Residential';
+
+    const totalTaxes = db.prepare('SELECT COUNT(*) as count FROM tax_records WHERE property_id = ?').get(record.property_id).count || 0;
+    const unpaidTaxes = db.prepare("SELECT COUNT(*) as count FROM tax_records WHERE property_id = ? AND status IN ('Unpaid', 'Overdue')").get(record.property_id).count || 0;
+    const history_paid_ratio = totalTaxes > 0 ? (totalTaxes - unpaidTaxes) / totalTaxes : 1.0;
+    const late_payments = unpaidTaxes;
+
+    const mlResult = await runMLInference('--predict-defaulter', {
+      property_type,
+      tax_amount: record.tax_amount,
+      year: record.year,
+      history_paid_ratio,
+      late_payments,
+      status: record.status
+    });
+
+    db.prepare(`
+      UPDATE tax_records 
+      SET predicted_status = ?, payment_probability = ?, xai_explanation = ?
+      WHERE id = ?
+    `).run(mlResult.risk, mlResult.probability, mlResult.reasons.join(' | '), recordId);
+    
+    saveDatabase();
+  } catch (error) {
+    console.error("Error recalculating Tax ML:", error.message);
+  }
+}
+
+
+
 // Create notification in database
 function createNotification(userId, role, title, message, type) {
   try {
@@ -74,29 +129,48 @@ function createNotification(userId, role, title, message, type) {
 
 // ==================== PUBLIC ROUTES ====================
 
-// Home page
+// Landing Page
 app.get('/', (req, res) => {
+  if (req.session.user) {
+    return res.redirect('/user-dashboard');
+  }
+  if (req.session.admin) {
+    return res.redirect('/admin-dashboard');
+  }
+  res.render('landing', { session: req.session });
+});
+
+app.get('/home', (req, res) => {
   res.locals.page = 'home';
-  const totalCollection = db.prepare(`
-    SELECT COALESCE(SUM(amount), 0) as total FROM payments
-  `).get() || { total: 0 };
+  try {
+    const totalCollection = db.prepare(`
+      SELECT COALESCE(SUM(amount), 0) as total FROM payments
+    `).get() || { total: 0 };
 
-  const pendingCount = db.prepare(`
-    SELECT COUNT(*) as count FROM tax_records WHERE status = 'Unpaid'
-  `).get() || { count: 0 };
+    const pendingCount = db.prepare(`
+      SELECT COUNT(*) as count FROM tax_records WHERE status = 'Unpaid'
+    `).get() || { count: 0 };
 
-  const totalProperties = db.prepare(`
-    SELECT COUNT(*) as count FROM properties
-  `).get() || { count: 0 };
+    const totalProperties = db.prepare(`
+      SELECT COUNT(*) as count FROM properties
+    `).get() || { count: 0 };
 
-  res.render('index', {
-    stats: {
-      collection: totalCollection.total || 0,
-      pending: pendingCount.count || 0,
-      properties: totalProperties.count || 0
-    },
-    session: req.session
-  });
+    const schemes = db.prepare('SELECT * FROM government_schemes').all() || [];
+    const services = db.prepare('SELECT * FROM services WHERE status = "Active" LIMIT 4').all() || [];
+
+    res.render('index', {
+      stats: {
+        collection: totalCollection.total || 0,
+        pending: pendingCount.count || 0,
+        properties: totalProperties.count || 0
+      },
+      session: req.session,
+      schemes,
+      services
+    });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 // Tax search page
@@ -179,7 +253,7 @@ app.post('/api/pay-tax', (req, res) => {
   const txnId = generateTransactionId();
   
   try {
-    db.prepare('UPDATE tax_records SET status = "Paid" WHERE id = ?').run(taxId);
+    db.prepare("UPDATE tax_records SET status = 'Paid', predicted_status = 'No Risk', payment_probability = 0.0 WHERE id = ?").run(taxId);
     db.prepare('INSERT INTO payments (property_id, tax_record_id, amount, transaction_id) VALUES (?, ?, ?, ?)').run(propertyId, taxId, amount, txnId);
     res.json({ success: true, txnId });
   } catch (error) {
@@ -194,7 +268,7 @@ app.post('/api/make-payment', (req, res) => {
 
   try {
     db.prepare(`
-      UPDATE tax_records SET status = 'Paid' WHERE id = ?
+      UPDATE tax_records SET status = 'Paid', predicted_status = 'No Risk', payment_probability = 0.0 WHERE id = ?
     `).run(taxRecordId);
 
     db.prepare(`
@@ -212,10 +286,40 @@ app.post('/api/make-payment', (req, res) => {
   }
 });
 
+
+
 // Services page
 app.get('/services', (req, res) => {
   const services = db.prepare('SELECT * FROM services WHERE status = "Active"').all();
   res.render('services', { services: services || [], session: req.session });
+});
+
+// Scheme details page
+app.get('/schemes/:id', (req, res) => {
+  const { id } = req.params;
+  try {
+    const scheme = db.prepare('SELECT * FROM government_schemes WHERE id = ?').get(id);
+    if (!scheme) {
+      return res.status(404).send('Scheme not found');
+    }
+    res.render('scheme-details', { scheme, session: req.session });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+// Service details page
+app.get('/services/:id', (req, res) => {
+  const { id } = req.params;
+  try {
+    const service = db.prepare('SELECT * FROM services WHERE id = ?').get(id);
+    if (!service) {
+      return res.status(404).send('Service not found');
+    }
+    res.render('service-details', { service, session: req.session });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 // payment-success
@@ -239,11 +343,19 @@ app.get('/user-login', (req, res) => {
 });
 
 app.post('/user-login', (req, res) => {
-  const { propertyId, phone } = req.body;
+  const { username, password } = req.body;
 
-  const user = db.prepare(`
-    SELECT * FROM users WHERE property_id = ? AND phone = ?
-  `).get(propertyId.toUpperCase(), phone);
+  // Try username and password first
+  let user = db.prepare(`
+    SELECT * FROM users WHERE LOWER(username) = LOWER(?) AND password = ?
+  `).get(username, password);
+
+  // Fallback to propertyId and phone for legacy logins
+  if (!user) {
+    user = db.prepare(`
+      SELECT * FROM users WHERE LOWER(property_id) = LOWER(?) AND phone = ?
+    `).get(username, password);
+  }
 
   if (user) {
     req.session.user = user;
@@ -251,14 +363,95 @@ app.post('/user-login', (req, res) => {
   } else {
     res.render('user-login', { 
       session: req.session, 
-      error: 'Invalid Property ID or Registered Mobile Number' 
+      error: 'Invalid Username/Property ID or Password/Mobile Number' 
+    });
+  }
+});
+
+app.get('/user-register', (req, res) => {
+  const properties = db.prepare('SELECT property_id, owner_name FROM properties ORDER BY property_id ASC').all() || [];
+  res.render('user-register', { session: req.session, properties, error: null, success: null });
+});
+
+app.post('/user-register', (req, res) => {
+  const { name, age, gender, phone, email, propertyId, address, ward, occupation, aadhaar, username, password } = req.body;
+
+  try {
+    // Check if username already exists
+    const existingUsername = db.prepare('SELECT COUNT(*) as count FROM users WHERE LOWER(username) = LOWER(?)').get(username).count;
+    if (existingUsername > 0) {
+      const properties = db.prepare('SELECT property_id, owner_name FROM properties ORDER BY property_id ASC').all() || [];
+      return res.render('user-register', {
+        session: req.session,
+        properties,
+        error: 'Username is already taken.',
+        success: null
+      });
+    }
+
+    // Check if property is already registered
+    const existingProperty = db.prepare('SELECT COUNT(*) as count FROM users WHERE property_id = ?').get(propertyId).count;
+    if (existingProperty > 0) {
+      const properties = db.prepare('SELECT property_id, owner_name FROM properties ORDER BY property_id ASC').all() || [];
+      return res.render('user-register', {
+        session: req.session,
+        properties,
+        error: 'This Property ID is already linked to another registered citizen.',
+        success: null
+      });
+    }
+
+    // Set reasonable defaults for demographics
+    let income = 80000.0;
+    let land_size = 1.5;
+    let is_farmer = (occupation === 'Agriculture') ? 1 : 0;
+    let is_student = (occupation === 'Student') ? 1 : 0;
+    let disability = 0;
+
+    // Save permanently in the database
+    db.prepare(`
+      INSERT INTO users (property_id, name, phone, email, password, age, gender, occupation, income, land_size, is_farmer, is_student, disability, address, ward, aadhaar, username)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(propertyId, name, phone, email, password, parseInt(age), gender, occupation, income, land_size, is_farmer, is_student, disability, address, ward, aadhaar || null, username);
+
+    // Create notifications for citizen and admin
+    createNotification(
+      propertyId, 'Citizen',
+      'Account Registered Successfully',
+      `Welcome ${name}! Your citizen account has been successfully linked to Property ID ${propertyId}.`,
+      'System'
+    );
+
+    createNotification(
+      'admin', 'Admin',
+      'New Citizen Registered',
+      `A new citizen ${name} has registered under Property ID ${propertyId}.`,
+      'System'
+    );
+
+    const properties = db.prepare('SELECT property_id, owner_name FROM properties ORDER BY property_id ASC').all() || [];
+    res.render('user-register', {
+      session: req.session,
+      properties,
+      error: null,
+      success: 'Registration successful! You can now log in.'
+    });
+
+  } catch (err) {
+    console.error("Error registering user:", err.message);
+    const properties = db.prepare('SELECT property_id, owner_name FROM properties ORDER BY property_id ASC').all() || [];
+    res.render('user-register', {
+      session: req.session,
+      properties,
+      error: 'Error: ' + err.message,
+      success: null
     });
   }
 });
 
 app.get('/user-logout', (req, res) => {
   req.session.user = null;
-  res.redirect('/user-login');
+  res.redirect('/');
 });
 
 // Citizen dashboard (with scheme recommendations)
@@ -268,13 +461,16 @@ app.get('/user-dashboard', async (req, res) => {
   }
   
   const user = req.session.user;
+    const property = db.prepare('SELECT * FROM properties WHERE property_id = ?').get(user.property_id);
+  const taxRecords = db.prepare('SELECT * FROM tax_records WHERE property_id = ? ORDER BY year DESC').all(user.property_id) || [];
+  const payments = db.prepare('SELECT * FROM payments WHERE property_id = ? ORDER BY payment_date DESC').all(user.property_id) || [];
+  const complaints = db.prepare('SELECT * FROM complaints WHERE property_id = ? ORDER BY created_at DESC').all(user.property_id) || [];
+  const notifications = db.prepare('SELECT * FROM notifications WHERE (user_id = ? OR role = "Citizen") ORDER BY created_at DESC LIMIT 10').all(user.property_id) || [];
   
-  const property = db.prepare('SELECT * FROM properties WHERE property_id = ?').get(user.property_id);
-  const taxRecords = db.prepare('SELECT * FROM tax_records WHERE property_id = ? ORDER BY year DESC').all() || [];
-  const payments = db.prepare('SELECT * FROM payments WHERE property_id = ? ORDER BY payment_date DESC').all() || [];
-  const complaints = db.prepare('SELECT * FROM complaints WHERE property_id = ? ORDER BY created_at DESC').all() || [];
-  const notifications = db.prepare('SELECT * FROM notifications WHERE (user_id = ? OR role = "Citizen") ORDER BY created_at DESC LIMIT 10').all() || [];
-  
+  // Fetch schemes and services
+  const services = db.prepare('SELECT * FROM services WHERE status = "Active"').all() || [];
+  const schemes = db.prepare('SELECT * FROM government_schemes').all() || [];
+
   let recommendedSchemes = [];
   try {
     const mlResult = await runMLInference('--recommend-schemes', {
@@ -317,9 +513,12 @@ app.get('/user-dashboard', async (req, res) => {
     payments,
     complaints,
     notifications,
-    recommendedSchemes
+    recommendedSchemes,
+    services,
+    schemes
   });
 });
+// Appointments endpoints removed
 
 app.post('/api/notifications/read', (req, res) => {
   const { id } = req.body;
@@ -345,33 +544,29 @@ app.post('/api/complaints/suggest-category', async (req, res) => {
 app.post('/api/complaints', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ success: false, error: 'Unauthorized' });
-  }
-  const { category, description, ward } = req.body;
+  }  const { category, description, ward } = req.body;
   const propertyId = req.session.user.property_id;
 
   try {
-    // 1. Commit complaint to database immediately (Standard fallback values)
+    const catResult = await runMLInference('--predict-category', { description });
+    const predictedCategory = catResult.category || category;
+    const catConfidence = catResult.confidence || 1.0;
+
     db.prepare(`
       INSERT INTO complaints (property_id, category, description, ward, priority, predicted_priority, predicted_category, confidence_score, is_duplicate, duplicate_of_id, xai_explanation)
-      VALUES (?, ?, ?, ?, 'Medium', 'Medium', ?, 1.0, 0, NULL, 'Grievance lodged in Panchayat records.')
-    `).run(propertyId, category, description, ward, category);
-
-    // Retrieve last inserted record row ID
-    const lastRow = db.prepare('SELECT id FROM complaints WHERE property_id = ? ORDER BY id DESC LIMIT 1').get(propertyId);
-    const complaintId = lastRow ? lastRow.id : null;
-
-    // Default return payload
+      VALUES (?, ?, ?, ?, 'Medium', 'Medium', ?, ?, 0, NULL, 'Grievance lodged in Panchayat records.')
+    `).run(propertyId, category, description, ward, predictedCategory, catConfidence);
+    const complaintId = db.prepare('SELECT last_insert_rowid() AS id').get().id;
     let priority = 'Medium';
     let isDuplicate = 0;
     let duplicateOfId = null;
     let xaiExplanation = 'Grievance lodged in Panchayat records.';
 
-    // 2. Wrap ML predictions and similarity calculations in an auxiliary try-catch
     try {
       const existing = db.prepare(`
         SELECT id, description FROM complaints
-        WHERE category = ? AND status != 'Resolved' AND id != ?
-      `).all(category, complaintId) || [];
+        WHERE category = ? AND ward = ? AND status != 'Resolved' AND id != ? AND is_duplicate = 0
+      `).all(predictedCategory, ward, complaintId) || [];
 
       const dupResult = await runMLInference('--detect-duplicate', {
         description,
@@ -391,10 +586,14 @@ app.post('/api/complaints', async (req, res) => {
         );
       }
 
+      const similarCount = existing.length;
+
       const prioResult = await runMLInference('--predict-priority', {
         description,
         category,
-        ward
+        ward,
+        similar_count: similarCount,
+        is_duplicate: isDuplicate
       });
 
       priority = prioResult.priority;
@@ -459,94 +658,134 @@ app.post('/admin-login', (req, res) => {
   }
 });
 
+
+
 app.get('/admin-logout', (req, res) => {
   req.session.admin = false;
-  res.redirect('/admin-login');
+  res.redirect('/');
 });
 
-// Admin dashboard
 app.get('/admin-dashboard', requireAdmin, (req, res) => {
-  const totalCollection = db.prepare(`
-    SELECT COALESCE(SUM(amount), 0) as total FROM payments
-  `).get() || { total: 0 };
+  try {
+    const totalCollection = db.prepare(`
+      SELECT COALESCE(SUM(amount), 0) as total FROM payments
+    `).get() || { total: 0 };
 
-  const pendingCount = db.prepare(`
-    SELECT COUNT(*) as count FROM tax_records WHERE status = 'Unpaid'
-  `).get() || { count: 0 };
+    const pendingCount = db.prepare(`
+      SELECT COUNT(*) as count FROM tax_records WHERE status = 'Unpaid'
+    `).get() || { count: 0 };
 
-  const totalProperties = db.prepare(`
-    SELECT COUNT(*) as count FROM properties
-  `).get() || { count: 0 };
+    const totalProperties = db.prepare(`
+      SELECT COUNT(*) as count FROM properties
+    `).get() || { count: 0 };
 
-  const recentPayments = db.prepare(`
-    SELECT pay.*, p.owner_name 
-    FROM payments pay
-    JOIN properties p ON pay.property_id = p.property_id
-    ORDER BY pay.payment_date DESC LIMIT 5
-  `).all() || [];
+    const totalCitizens = db.prepare(`
+      SELECT COUNT(*) as count FROM users
+    `).get() || { count: 0 };
 
-  const alerts = db.prepare(`
-    SELECT * FROM notifications 
-    WHERE role = 'Admin' AND read_status = 0
-    ORDER BY created_at DESC LIMIT 10
-  `).all() || [];
 
-  // ML Metadata
-  let mlMeta = { version: 'N/A', last_trained: 'Never', dataset_size: 0 };
-  const metaPath = path.join(__dirname, 'models', 'metadata.json');
-  if (fs.existsSync(metaPath)) {
-    try {
-      const raw = fs.readFileSync(metaPath, 'utf8');
-      const data = JSON.parse(raw);
-      mlMeta.version = data.version || '1';
-      mlMeta.last_trained = data.last_trained || 'N/A';
-      
-      let totalSize = 0;
-      if (data.models) {
-        Object.keys(data.models).forEach(k => {
-          totalSize += data.models[k].dataset_size || 0;
-        });
+
+    const totalComplaints = db.prepare(`
+      SELECT COUNT(*) as count FROM complaints
+    `).get() || { count: 0 };
+
+    const highPriorityComplaints = db.prepare(`
+      SELECT COUNT(*) as count FROM complaints WHERE priority = 'High'
+    `).get() || { count: 0 };
+
+    const activeSchemes = db.prepare(`
+      SELECT COUNT(*) as count FROM government_schemes
+    `).get() || { count: 0 };
+
+    const activeServices = db.prepare(`
+      SELECT COUNT(*) as count FROM services WHERE status = 'Active'
+    `).get() || { count: 0 };
+
+    const recentPayments = db.prepare(`
+      SELECT pay.*, p.owner_name 
+      FROM payments pay
+      JOIN properties p ON pay.property_id = p.property_id
+      ORDER BY pay.payment_date DESC LIMIT 5
+    `).all() || [];
+
+    const alerts = db.prepare(`
+      SELECT * FROM notifications 
+      WHERE role = 'Admin' AND read_status = 0
+      ORDER BY created_at DESC LIMIT 10
+    `).all() || [];
+
+    // ML Metadata
+    let mlMeta = { version: 'N/A', last_trained: 'Never', dataset_size: 0 };
+    const metaPath = path.join(__dirname, 'models', 'metadata.json');
+    if (fs.existsSync(metaPath)) {
+      try {
+        const raw = fs.readFileSync(metaPath, 'utf8');
+        const data = JSON.parse(raw);
+        mlMeta.version = data.version || '1';
+        mlMeta.last_trained = data.last_trained || 'N/A';
+        
+        let totalSize = 0;
+        if (data.models) {
+          Object.keys(data.models).forEach(k => {
+            totalSize += data.models[k].dataset_size || 0;
+          });
+        }
+        mlMeta.dataset_size = Math.round(totalSize / 4); // Avg across 4 models
+      } catch (e) {
+        console.error("Error reading ML metadata:", e.message);
       }
-      mlMeta.dataset_size = Math.round(totalSize / 4); // Avg across 4 models
-    } catch (e) {
-      console.error("Error reading ML metadata:", e.message);
     }
+
+    // Dashboard Aggregates for Chart.js
+    const complaints = db.prepare('SELECT category, priority, is_duplicate FROM complaints').all() || [];
+    const priorityDist = { High: 0, Medium: 0, Low: 0 };
+    const catDist = {};
+    let duplicatesCount = 0;
+    complaints.forEach(c => {
+      priorityDist[c.priority] = (priorityDist[c.priority] || 0) + 1;
+      catDist[c.category] = (catDist[c.category] || 0) + 1;
+      if (c.is_duplicate) duplicatesCount++;
+    });
+    const unpaidTaxes = db.prepare('SELECT predicted_status FROM tax_records WHERE status = "Unpaid"').all() || [];
+    const defaultRiskDist = { "High Risk": 0, "Medium Risk": 0, "Low Risk": 0 };
+    unpaidTaxes.forEach(t => {
+      defaultRiskDist[t.predicted_status] = (defaultRiskDist[t.predicted_status] || 0) + 1;
+    });
+
+    const highRiskDefaulters = db.prepare(`
+      SELECT tr.*, p.owner_name, p.phone
+      FROM tax_records tr
+      JOIN properties p ON tr.property_id = p.property_id
+      WHERE tr.status = 'Unpaid' AND tr.predicted_status = 'High Risk'
+      ORDER BY tr.payment_probability DESC LIMIT 5
+    `).all() || [];
+
+    res.render('admin-dashboard', {
+      session: req.session,
+      stats: {
+        collection: totalCollection.total || 0,
+        pending: pendingCount.count || 0,
+        properties: totalProperties.count || 0,
+        citizens: totalCitizens.count || 0,
+        totalComplaints: totalComplaints.count || 0,
+        highPriorityComplaints: highPriorityComplaints.count || 0,
+        activeSchemes: activeSchemes.count || 0,
+        activeServices: activeServices.count || 0
+      },
+      recentPayments,
+      highRiskDefaulters,
+      alerts,
+      mlMeta,
+      charts: {
+        priorityDist,
+        catDist,
+        defaultRiskDist,
+        duplicatesCount
+      }
+    });
+  } catch (error) {
+    res.status(500).send(error.message);
   }
-
-  // Dashboard Aggregates for Chart.js
-  const complaints = db.prepare('SELECT category, priority, is_duplicate FROM complaints').all() || [];
-  const priorityDist = { High: 0, Medium: 0, Low: 0 };
-  const catDist = {};
-  let duplicatesCount = 0;
-  complaints.forEach(c => {
-    priorityDist[c.priority] = (priorityDist[c.priority] || 0) + 1;
-    catDist[c.category] = (catDist[c.category] || 0) + 1;
-    if (c.is_duplicate) duplicatesCount++;
-  });
-
-  const unpaidTaxes = db.prepare('SELECT predicted_status FROM tax_records WHERE status = "Unpaid"').all() || [];
-  const defaultRiskDist = { "High Risk": 0, "Medium Risk": 0, "Low Risk": 0 };
-  unpaidTaxes.forEach(t => {
-    defaultRiskDist[t.predicted_status] = (defaultRiskDist[t.predicted_status] || 0) + 1;
-  });
-
-  res.render('admin-dashboard', {
-    session: req.session,
-    stats: {
-      collection: totalCollection.total || 0,
-      pending: pendingCount.count || 0,
-      properties: totalProperties.count || 0
-    },
-    recentPayments,
-    alerts,
-    mlMeta,
-    charts: {
-      priorityDist,
-      catDist,
-      defaultRiskDist,
-      duplicatesCount
-    }
-  });
 });
 
 // ==================== PROPERTIES CRUD ====================
@@ -606,46 +845,61 @@ app.get('/admin-citizens', requireAdmin, (req, res) => {
   `).all() || [];
   res.render('admin-citizens', { session: req.session, citizens, properties });
 });
-
 app.post('/api/admin/add-citizen', requireAdmin, (req, res) => {
-  const { propertyId, name, phone, email, password, age, gender, occupation, income, landSize, isFarmer, isStudent, disability } = req.body;
-  if (!propertyId || !name || !phone) {
-    return res.json({ success: false, message: 'Property ID, Name, and Phone are required.' });
+  const { propertyId, name, phone, email, password, age, gender, occupation, income, landSize, isFarmer, isStudent, disability, address, ward, aadhaar, username } = req.body;
+  if (!propertyId || !name || !phone || !username) {
+    return res.json({ success: false, message: 'Property ID, Name, Phone, and Username are required.' });
   }
   try {
     db.prepare(`
-      INSERT INTO users (property_id, name, phone, email, password, age, gender, occupation, income, land_size, is_farmer, is_student, disability)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (property_id, name, phone, email, password, age, gender, occupation, income, land_size, is_farmer, is_student, disability, address, ward, aadhaar, username)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       propertyId.toUpperCase(), name, phone, email || '', password || 'user123',
       parseInt(age) || 30, gender || 'Male', occupation || 'Agriculture',
       parseFloat(income) || 80000.0, parseFloat(landSize) || 1.5,
-      parseInt(isFarmer) || 0, parseInt(isStudent) || 0, parseInt(disability) || 0
+      parseInt(isFarmer) || 0, parseInt(isStudent) || 0, parseInt(disability) || 0,
+      address || '', ward || 'Ward 1', aadhaar || '', username
     );
+
+    createNotification(
+      'admin', 'Admin',
+      'New Citizen Registration',
+      `Citizen ${name} has been registered successfully with Property ID ${propertyId.toUpperCase()}.`,
+      'System'
+    );
+
     res.json({ success: true, message: 'Citizen profile registered successfully!' });
   } catch (e) {
     let msg = e.message;
     if (msg.includes('UNIQUE constraint failed: users.property_id')) {
       msg = `This Property ID (${propertyId.toUpperCase()}) is already registered to another citizen profile.`;
+    } else if (msg.includes('UNIQUE constraint failed: users.username')) {
+      msg = `The username '${username}' is already taken. Please choose another.`;
     }
     res.json({ success: false, message: msg });
   }
 });
 
 app.post('/api/admin/update-citizen', requireAdmin, (req, res) => {
-  const { id, name, phone, email, age, gender, occupation, income, landSize, isFarmer, isStudent, disability } = req.body;
+  const { id, name, phone, email, age, gender, occupation, income, landSize, isFarmer, isStudent, disability, address, ward, aadhaar, username } = req.body;
   try {
     db.prepare(`
       UPDATE users 
-      SET name = ?, phone = ?, email = ?, age = ?, gender = ?, occupation = ?, income = ?, land_size = ?, is_farmer = ?, is_student = ?, disability = ?
+      SET name = ?, phone = ?, email = ?, age = ?, gender = ?, occupation = ?, income = ?, land_size = ?, is_farmer = ?, is_student = ?, disability = ?, address = ?, ward = ?, aadhaar = ?, username = ?
       WHERE id = ?
     `).run(
       name, phone, email, parseInt(age), gender, occupation,
-      parseFloat(income), parseFloat(landSize), parseInt(isFarmer), parseInt(isStudent), parseInt(disability), id
+      parseFloat(income), parseFloat(landSize), parseInt(isFarmer), parseInt(isStudent), parseInt(disability),
+      address || '', ward || 'Ward 1', aadhaar || '', username, id
     );
     res.json({ success: true, message: 'Citizen profile updated successfully!' });
   } catch (e) {
-    res.json({ success: false, message: e.message });
+    let msg = e.message;
+    if (msg.includes('UNIQUE constraint failed: users.username')) {
+      msg = `The username '${username}' is already taken. Please choose another.`;
+    }
+    res.json({ success: false, message: msg });
   }
 });
 
@@ -714,20 +968,21 @@ app.get('/admin-tax', requireAdmin, (req, res) => {
 
   res.render('admin-tax', { session: req.session, taxRecords });
 });
-
 app.post('/api/admin/override-tax-prediction', requireAdmin, (req, res) => {
   const { id, risk } = req.body;
   try {
     db.prepare(`
       UPDATE tax_records 
-      SET predicted_status = ?, admin_corrected = 1, xai_explanation = 'Predicted status manually corrected by administrator.'
+      SET override_status = ?, admin_corrected = ?
       WHERE id = ?
-    `).run(risk, id);
+    `).run(risk || null, risk ? 1 : 0, id);
+    saveDatabase();
     res.json({ success: true });
   } catch (error) {
     res.json({ success: false, error: error.message });
   }
 });
+
 
 app.get('/admin-complaints', requireAdmin, (req, res) => {
   const complaints = db.prepare(`
@@ -737,7 +992,18 @@ app.get('/admin-complaints', requireAdmin, (req, res) => {
     ORDER BY c.created_at DESC
   `).all() || [];
 
-  res.render('admin-complaints', { session: req.session, complaints });
+  const duplicatesAnalysis = db.prepare(`
+    SELECT c.id as original_id, c.ward, c.status, c.priority, c.category,
+           COUNT(d.id) as duplicates_count, 
+           GROUP_CONCAT(d.id, ', ') as linked_ids,
+           GROUP_CONCAT(p.owner_name, ', ') as affected_citizens
+    FROM complaints c
+    JOIN complaints d ON c.id = d.duplicate_of_id
+    LEFT JOIN properties p ON d.property_id = p.property_id
+    GROUP BY c.id
+  `).all() || [];
+
+  res.render('admin-complaints', { session: req.session, complaints, duplicatesAnalysis });
 });
 
 app.post('/api/admin/override-complaint', requireAdmin, (req, res) => {
@@ -747,17 +1013,69 @@ app.post('/api/admin/override-complaint', requireAdmin, (req, res) => {
       UPDATE complaints 
       SET category = ?, priority = ?, admin_corrected = 1, xai_explanation = 'Complaint priority/category manually corrected by administrator.'
       WHERE id = ?
-    `).run(category, priority, id);
+    `).run(category, priority, parseInt(id));
+    saveDatabase();
     res.json({ success: true });
   } catch (error) {
     res.json({ success: false, error: error.message });
   }
 });
 
-app.post('/api/admin/update-complaint-status', requireAdmin, (req, res) => {
-  const { id, status } = req.body;
+app.post('/api/admin/delete-complaint', requireAdmin, (req, res) => {
+  const { id } = req.body;
   try {
-    db.prepare('UPDATE complaints SET status = ? WHERE id = ?').run(status, id);
+    db.prepare('DELETE FROM complaints WHERE id = ?').run(parseInt(id));
+    saveDatabase();
+    res.json({ success: true, message: 'Complaint deleted successfully!' });
+  } catch (error) {
+    res.json({ success: false, error: error.message });
+  }
+});
+
+app.post('/api/admin/update-complaint-status', requireAdmin, (req, res) => {
+  const { id, status, remarks } = req.body;
+  try {
+    let activePriority = 'Medium';
+    if (status === 'Pending') {
+      activePriority = 'High';
+    } else if (status === 'In Progress') {
+      activePriority = 'Medium';
+    } else if (status === 'Resolved') {
+      activePriority = 'Low';
+    }
+
+    db.prepare('UPDATE complaints SET status = ?, admin_remarks = ?, priority = ? WHERE id = ?').run(status, remarks || null, activePriority, id);
+    
+    const original = db.prepare('SELECT * FROM complaints WHERE id = ?').get(id);
+    if (original) {
+      createNotification(
+        original.property_id, 'Citizen',
+        'Complaint Status Updated',
+        `Your complaint (ID: #${id}, Category: ${original.category}) has been updated to '${status}'. Remarks: ${remarks || 'None'}.`,
+        'Complaint'
+      );
+
+      if (status === 'Resolved') {
+        const duplicates = db.prepare('SELECT * FROM complaints WHERE duplicate_of_id = ?').all(id) || [];
+        for (const dup of duplicates) {
+          db.prepare('UPDATE complaints SET status = ?, admin_remarks = ?, priority = ? WHERE id = ?').run(
+            'Resolved',
+            `Resolved via link to Original Complaint #${id}: ${remarks || 'None'}.`,
+            'Low',
+            dup.id
+          );
+          
+          createNotification(
+            dup.property_id, 'Citizen',
+            'Linked Complaint Resolved',
+            `The original issue (ID: #${id}) linked to your complaint (ID: #${dup.id}, Category: ${dup.category}) has been resolved. Your complaint status is now 'Resolved'.`,
+            'Complaint'
+          );
+        }
+      }
+      saveDatabase();
+    }
+    
     res.json({ success: true });
   } catch (error) {
     res.json({ success: false, error: error.message });
@@ -845,6 +1163,7 @@ app.post('/api/admin/retrain', requireAdmin, async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+// Admin appointments endpoints removed
 
 // Admin services management
 app.get('/admin-services', requireAdmin, (req, res) => {
@@ -888,7 +1207,7 @@ app.post('/api/admin/delete-service', requireAdmin, (req, res) => {
   }
 });
 
-app.post('/api/admin/add-tax', requireAdmin, (req, res) => {
+app.post('/api/admin/add-tax', requireAdmin, async (req, res) => {
   const { propertyId, taxAmount, dueDate, year, ownerName } = req.body;
   if (!propertyId || !taxAmount || !dueDate || !year) {
     return res.json({ success: false, message: 'All fields are required' });
@@ -906,28 +1225,41 @@ app.post('/api/admin/add-tax', requireAdmin, (req, res) => {
         VALUES (?, ?, ?, 'Residential')
       `).run(propertyId.toUpperCase(), ownerName || 'Citizen', 'Panchayat Area');
     }
-    db.prepare(`
+    const insertResult = db.prepare(`
       INSERT INTO tax_records (property_id, tax_amount, due_date, year, status)
       VALUES (?, ?, ?, ?, 'Unpaid')
     `).run(propertyId.toUpperCase(), parseFloat(taxAmount), dueDate, parseInt(year));
+    const lastId = db.prepare('SELECT last_insert_rowid() AS id').get().id;
+    await recalculateTaxML(lastId);    
     res.json({ success: true, message: 'Tax record saved successfully!' });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
 });
 
-app.post('/api/admin/update-tax', requireAdmin, (req, res) => {
+app.post('/api/admin/update-tax', requireAdmin, async (req, res) => {
   const { id, taxAmount, dueDate, year, status } = req.body;
   try {
+    const current = db.prepare('SELECT property_id FROM tax_records WHERE id = ?').get(id);
+    if (current) {
+      const existing = db.prepare('SELECT id FROM tax_records WHERE property_id = ? AND year = ? AND id != ?').get(current.property_id, parseInt(year), id);
+      if (existing) {
+        return res.json({ success: false, message: `A tax record already exists for Property ID ${current.property_id} and Year ${year}.` });
+      }
+    }
     db.prepare(`
       UPDATE tax_records SET tax_amount = ?, due_date = ?, year = ?, status = ?
       WHERE id = ?
     `).run(taxAmount, dueDate, year, status, id);
+    
+    await recalculateTaxML(id);
+    
     res.json({ success: true, message: 'Tax record updated successfully!' });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
 });
+
 
 app.post('/api/admin/delete-tax', requireAdmin, (req, res) => {
   const { id } = req.body;
@@ -938,11 +1270,15 @@ app.post('/api/admin/delete-tax', requireAdmin, (req, res) => {
     res.json({ success: false, message: error.message });
   }
 });
-
 // ==================== SMS REMINDERS ROUTES ====================
 
 app.get('/admin-reminders', requireAdmin, (req, res) => {
-  res.render('admin-reminders', { session: req.session });
+  const twilioSid = process.env.TWILIO_ACCOUNT_SID;
+  const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+  const twilioFrom = process.env.TWILIO_PHONE_NUMBER;
+  const fast2smsKey = process.env.FAST2SMS_API_KEY;
+  const isRealSMS = !!((twilioSid && twilioAuthToken && twilioFrom && twilioSid.trim() !== '' && !twilioSid.includes('YOUR_')) || (fast2smsKey && fast2smsKey.trim() !== '' && !fast2smsKey.includes('YOUR_')));
+  res.render('admin-reminders', { session: req.session, isRealSMS });
 });
 
 app.get('/api/admin/pending-reminders', requireAdmin, (req, res) => {
@@ -951,7 +1287,7 @@ app.get('/api/admin/pending-reminders', requireAdmin, (req, res) => {
       SELECT tr.*, p.owner_name
       FROM tax_records tr
       JOIN properties p ON tr.property_id = p.property_id
-      WHERE tr.status = 'Unpaid'
+      WHERE tr.status != 'Paid'
     `).all() || [];
 
     const pendingReminders = [];
@@ -999,25 +1335,98 @@ app.get('/api/admin/sms-logs', requireAdmin, (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+async function sendSMSGateway(phone, citizenName, propertyId, message) {
+  const twilioSid = process.env.TWILIO_ACCOUNT_SID;
+  const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+  const twilioFrom = process.env.TWILIO_PHONE_NUMBER;
+  const fast2smsKey = process.env.FAST2SMS_API_KEY;
 
-app.post('/api/admin/send-reminder', requireAdmin, (req, res) => {
+  if (twilioSid && twilioAuthToken && twilioFrom && twilioSid.trim() !== '' && !twilioSid.includes('YOUR_')) {
+    try {
+      const auth = Buffer.from(`${twilioSid}:${twilioAuthToken}`).toString('base64');
+      const params = new URLSearchParams({
+        To: phone,
+        From: twilioFrom,
+        Body: message
+      });
+      const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: params.toString()
+      });
+      const result = await response.json();
+      if (response.ok) {
+        return { status: 'Sent', error: null };
+      } else {
+        console.error('Twilio Error:', result);
+        return { status: 'Failed', error: result.message || JSON.stringify(result) };
+      }
+    } catch (err) {
+      console.error('Twilio Fetch Error:', err);
+      return { status: 'Failed', error: err.message };
+    }
+  } else if (fast2smsKey && fast2smsKey.trim() !== '' && !fast2smsKey.includes('YOUR_')) {
+    try {
+      const response = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+        method: 'POST',
+        headers: {
+          'authorization': fast2smsKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          route: 'q',
+          message: message,
+          language: 'english',
+          numbers: phone
+        })
+      });
+      const result = await response.json();
+      if (result.return) {
+        return { status: 'Sent', error: null };
+      } else {
+        console.error('Fast2SMS Error:', result);
+        return { status: 'Failed', error: result.message || JSON.stringify(result) };
+      }
+    } catch (err) {
+      console.error('Fast2SMS Fetch Error:', err);
+      return { status: 'Failed', error: err.message };
+    }
+  }
+  console.error(`[SMS FAILED] Twilio or Fast2SMS credentials not configured in environment.`);
+  return { status: 'Failed', error: 'Missing Twilio / Fast2SMS credentials in environment configuration.' };
+}
+
+app.post('/api/admin/send-reminder', requireAdmin, async (req, res) => {
   const { propertyId, reminderType } = req.body;
   try {
     const user = db.prepare('SELECT * FROM users WHERE property_id = ?').get(propertyId);
     const phone = user ? user.phone : '9876543210';
     const name = user ? user.name : 'Citizen';
     
-    const taxRecord = db.prepare("SELECT * FROM tax_records WHERE property_id = ? AND status = 'Unpaid' ORDER BY year DESC LIMIT 1").get(propertyId);
+    const taxRecord = db.prepare("SELECT * FROM tax_records WHERE property_id = ? AND status IN ('Unpaid', 'Overdue') ORDER BY year DESC LIMIT 1").get(propertyId);
     if (!taxRecord) {
-      return res.json({ success: false, message: 'No unpaid tax records found for this property.' });
+      return res.json({ success: false, message: 'No pending tax records found for this property.' });
     }
+
+    const msg = `Dear ${name},
+
+Our records show that your Gram Panchayat Property Tax for Property ID ${propertyId} is pending.
+
+Please log in to the Smart Gram Panchayat application to view the outstanding amount, due date, and payment details.
+
+To make an offline payment, please contact or visit the Gram Panchayat Office.
+
+Thank you.`;
     
-    const msg = `Dear ${name}, this is a reminder that your property tax of ₹${taxRecord.tax_amount} for Property ${propertyId} is ${reminderType === 'overdue' ? 'OVERDUE' : 'due in ' + reminderType + ' days'} (Due: ${taxRecord.due_date}). Please pay online. - Gram Panchayat`;
-    
+    const smsResult = await sendSMSGateway(phone, name, propertyId, msg);
+
     db.prepare(`
-      INSERT INTO sms_logs (property_id, phone, message, status)
-      VALUES (?, ?, ?, 'Sent')
-    `).run(propertyId, phone, msg);
+      INSERT INTO sms_logs (property_id, phone, message, status, citizen_name, tax_status, error_message)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(propertyId, phone, msg, smsResult.status, name, taxRecord.status, smsResult.error);
     
     // Also log in reminders table
     db.prepare(`
@@ -1029,54 +1438,73 @@ app.post('/api/admin/send-reminder', requireAdmin, (req, res) => {
     createNotification(
       propertyId, 'Citizen',
       'Tax Payment Reminder',
-      msg,
+      `Tax reminder message sent (Status: ${smsResult.status}). Due: ${taxRecord.due_date}`,
       'Tax'
     );
 
-    res.json({ success: true, message: `SMS reminder sent successfully to ${phone}!` });
+    let responseMsg = `SMS reminder sent successfully to ${phone} (Real Gateway).`;
+    if (smsResult.status === 'Failed') {
+      responseMsg = `Failed to send SMS to ${phone}. Error: ${smsResult.error || 'Unknown Gateway Error'}`;
+    }
+    res.json({ success: smsResult.status === 'Sent', message: responseMsg });
   } catch (error) {
     res.json({ success: false, message: error.message });
-  }
-});
+  }});
 
-app.post('/api/admin/send-bulk-reminder', requireAdmin, (req, res) => {
+app.post('/api/admin/send-bulk-reminder', requireAdmin, async (req, res) => {
   const { reminderType } = req.body;
   try {
-    const unpaid = db.prepare(`
+    const pendingRecords = db.prepare(`
       SELECT tr.*, p.owner_name
       FROM tax_records tr
       JOIN properties p ON tr.property_id = p.property_id
-      WHERE tr.status = 'Unpaid'
+      WHERE tr.status IN ('Unpaid', 'Overdue')
     `).all() || [];
 
     let sentCount = 0;
-    unpaid.forEach(record => {
+
+    for (const record of pendingRecords) {
+      // Prevent duplicate SMS reminders from being sent repeatedly on the same day in bulk mode
+      const duplicate = db.prepare(`
+        SELECT COUNT(*) as count FROM sms_logs 
+        WHERE property_id = ? AND date(sent_at) = date('now')
+      `).get(record.property_id).count > 0;
+      
+      if (duplicate) continue;
+
       const user = db.prepare('SELECT * FROM users WHERE property_id = ?').get(record.property_id);
       const phone = user ? user.phone : '9876543210';
       const name = user ? user.name : record.owner_name || 'Citizen';
 
-      const msg = `Dear ${name}, this is a bulk reminder that your property tax of ₹${record.tax_amount} for Property ${record.property_id} is ${reminderType === 'overdue' ? 'OVERDUE' : 'due in ' + reminderType + ' days'} (Due: ${record.due_date}). Please pay online. - Gram Panchayat`;
+      const msg = `Dear ${name},
+Our records show that your Gram Panchayat Property Tax for Property ID ${record.property_id} is pending.
 
+      Please log in to the Smart Gram Panchayat application to view the outstanding amount, due date, and payment details.
+
+      To make an offline payment, please contact or visit the Gram Panchayat Office.
+
+      Thank you.`;
+
+      const smsResult = await sendSMSGateway(phone, name, record.property_id, msg);
       db.prepare(`
-        INSERT INTO sms_logs (property_id, phone, message, status)
-        VALUES (?, ?, ?, 'Sent')
-      `).run(record.property_id, phone, msg);
+        INSERT INTO sms_logs (property_id, phone, message, status, citizen_name, tax_status, error_message)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).run(record.property_id, phone, msg, smsResult.status, name, record.status, smsResult.error);
 
       db.prepare(`
         INSERT INTO reminders (property_id, tax_record_id, reminder_type, reminder_days, reminder_date, sent, sent_date, sms_sent)
         VALUES (?, ?, 'Tax Payment', ?, ?, 1, datetime('now'), 1)
       `).run(record.property_id, record.id, reminderType, record.due_date);
 
-      // Create notification
       createNotification(
         record.property_id, 'Citizen',
         'Tax Payment Reminder',
-        msg,
+        `Tax reminder message sent (Status: ${smsResult.status}). Due: ${record.due_date}`,
         'Tax'
       );
 
       sentCount++;
-    });
+    }
 
     res.json({ success: true, message: `Sent bulk reminders to ${sentCount} properties successfully!` });
   } catch (error) {
@@ -1092,15 +1520,21 @@ app.post('/api/chat', async (req, res) => {
   if (req.session.user) {
     propertyId = req.session.user.property_id;
   }
-  
   try {
-    const services = db.prepare('SELECT title, description FROM services WHERE status = "Active"').all() || [];
+    const services = db.prepare('SELECT * FROM services WHERE status = "Active"').all() || [];
+    const schemes = db.prepare('SELECT * FROM government_schemes').all() || [];
+    
     const announcements = [
       { title: 'Gram Sabha Meeting', message: 'A meeting is scheduled for tomorrow at 10 AM regarding water supply.' },
       { title: 'Tax Payment Reminder', message: 'Please pay your property taxes before the due date to avoid fines.' }
     ];
     
-    let taxInfo = null;
+
+        let taxInfo = null;
+    let complaints = [];
+    let property = null;
+    let taxRecords = [];
+    
     if (propertyId) {
       taxInfo = db.prepare(`
         SELECT tr.*, p.owner_name, p.property_type
@@ -1109,12 +1543,19 @@ app.post('/api/chat', async (req, res) => {
         WHERE tr.property_id = ? AND tr.status = 'Unpaid'
         ORDER BY tr.year DESC LIMIT 1
       `).get(propertyId);
+      complaints = db.prepare('SELECT * FROM complaints WHERE property_id = ?').all() || [];
+      property = db.prepare('SELECT * FROM properties WHERE property_id = ?').get(propertyId);
+      taxRecords = db.prepare('SELECT * FROM tax_records WHERE property_id = ?').all() || [];
     }
     
     const context = {
       services,
+      schemes,
       announcements,
       tax_info: taxInfo,
+      complaints,
+      property,
+      tax_records: taxRecords,
       gemini_api_key: process.env.GEMINI_API_KEY || null
     };
 

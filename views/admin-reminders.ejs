@@ -39,6 +39,20 @@
         </div>
       </div>
 
+      <!-- Gateway Connection Status -->
+      <div class="card mb-4" style="border-left: 5px solid <%= isRealSMS ? '#2E7D32' : '#E65100' %>; background: <%= isRealSMS ? '#E8F5E9' : '#FFF3E0' %>; color: <%= isRealSMS ? '#1B5E20' : '#E65100' %>;">
+        <div class="card-body" style="padding: 12px 20px; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <i class="fas <%= isRealSMS ? 'fa-check-circle' : 'fa-exclamation-triangle' %> fa-lg"></i>
+            <strong style="margin-left: 8px;">SMS Gateway Status:</strong> 
+            <%= isRealSMS ? 'Real SMS Gateway Connected (Twilio/Fast2SMS)' : 'Simulation Mode (No credentials configured in .env)' %>
+          </div>
+          <span class="status-badge <%= isRealSMS ? 'paid' : 'unpaid' %>" style="margin: 0; font-size: 0.8rem;">
+            <%= isRealSMS ? 'Active' : 'Simulation Mode' %>
+          </span>
+        </div>
+      </div>
+
       <!-- Bulk SMS Buttons -->
       <div class="stats-grid">
         <div class="stat-card reminder-card">
@@ -84,22 +98,22 @@
         <div class="card-header">
           <h3 class="card-title">Send Individual Reminder</h3>
         </div>
-        <div class="form-row">
-          <div class="form-group" style="flex: 1;">
+        <div class="form-row" style="padding: 20px; display: flex; gap: 15px; align-items: flex-end;">
+          <div class="form-group" style="flex: 1; margin-bottom: 0;">
             <label class="form-label">Property ID</label>
-            <input type="text" id="individualPropertyId" class="form-control" placeholder="e.g. PROP001">
+            <input type="text" id="individualPropertyId" class="form-control" placeholder="e.g. PROP001" style="margin-bottom: 0;">
           </div>
-          <div class="form-group" style="width: 200px;">
+          <div class="form-group" style="width: 200px; margin-bottom: 0;">
             <label class="form-label">Type</label>
-            <select id="individualType" class="form-control">
+            <select id="individualType" class="form-control" style="margin-bottom: 0;">
               <option value="15">15 Days</option>
               <option value="20">20 Days</option>
               <option value="30">30 Days</option>
               <option value="overdue">Overdue</option>
             </select>
           </div>
-          <div class="form-group" style="width: 150px; align-self: end;">
-            <button onclick="sendIndividualReminder()" class="btn btn-warning">
+          <div class="form-group" style="margin-bottom: 0;">
+            <button onclick="sendIndividualReminder()" class="btn btn-warning" style="margin-top: 0; padding: 10px 25px;">
               <i class="fas fa-paper-plane"></i> Send
             </button>
           </div>
@@ -132,7 +146,7 @@
       </div>
 
       <!-- SMS Logs -->
-      <div class="card mt-4">
+      <div class="card mt-4 text-management-card">
         <div class="card-header">
           <h3 class="card-title">SMS Logs (<span id="smsCount">0</span>)</h3>
         </div>
@@ -140,10 +154,13 @@
           <table class="table">
             <thead>
               <tr>
-                <th>Property</th>
-                <th>Phone</th>
+                <th>Citizen</th>
+                <th>Property ID</th>
+                <th>Mobile</th>
+                <th>Tax Status</th>
+                <th>Date & Time</th>
                 <th>Status</th>
-                <th>Sent</th>
+                <th>Details / Error</th>
               </tr>
             </thead>
             <tbody id="smsLogs">
@@ -197,19 +214,37 @@
     function displaySMSLogs(logs) {
       const tbody = document.getElementById('smsLogs');
       document.getElementById('smsCount').textContent = logs.length;
-      
-      tbody.innerHTML = logs.map(log => `
-        <tr>
-          <td>${log.property_id}</td>
-          <td>${log.phone}</td>
-          <td><span class="status-badge ${log.status === 'Sent' ? 'success' : 'error'}">${log.status}</span></td>
-          <td>${new Date(log.sent_at).toLocaleString('en-IN')}</td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = logs.map(log => {
+        let badgeColor = 'paid'; // green for Sent
+        if (log.status === 'Simulation') badgeColor = 'unpaid'; // orange/yellow
+        else if (log.status === 'Failed') badgeColor = 'overdue'; // red
+
+        let statusText = log.status;
+        if (log.status === 'Simulation') statusText = 'Simulation Mode';
+
+        let taxBadgeColor = 'unpaid';
+        if (log.tax_status === 'Overdue') taxBadgeColor = 'overdue';
+
+        return `
+          <tr>
+            <td>${log.citizen_name || 'Citizen'}</td>
+            <td><strong>${log.property_id}</strong></td>
+            <td>${log.phone}</td>
+            <td><span class="status-badge ${taxBadgeColor}">${log.tax_status || 'Pending'}</span></td>
+            <td>${new Date(log.sent_at).toLocaleString('en-IN')}</td>
+            <td>
+              <span class="status-badge ${badgeColor}">
+                ${statusText}
+              </span>
+            </td>
+            <td><small class="text-muted">${log.error_message || 'None'}</small></td>
+          </tr>
+        `;
+      }).join('');
     }
 
     async function sendBulkReminder(type) {
-      if (!confirm(`Send ${type}-day reminder to ALL pending properties?`)) return;
+      if (!confirm(`Send bulk reminders to ALL pending properties with no SMS sent today?`)) return;
       
       try {
         const res = await fetch('/api/admin/send-bulk-reminder', {
@@ -225,15 +260,7 @@
       }
     }
 
-    async function sendIndividualReminder() {
-      const propertyId = document.getElementById('individualPropertyId').value.trim();
-      const type = document.getElementById('individualType').value;
-      
-      if (!propertyId) {
-        alert('Please enter Property ID');
-        return;
-      }
-      
+    async function sendReminder(propertyId, type) {
       try {
         const res = await fetch('/api/admin/send-reminder', {
           method: 'POST',
@@ -248,8 +275,17 @@
       }
     }
 
-    // Page load
-    document.addEventListener('DOMContentLoaded', loadRemindersData);
+    async function sendIndividualReminder() {
+      const propId = document.getElementById('individualPropertyId').value.trim();
+      const type = document.getElementById('individualType').value;
+      if (!propId) {
+        alert('Please enter a Property ID');
+        return;
+      }
+      sendReminder(propId, type);
+    }
+
+    window.onload = loadRemindersData;
   </script>
 </body>
 </html>

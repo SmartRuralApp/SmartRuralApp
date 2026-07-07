@@ -18,16 +18,18 @@
           <span>Panchayat Admin</span>
         </div>
       </div>
-      <ul class="sidebar-menu">
-        <li><a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-        <li><a href="/admin-properties"><i class="fas fa-city"></i> <span>Properties</span></a></li>
-        <li><a href="/admin-citizens" class="active"><i class="fas fa-users"></i> <span>Citizens</span></a></li>
-        <li><a href="/admin-tax"><i class="fas fa-file-invoice-dollar"></i> <span>Tax Management</span></a></li>
-        <li><a href="/admin-complaints"><i class="fas fa-exclamation-triangle"></i> <span>Complaints</span></a></li>
-        <li><a href="/admin-services"><i class="fas fa-cogs"></i> <span>Services</span></a></li>
-        <li><a href="/admin-schemes"><i class="fas fa-hand-holding-usd"></i> <span>Schemes</span></a></li>
-        <li><a href="/admin-ml-performance"><i class="fas fa-chart-line"></i> <span>ML Performance</span></a></li>
-        <li><a href="/admin-logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            <ul class="sidebar-menu">
+        <li><a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/admin-properties"><i class="fas fa-city"></i> Properties</a></li>
+        <li><a href="/admin-citizens" class="active"><i class="fas fa-users"></i> Citizens</a></li>
+        <li><a href="/admin-tax"><i class="fas fa-receipt"></i> Tax Management</a></li>
+        <li><a href="/admin-reminders"><i class="fas fa-bell"></i> SMS Reminders</a></li>
+        
+        <li><a href="/admin-complaints"><i class="fas fa-exclamation-triangle"></i> Complaints</a></li>
+        <li><a href="/admin-services"><i class="fas fa-cogs"></i> Services</a></li>
+        <li><a href="/admin-schemes"><i class="fas fa-hand-holding-usd"></i> Schemes</a></li>
+        <li><a href="/admin-ml-performance"><i class="fas fa-chart-line"></i> ML Performance</a></li>
+        <li><a href="/admin-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
       </ul>
     </aside>
 
@@ -40,7 +42,20 @@
         </div>
       </div>
 
-      <!-- Add Citizen Form -->
+      <!-- Excel Import Panel -->
+      <div class="card mb-4">
+        <div class="card-header" style="background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%); color: white; display: flex; justify-content: space-between; align-items: center;">
+          <h3 class="card-title" style="color: white; margin: 0;"><i class="fas fa-file-excel"></i> Import Citizens from Excel</h3>
+          <span style="font-size: 0.8rem; opacity: 0.9;">Required: property_id, name, phone, username</span>
+        </div>
+        <div class="card-body" style="display: flex; gap: 15px; align-items: center; padding: 15px 20px;">
+          <input type="file" id="excelFileInput" class="form-control" accept=".xlsx, .xls" style="max-width: 350px;">
+          <button onclick="importExcelData('citizens')" class="btn btn-primary" style="background: #1E88E5; border-color: #1E88E5; margin-top:0;">
+            <i class="fas fa-upload"></i> Parse & Import
+          </button>
+        </div>
+      </div>
+
       <div class="card mb-4">
         <div class="card-header">
           <h3 class="card-title"><i class="fas fa-user-plus"></i> Add New Citizen Profile</h3>
@@ -68,7 +83,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Mobile Phone Number</label>
-                <input type="tel" name="phone" class="form-control" placeholder="10-digit number" required pattern="[0-9]{10}">
+                <input type="text" name="phone" class="form-control" placeholder="10-digit number" required pattern="[0-9]{10}">
               </div>
               <div class="form-group">
                 <label class="form-label">Email Address</label>
@@ -77,6 +92,32 @@
               <div class="form-group">
                 <label class="form-label">Password (For Citizen Portal)</label>
                 <input type="password" name="password" class="form-control" value="user123" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Residential Address</label>
+                <input type="text" name="address" class="form-control" placeholder="House no, Street name, Block" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Ward Number</label>
+                <select name="ward" class="form-control">
+                  <option value="Ward 1">Ward 1</option>
+                  <option value="Ward 2">Ward 2</option>
+                  <option value="Ward 3">Ward 3</option>
+                  <option value="Ward 4">Ward 4</option>
+                  <option value="Ward 5">Ward 5</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Aadhaar Number (Optional)</label>
+                <input type="text" name="aadhaar" class="form-control" placeholder="12-digit number" pattern="[0-9]{12}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" placeholder="e.g. johndoe" required>
               </div>
             </div>
             <div class="form-row" style="border-top: 1px dashed #EEE; padding-top: 15px; margin-top: 10px;">
@@ -168,12 +209,19 @@
                 <% citizens.forEach(function(cit) { %>
                   <tr>
                     <td><strong><%= cit.property_id %></strong></td>
-                    <td><strong><%= cit.name %></strong></td>
+                    <td>
+                      <strong><%= cit.name %></strong><br>
+                      <small class="text-muted">User: <%= cit.username || 'N/A' %></small>
+                    </td>
                     <td>
                       <%= cit.phone %><br>
-                      <small class="text-muted"><%= cit.email || 'No email' %></small>
+                      <small class="text-muted"><%= cit.email || 'No email' %></small><br>
+                      <small style="color: #666;"><%= cit.address || 'No address' %> (<%= cit.ward || 'No ward' %>)</small>
                     </td>
-                    <td><%= cit.age %> yrs / <%= cit.gender %></td>
+                    <td>
+                      <%= cit.age %> yrs / <%= cit.gender %><br>
+                      <small class="text-muted">Aadhaar: <%= cit.aadhaar || 'N/A' %></small>
+                    </td>
                     <td><%= cit.occupation %></td>
                     <td><strong>₹<%= cit.income.toLocaleString('en-IN') %></strong></td>
                     <td><%= cit.land_size %> acres</td>
@@ -194,7 +242,11 @@
                               data-land-size="<%= cit.land_size %>"
                               data-is-farmer="<%= cit.is_farmer %>"
                               data-is-student="<%= cit.is_student %>"
-                              data-disability="<%= cit.disability %>">
+                              data-disability="<%= cit.disability %>"
+                              data-address="<%= cit.address || '' %>"
+                              data-ward="<%= cit.ward || '' %>"
+                              data-aadhaar="<%= cit.aadhaar || '' %>"
+                              data-username="<%= cit.username || '' %>">
                         <i class="fas fa-edit"></i>
                       </button>
                       <button class="btn btn-sm btn-danger" onclick="deleteCitizen(this)"
@@ -235,8 +287,30 @@
             <input type="text" id="editCitName" name="name" class="form-control" required>
           </div>
           <div class="form-group">
+            <label class="form-label">Residential Address</label>
+            <input type="text" id="editCitAddress" name="address" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ward Number</label>
+            <select id="editCitWard" name="ward" class="form-control">
+              <option value="Ward 1">Ward 1</option>
+              <option value="Ward 2">Ward 2</option>
+              <option value="Ward 3">Ward 3</option>
+              <option value="Ward 4">Ward 4</option>
+              <option value="Ward 5">Ward 5</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Aadhaar Number</label>
+            <input type="text" id="editCitAadhaar" name="aadhaar" class="form-control" pattern="[0-9]{12}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <input type="text" id="editCitUsername" name="username" class="form-control" required>
+          </div>
+          <div class="form-group">
             <label class="form-label">Phone Number</label>
-            <input type="tel" id="editCitPhone" name="phone" class="form-control" required pattern="[0-9]{10}">
+            <input type="text" id="editCitPhone" name="phone" class="form-control" required pattern="[0-9]{10}">
           </div>
           <div class="form-group">
             <label class="form-label">Email Address</label>
@@ -293,13 +367,58 @@
               <option value="0">No</option>
             </select>
           </div>
+        </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline" onclick="closeEditCitizenModal()">Cancel</button>
           <button type="submit" class="btn btn-primary">Update</button>
         </div>
       </form>
     </div>
-
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script>
+    function importExcelData(type) {
+      const fileInput = document.getElementById('excelFileInput');
+      if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        alert('Please select an Excel file first.');
+        return;
+      }
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+          
+          if (jsonData.length === 0) {
+            alert('The Excel file is empty.');
+            return;
+          }
+          
+          fetch('/api/admin/import', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: type, data: jsonData })
+          })
+          .then(res => res.json())
+          .then(resData => {
+            alert(resData.message);
+            if (resData.success) {
+              window.location.reload();
+            }
+          });
+        } catch(err) {
+          alert('Error parsing Excel: ' + err.message);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
   <script src="/js/main.js?v=<%= Date.now() %>"></script>
 </body>
 </html>
+
+
+

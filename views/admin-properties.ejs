@@ -18,16 +18,18 @@
           <span>Panchayat Admin</span>
         </div>
       </div>
-      <ul class="sidebar-menu">
-        <li><a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-        <li><a href="/admin-properties" class="active"><i class="fas fa-city"></i> <span>Properties</span></a></li>
-        <li><a href="/admin-citizens"><i class="fas fa-users"></i> <span>Citizens</span></a></li>
-        <li><a href="/admin-tax"><i class="fas fa-file-invoice-dollar"></i> <span>Tax Management</span></a></li>
-        <li><a href="/admin-complaints"><i class="fas fa-exclamation-triangle"></i> <span>Complaints</span></a></li>
-        <li><a href="/admin-services"><i class="fas fa-cogs"></i> <span>Services</span></a></li>
-        <li><a href="/admin-schemes"><i class="fas fa-hand-holding-usd"></i> <span>Schemes</span></a></li>
-        <li><a href="/admin-ml-performance"><i class="fas fa-chart-line"></i> <span>ML Performance</span></a></li>
-        <li><a href="/admin-logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            <ul class="sidebar-menu">
+        <li><a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/admin-properties" class="active"><i class="fas fa-city"></i> Properties</a></li>
+        <li><a href="/admin-citizens"><i class="fas fa-users"></i> Citizens</a></li>
+        <li><a href="/admin-tax"><i class="fas fa-receipt"></i> Tax Management</a></li>
+        <li><a href="/admin-reminders"><i class="fas fa-bell"></i> SMS Reminders</a></li>
+        
+        <li><a href="/admin-complaints"><i class="fas fa-exclamation-triangle"></i> Complaints</a></li>
+        <li><a href="/admin-services"><i class="fas fa-cogs"></i> Services</a></li>
+        <li><a href="/admin-schemes"><i class="fas fa-hand-holding-usd"></i> Schemes</a></li>
+        <li><a href="/admin-ml-performance"><i class="fas fa-chart-line"></i> ML Performance</a></li>
+        <li><a href="/admin-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
       </ul>
     </aside>
 
@@ -37,6 +39,20 @@
         <div>
           <h1>Properties Registry</h1>
           <p class="text-muted">Panchayat Property & Housing Records Database</p>
+        </div>
+      </div>
+
+      <!-- Excel Import Panel -->
+      <div class="card mb-4">
+        <div class="card-header" style="background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%); color: white; display: flex; justify-content: space-between; align-items: center;">
+          <h3 class="card-title" style="color: white; margin: 0;"><i class="fas fa-file-excel"></i> Import Properties from Excel</h3>
+          <span style="font-size: 0.8rem; opacity: 0.9;">Required: property_id, owner_name</span>
+        </div>
+        <div class="card-body" style="display: flex; gap: 15px; align-items: center; padding: 15px 20px;">
+          <input type="file" id="excelFileInput" class="form-control" accept=".xlsx, .xls" style="max-width: 350px;">
+          <button onclick="importExcelData('properties')" class="btn btn-primary" style="background: #1E88E5; border-color: #1E88E5; margin-top:0;">
+            <i class="fas fa-upload"></i> Parse & Import
+          </button>
         </div>
       </div>
 
@@ -169,6 +185,48 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script>
+    function importExcelData(type) {
+      const fileInput = document.getElementById('excelFileInput');
+      if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        alert('Please select an Excel file first.');
+        return;
+      }
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+          
+          if (jsonData.length === 0) {
+            alert('The Excel file is empty.');
+            return;
+          }
+          
+          fetch('/api/admin/import', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: type, data: jsonData })
+          })
+          .then(res => res.json())
+          .then(resData => {
+            alert(resData.message);
+            if (resData.success) {
+              window.location.reload();
+            }
+          });
+        } catch(err) {
+          alert('Error parsing Excel: ' + err.message);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
   <script src="/js/main.js?v=<%= Date.now() %>"></script>
 </body>
 </html>

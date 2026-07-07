@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= scheme.title %> - Scheme Details</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    .details-container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      margin-bottom: 25px;
+      transition: color 0.3s ease;
+    }
+    .back-link:hover {
+      color: #1B5E20;
+    }
+    .detail-section {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #ECEFF1;
+    }
+    .detail-section:last-child {
+      border-bottom: none;
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1B5E20;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-content {
+      font-size: 0.95rem;
+      color: #37474F;
+      line-height: 1.7;
+    }
+    .bullet-list {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .bullet-list li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body style="background-color: #F4F6F7;">
+
+  <!-- Header -->
+  <header class="header" style="background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+    <nav class="navbar">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-landmark"></i>
+        </div>
+        <span class="logo-text">Smart Grama Panchayat</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/home"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/services"><i class="fas fa-handshake"></i> Services</a></li>
+        <% if (session.user) { %>
+          <li><a href="/user-dashboard" class="active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+          <li><a href="/user-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        <% } else if (session.admin) { %>
+          <li><a href="/admin-dashboard" class="active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+          <li><a href="/admin-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        <% } else { %>
+          <li><a href="/user-login"><i class="fas fa-user"></i> Citizen Portal</a></li>
+          <li><a href="/admin-login"><i class="fas fa-user-shield"></i> Admin</a></li>
+        <% } %>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="details-container">
+    <a href="javascript:history.back()" class="back-link" id="schemeBackLink">
+      <i class="fas fa-arrow-left"></i> Go Back
+    </a>
+
+    <div class="card" style="padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
+      <div class="d-flex justify-between align-items-center mb-4 flex-wrap" style="border-bottom: 2px solid #E8F5E9; padding-bottom: 20px;">
+        <div>
+          <span class="status-badge active" style="margin-bottom: 8px; display: inline-block;">Welfare Scheme</span>
+          <h1 style="color: #1B5E20; font-weight: 700; font-family: 'Poppins', sans-serif; margin: 0;"><%= scheme.title %></h1>
+        </div>
+        <div style="font-size: 3rem; color: #2E7D32;">
+          <i class="fas fa-hand-holding-usd"></i>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="detail-section">
+        <div class="section-title"><i class="fas fa-info-circle"></i> Scheme Description</div>
+        <div class="section-content"><%= scheme.description %></div>
+      </div>
+
+      <!-- Eligibility -->
+      <div class="detail-section">
+        <div class="section-title"><i class="fas fa-user-check"></i> Eligibility Criteria</div>
+        <div class="section-content">
+          <p style="font-weight: 600; color: #2E7D32; margin-bottom: 8px;"><%= scheme.target_criteria %></p>
+          <p><%= scheme.eligibility_criteria || 'Available to all eligible low-income citizen families residing in the Gram Panchayat ward limits.' %></p>
+        </div>
+      </div>
+
+      <!-- Benefits -->
+      <div class="detail-section">
+        <div class="section-title"><i class="fas fa-gift"></i> Program Benefits</div>
+        <div class="section-content">
+          <%= scheme.benefits || 'Direct cash benefit transfers and welfare assistance plans matching standard rural guidelines.' %>
+        </div>
+      </div>
+
+      <!-- Required Documents -->
+      <div class="detail-section">
+        <div class="section-title"><i class="fas fa-file-alt"></i> Required Documents</div>
+        <div class="section-content">
+          <% if (scheme.required_documents) { %>
+            <ul class="bullet-list">
+              <% scheme.required_documents.split(',').forEach(function(doc) { %>
+                <li><i class="fas fa-check text-success" style="margin-right: 8px;"></i> <%= doc.trim() %></li>
+              <% }); %>
+            </ul>
+          <% } else { %>
+            <p>Aadhaar Card, Address Proof (Utility Bill or Land Record), Passport Photo, Bank Passbook Details.</p>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Application Process -->
+      <div class="detail-section">
+        <div class="section-title"><i class="fas fa-clipboard-list"></i> Application Process</div>
+        <div class="section-content">
+          <%= scheme.application_process || 'Apply online or submit the filled application form directly to the Panchayat Development Officer (PDO).' %>
+        </div>
+      </div>
+
+      <!-- Contact Details -->
+      <div class="detail-section" style="background-color: #E8F5E9; padding: 20px; border-radius: 12px; border: 1px solid #C8E6C9; border-left: 5px solid #2E7D32;">
+        <div class="section-title" style="margin-bottom: 6px;"><i class="fas fa-phone-alt"></i> Support & Contact Details</div>
+        <div class="section-content" style="font-weight: 500;">
+          <%= scheme.contact_details || 'Panchayat Helpdesk - Contact: +91 80 2843 1234' %>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top: 40px;">
+    <div class="footer-content">
+      <div class="footer-logo">Smart Grama Panchayat</div>
+      <p>Digitizing Rural Governance | All Rights Reserved</p>
+    </div>
+  </footer>
+
+</body>
+</html>

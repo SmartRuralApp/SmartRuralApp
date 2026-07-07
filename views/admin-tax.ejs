@@ -33,15 +33,17 @@
         </div>
       </div>
       <ul class="sidebar-menu">
-        <li><a href="/admin-dashboard" class="sidebar-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-        <li><a href="/admin-properties" class="sidebar-link"><i class="fas fa-city"></i> Properties</a></li>
-        <li><a href="/admin-citizens" class="sidebar-link"><i class="fas fa-users"></i> Citizens</a></li>
-        <li><a href="/admin-tax" class="sidebar-link active"><i class="fas fa-receipt"></i> Tax Records</a></li>
-        <li><a href="/admin-complaints" class="sidebar-link"><i class="fas fa-exclamation-triangle"></i> Complaints</a></li>
-        <li><a href="/admin-services" class="sidebar-link"><i class="fas fa-cogs"></i> Services</a></li>
-        <li><a href="/admin-schemes" class="sidebar-link"><i class="fas fa-hand-holding-usd"></i> Schemes</a></li>
-        <li><a href="/admin-ml-performance" class="sidebar-link"><i class="fas fa-chart-line"></i> ML Performance</a></li>
-        <li><a href="/admin-logout" class="sidebar-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        <li><a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="/admin-properties"><i class="fas fa-city"></i> Properties</a></li>
+        <li><a href="/admin-citizens"><i class="fas fa-users"></i> Citizens</a></li>
+        <li><a href="/admin-tax" class="active"><i class="fas fa-receipt"></i> Tax Management</a></li>
+        <li><a href="/admin-reminders"><i class="fas fa-bell"></i> SMS Reminders</a></li>
+        
+        <li><a href="/admin-complaints"><i class="fas fa-exclamation-triangle"></i> Complaints</a></li>
+        <li><a href="/admin-services"><i class="fas fa-cogs"></i> Services</a></li>
+        <li><a href="/admin-schemes"><i class="fas fa-hand-holding-usd"></i> Schemes</a></li>
+        <li><a href="/admin-ml-performance"><i class="fas fa-chart-line"></i> ML Performance</a></li>
+        <li><a href="/admin-logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
       </ul>
     </aside>
 
@@ -53,23 +55,36 @@
             <div class="stat-card">
               <div class="stat-icon blue"><i class="fas fa-file-invoice"></i></div>
               <div class="stat-info">
-<h3><%= taxRecords ? taxRecords.length : 0 %></h3>
-
-                <p>Total Properties</p>
+                <h3><%= taxRecords ? taxRecords.length : 0 %></h3>
+                <p>Total Tax Records</p>
               </div>
             </div>
             <div class="stat-card">
               <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
               <div class="stat-info">
-                <h3><%= taxRecords.length %></h3>
-                <p>Tax Records</p>
+                <h3><%= taxRecords.filter(r => r.status !== 'Paid').length %></h3>
+                <p>Pending Collections</p>
               </div>
             </div>
           </div>
         </div>
         
+        <!-- Excel Import Panel -->
+        <div class="card mb-4">
+          <div class="card-header" style="background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%); color: white; display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="card-title" style="color: white; margin: 0;"><i class="fas fa-file-excel"></i> Import Tax Records from Excel</h3>
+            <span style="font-size: 0.8rem; opacity: 0.9;">Required: property_id, tax_amount, due_date, year</span>
+          </div>
+          <div class="card-body" style="display: flex; gap: 15px; align-items: center; padding: 15px 20px;">
+            <input type="file" id="excelFileInput" class="form-control" accept=".xlsx, .xls" style="max-width: 350px;">
+            <button onclick="importExcelData('taxes')" class="btn btn-primary" style="background: #1E88E5; border-color: #1E88E5; margin-top:0;">
+              <i class="fas fa-upload"></i> Parse & Import
+            </button>
+          </div>
+        </div>
+
         <!-- Add New Tax Record Form -->
-        <div class="card">
+        <div class="card mb-4">
           <div class="card-header">
             <h3 class="card-title"><i class="fas fa-plus"></i> Add New Tax Record</h3>
           </div>
@@ -150,32 +165,32 @@
                           <span class="status-badge <%= record.status.toLowerCase() %>"><%= record.status %></span>
                         </td>
                         <td>
-                          <% if (record.status === 'Unpaid') { %>
-                            <div style="display: flex; flex-direction: column; gap: 4px;">
-                              <div>
-                                <span class="status-badge <%= record.predicted_status === 'High Risk' ? 'overdue' : record.predicted_status === 'Medium Risk' ? 'unpaid' : 'paid' %>">
-                                  <%= record.predicted_status %> (<%= Math.round(record.payment_probability) %>%)
-                                </span>
-                                <% if (record.admin_corrected) { %>
-                                  <small class="text-success" title="Admin Overridden"><i class="fas fa-check-circle"></i></small>
-                                <% } %>
-                              </div>
-                              <% if (record.xai_explanation) { %>
-                                <small class="text-muted" style="font-size: 0.73rem; font-style: italic; line-height: 1.1; margin-top: 2px;">
-                                  <i class="fas fa-info-circle"></i> <%= record.xai_explanation %>
-                                </small>
+                          <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <div>
+                              <% const displayRisk = record.override_status || record.predicted_status || 'No Risk'; %>
+                              <span class="status-badge <%= displayRisk === 'High Risk' ? 'overdue' : (displayRisk === 'Medium Risk' || displayRisk === 'Low Risk') ? 'unpaid' : 'paid' %>">
+                                <%= displayRisk %> (<%= Math.round(record.payment_probability || 0) %>%)
+                              </span>
+                              <% if (record.override_status) { %>
+                                <small class="text-success" title="Admin Overridden: ML model predicted <%= record.predicted_status %>"><i class="fas fa-check-circle"></i></small>
+                                <div style="font-size:0.75rem; color:#666; margin-top:2px;">(ML: <%= record.predicted_status %>)</div>
                               <% } %>
+                            </div>
+                            <% if (record.xai_explanation) { %>
+                              <small class="text-muted" style="font-size: 0.73rem; font-style: italic; line-height: 1.1; margin-top: 2px;">
+                                <i class="fas fa-info-circle"></i> <%= record.xai_explanation %>
+                              </small>
+                            <% } %>
+                            <% if (record.status !== 'Paid') { %>
                               <!-- Override Select -->
                               <select class="form-control form-control-sm" style="width: auto; font-size: 0.75rem; margin-top: 4px; padding: 2px 5px;" onchange="overrideTaxRisk('<%= record.id %>', this.value)">
                                 <option value="">Override Risk...</option>
-                                <option value="Low Risk" <%= record.predicted_status === 'Low Risk' ? 'selected' : '' %>>Low Risk</option>
-                                <option value="Medium Risk" <%= record.predicted_status === 'Medium Risk' ? 'selected' : '' %>>Medium Risk</option>
-                                <option value="High Risk" <%= record.predicted_status === 'High Risk' ? 'selected' : '' %>>High Risk</option>
+                                <option value="Low Risk" <%= record.override_status === 'Low Risk' ? 'selected' : '' %>>Low Risk</option>
+                                <option value="Medium Risk" <%= record.override_status === 'Medium Risk' ? 'selected' : '' %>>Medium Risk</option>
+                                <option value="High Risk" <%= record.override_status === 'High Risk' ? 'selected' : '' %>>High Risk</option>
                               </select>
-                            </div>
-                          <% } else { %>
-                            <span class="text-muted">—</span>
-                          <% } %>
+                            <% } %>
+                          </div>
                         </td>
                         <td><small><%= new Date(record.created_at).toLocaleDateString('en-IN') %></small></td>
                         <td>
@@ -212,12 +227,12 @@
     <div class="modal">
       <div class="modal-header">
         <h3>Edit Tax Record</h3>
-        <button class="modal-close"><i class="fas fa-times"></i></button>
+        <button class="modal-close" onclick="closeEditTaxModal()"><i class="fas fa-times"></i></button>
       </div>
       <form id="editTaxForm" method="POST" action="/api/admin/update-tax">
         <div class="modal-body">
-
           <input type="hidden" id="editTaxId" name="id">
+          <input type="hidden" id="editPropertyId" name="propertyId">
           <div class="form-row">
             <div class="form-group">
               <label for="editTaxAmount" class="form-label">Tax Amount</label>
@@ -242,9 +257,6 @@
               </select>
             </div>
           </div>
-          <div class="form-group">
-            <input type="hidden" id="editPropertyId" name="propertyId">
-          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline" onclick="closeEditTaxModal()">Cancel</button>
@@ -256,12 +268,27 @@
 
   <script src="/js/main.js?v=<%= Date.now() %>"></script>
   <script>
-    // Set default due date to end of month
-    document.getElementById('dueDate').valueAsDate = new Date(new Date().getFullYear(), new Date().getMonth() + 11, 31);
+    // Set default due date to end of year
+    document.getElementById('dueDate').valueAsDate = new Date(new Date().getFullYear(), 11, 31);
     document.getElementById('year').value = new Date().getFullYear();
 
+    const editModal = document.getElementById('editTaxModal');
+
+    function editTaxRecord(btn) {
+      document.getElementById('editTaxId').value = btn.dataset.id;
+      document.getElementById('editPropertyId').value = btn.dataset.propertyId;
+      document.getElementById('editTaxAmount').value = btn.dataset.taxAmount;
+      document.getElementById('editDueDate').value = btn.dataset.dueDate;
+      document.getElementById('editYear').value = btn.dataset.year;
+      document.getElementById('editStatus').value = btn.dataset.status;
+      editModal.classList.add('active');
+    }
+
+    function closeEditTaxModal() {
+      editModal.classList.remove('active');
+    }
+
     function overrideTaxRisk(id, risk) {
-      if (!risk) return;
       fetch('/api/admin/override-tax-prediction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -276,6 +303,66 @@
         }
       })
       .catch(err => alert("Network error: " + err.message));
+    }
+
+    function deleteTaxRecord(btn) {
+      if (confirm("Are you sure you want to delete this tax record?")) {
+        fetch('/api/admin/delete-tax', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: btn.dataset.id })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            window.location.reload();
+          } else {
+            alert("Error deleting record: " + data.message);
+          }
+        });
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script>
+    function importExcelData(type) {
+      const fileInput = document.getElementById('excelFileInput');
+      if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        alert('Please select an Excel file first.');
+        return;
+      }
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+          
+          if (jsonData.length === 0) {
+            alert('The Excel file is empty.');
+            return;
+          }
+          
+          fetch('/api/admin/import', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: type, data: jsonData })
+          })
+          .then(res => res.json())
+          .then(resData => {
+            alert(resData.message);
+            if (resData.success) {
+              window.location.reload();
+            }
+          });
+        } catch(err) {
+          alert('Error parsing Excel: ' + err.message);
+        }
+      };
+      reader.readAsArrayBuffer(file);
     }
   </script>
 </body>

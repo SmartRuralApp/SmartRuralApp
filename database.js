@@ -49,6 +49,7 @@ async function initDatabase() {
       payment_probability REAL DEFAULT 100.0,
       admin_corrected INTEGER DEFAULT 0,
       xai_explanation TEXT,
+      override_status TEXT,
       FOREIGN KEY (property_id) REFERENCES properties(property_id)
     )
   `);
@@ -112,6 +113,10 @@ async function initDatabase() {
       is_farmer INTEGER DEFAULT 1,
       is_student INTEGER DEFAULT 0,
       disability INTEGER DEFAULT 0,
+      address TEXT,
+      ward TEXT,
+      aadhaar TEXT,
+      username TEXT UNIQUE,
       FOREIGN KEY (property_id) REFERENCES properties(property_id)
     )
   `);
@@ -124,7 +129,10 @@ async function initDatabase() {
       phone TEXT NOT NULL,
       message TEXT NOT NULL,
       status TEXT DEFAULT 'Sent',
-      sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      citizen_name TEXT,
+      tax_status TEXT,
+      error_message TEXT
     )
   `);
   
@@ -154,6 +162,7 @@ async function initDatabase() {
       duplicate_of_id INTEGER,
       admin_corrected INTEGER DEFAULT 0,
       xai_explanation TEXT,
+      admin_remarks TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (property_id) REFERENCES properties(property_id)
     )
@@ -172,17 +181,22 @@ async function initDatabase() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
-
   // Government Schemes table (NEW)
   db.run(`
     CREATE TABLE IF NOT EXISTS government_schemes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT UNIQUE NOT NULL,
       description TEXT NOT NULL,
-      target_criteria TEXT NOT NULL
+      target_criteria TEXT NOT NULL,
+      eligibility_criteria TEXT,
+      required_documents TEXT,
+      benefits TEXT,
+      application_process TEXT,
+      contact_details TEXT
     )
   `);
-
+  // Appointments table (DELETED)
+  db.run(`DROP TABLE IF EXISTS appointments`);
   // Run migrations in case database already exists
   const taxCols = [
     { name: 'predicted_status', type: "TEXT DEFAULT 'Low Risk'" },
@@ -204,13 +218,37 @@ async function initDatabase() {
     { name: 'land_size', type: "REAL DEFAULT 1.5" },
     { name: 'is_farmer', type: "INTEGER DEFAULT 1" },
     { name: 'is_student', type: "INTEGER DEFAULT 0" },
-    { name: 'disability', type: "INTEGER DEFAULT 0" }
+    { name: 'disability', type: "INTEGER DEFAULT 0" },
+    { name: 'address', type: "TEXT" },
+    { name: 'ward', type: "TEXT" },
+    { name: 'aadhaar', type: "TEXT" },
+    { name: 'username', type: "TEXT" }
   ];
   userCols.forEach(col => {
     try {
       db.run(`ALTER TABLE users ADD COLUMN ${col.name} ${col.type}`);
     } catch(e) {}
   });
+
+  try {
+    db.run("ALTER TABLE complaints ADD COLUMN admin_remarks TEXT");
+  } catch(e) {}
+
+  try {
+    db.run("ALTER TABLE sms_logs ADD COLUMN citizen_name TEXT");
+  } catch(e) {}
+
+  try {
+    db.run("ALTER TABLE sms_logs ADD COLUMN tax_status TEXT");
+  } catch(e) {}
+
+  try {
+    db.run("ALTER TABLE sms_logs ADD COLUMN error_message TEXT");
+  } catch(e) {}
+
+  try {
+    db.run("ALTER TABLE tax_records ADD COLUMN override_status TEXT");
+  } catch(e) {}
 
   const remindersCols = [
     { name: 'sent', type: "INTEGER DEFAULT 0" },
@@ -223,7 +261,139 @@ async function initDatabase() {
     } catch(e) {}
   });
 
-  // 1. Seed admin user if missing
+  // Schemes column migrations
+  const schemeCols = [
+    { name: 'eligibility_criteria', type: 'TEXT' },
+    { name: 'required_documents', type: 'TEXT' },
+    { name: 'benefits', type: 'TEXT' },
+    { name: 'application_process', type: 'TEXT' },
+    { name: 'contact_details', type: 'TEXT' }
+  ];
+  schemeCols.forEach(col => {
+    try {
+      db.run(`ALTER TABLE government_schemes ADD COLUMN ${col.name} ${col.type}`);
+    } catch(e) {}
+  });
+
+  // Services column migrations
+  const serviceCols = [
+    { name: 'required_documents', type: 'TEXT' },
+    { name: 'processing_time', type: 'TEXT' },
+    { name: 'office_timings', type: 'TEXT' },
+    { name: 'contact_details', type: 'TEXT' }
+  ];
+  serviceCols.forEach(col => {
+    try {
+      db.run(`ALTER TABLE services ADD COLUMN ${col.name} ${col.type}`);
+    } catch(e) {}
+  });
+
+  // Retroactively update existing schemes with details if they exist
+  try {
+    db.run(`UPDATE government_schemes SET 
+      eligibility_criteria = 'Landholding farmer families with cultivable land holding up to 2 hectares in their name.',
+      required_documents = 'Aadhaar Card, Land Ownership Documents (Pattadar Passbook), Bank Account Details, Mobile Number.',
+      benefits = 'Direct income support of ₹6,000 per year in three equal installments of ₹2,000 every four months.',
+      application_process = 'Apply online via PM-Kisan Portal (pmkisan.gov.in) or visit the local Gram Panchayat Common Service Center (CSC).',
+      contact_details = 'Panchayat Agriculture Officer (Contact: 080-28431101, Email: ao-agri@grampanchayat.gov.in)'
+      WHERE title = 'PM Kisan'`);
+    
+    db.run(`UPDATE government_schemes SET 
+      eligibility_criteria = 'Families residing in rural areas who do not own a pucca house, with annual income below ₹1.5 Lakhs.',
+      required_documents = 'Aadhaar Card, Job Card Number, Bank Passbook, Certificate of Land Ownership/No-Land Certificate.',
+      benefits = 'Financial assistance of ₹1.2 Lakhs in plains and ₹1.3 Lakhs in hilly/difficult areas for constructing a house.',
+      application_process = 'Identify yourself in the Socio-Economic Caste Census (SECC) list, or fill registration form at the Panchayat Office.',
+      contact_details = 'Panchayat Development Officer (PDO) (Contact: 080-28431102, Email: pdo@grampanchayat.gov.in)'
+      WHERE title = 'PM Awas Yojana'`);
+
+    db.run(`UPDATE government_schemes SET 
+      eligibility_criteria = 'All adult members of a rural household willing to do unskilled manual work.',
+      required_documents = 'Aadhaar Card, Age Proof, Passport size photo, Bank Account details (linked to Aadhaar).',
+      benefits = 'Guaranteed 100 days of wage employment in a financial year to a rural household.',
+      application_process = 'Apply for a Job Card at the local Gram Panchayat. Work is allocated within 15 days of demand.',
+      contact_details = 'MGNREGA Helpdesk at Gram Panchayat Office (Contact: 080-28431103, Email: mgnrega@grampanchayat.gov.in)'
+      WHERE title = 'MGNREGA'`);
+
+    db.run(`UPDATE government_schemes SET 
+      eligibility_criteria = 'Rural students pursuing post-matriculation courses, with family annual income less than ₹2.5 Lakhs.',
+      required_documents = 'Income Certificate, Caste Certificate, Previous Year Marks card, Bank Account details, Fee Receipt.',
+      benefits = 'Tuition fee reimbursement and monthly maintenance allowance depending on course type.',
+      application_process = 'Apply online through State Scholarship Portal (SSP) or submit documents at the Panchayat School Office.',
+      contact_details = 'Panchayat Education Coordinator (Contact: 080-28431104, Email: edu@grampanchayat.gov.in)'
+      WHERE title = 'Post-Matric Scholarship'`);
+
+    db.run(`UPDATE government_schemes SET 
+      eligibility_criteria = 'Citizens with 40% or more disability, residing in rural areas with annual income below ₹1.2 Lakhs.',
+      required_documents = 'Disability Certificate from Medical Board, Aadhaar Card, Income Certificate, Bank Account details.',
+      benefits = 'Monthly pension of ₹1,000 directly transferred to the beneficiary''s bank account.',
+      application_process = 'Submit physical application form signed by Panchayat PDO along with medical certificate.',
+      contact_details = 'Social Welfare Inspector (Contact: 080-28431105, Email: welfare@grampanchayat.gov.in)'
+      WHERE title = 'Divyangjan Pension'`);
+  } catch (err) {
+    console.error("Error migrating scheme details:", err.message);
+  }
+
+  // Retroactively update existing services with details
+  try {
+    db.run(`UPDATE services SET 
+      required_documents = 'Hospital birth registration slip, Parent''s ID proof (Aadhaar/Voter ID), Marriage certificate.',
+      processing_time = '7 Working Days',
+      office_timings = '10:00 AM to 02:00 PM (Monday to Friday)',
+      contact_details = 'Panchayat Registrar (Births & Deaths) - Contact: 080-28431110'
+      WHERE title = 'Birth Certificate'`);
+
+    db.run(`UPDATE services SET 
+      required_documents = 'Hospital death report or cremation/burial certificate, Identity proof of the deceased.',
+      processing_time = '5 Working Days',
+      office_timings = '10:00 AM to 02:00 PM (Monday to Friday)',
+      contact_details = 'Panchayat Registrar (Births & Deaths) - Contact: 080-28431110'
+      WHERE title = 'Death Certificate'`);
+
+    db.run(`UPDATE services SET 
+      required_documents = 'Marriage invitation card, Marriage photograph, Age proof, Address proof of bride/groom, 3 witnesses.',
+      processing_time = '15 Working Days',
+      office_timings = '10:00 AM to 04:00 PM (Monday to Friday)',
+      contact_details = 'Panchayat Marriage Officer - Contact: 080-28431111'
+      WHERE title = 'Marriage Certificate'`);
+
+    db.run(`UPDATE services SET 
+      required_documents = 'Property tax paid receipt, Address proof, Ownership document, Plumbing blueprint.',
+      processing_time = '10 Working Days',
+      office_timings = '10:00 AM to 01:00 PM (Monday to Friday)',
+      contact_details = 'Panchayat Water Department Engineer - Contact: 080-28431112'
+      WHERE title = 'Water Connection'`);
+
+    db.run(`UPDATE services SET 
+      required_documents = 'Property tax receipt, Land conversion certificate, Building blueprint certified by licensed architect.',
+      processing_time = '30 Working Days',
+      office_timings = '10:00 AM to 04:00 PM (Monday to Friday)',
+      contact_details = 'Panchayat Assistant Executive Engineer - Contact: 080-28431113'
+      WHERE title = 'Building Permission'`);
+
+    db.run(`UPDATE services SET 
+      required_documents = 'No Objection Certificate (NOC) from fire & police, Proof of business location, Rent agreement.',
+      processing_time = '20 Working Days',
+      office_timings = '11:00 AM to 04:00 PM (Monday to Friday)',
+      contact_details = 'PDO Trade Section - Contact: 080-28431114'
+      WHERE title = 'Trade License'`);
+
+    db.run(`UPDATE services SET 
+      required_documents = 'Written application signed by at least 5 residents of the ward, Photos of damaged road.',
+      processing_time = '15 Working Days',
+      office_timings = '10:00 AM to 05:00 PM (Monday to Saturday)',
+      contact_details = 'Panchayat Public Works Division - Contact: 080-28431115'
+      WHERE title = 'Road Repair'`);
+
+    db.run(`UPDATE services SET 
+      required_documents = 'Ward number, pole number (if visible), description of issue.',
+      processing_time = '3 Working Days',
+      office_timings = '09:00 AM to 06:00 PM (Monday to Saturday)',
+      contact_details = 'Panchayat Electrical Maintenance Cell - Contact: 080-28431116'
+      WHERE title = 'Street Light'`);
+  } catch (err) {
+    console.error("Error migrating service details:", err.message);
+  }
+
   const adminCheck = db.exec('SELECT COUNT(*) as count FROM admin_users');
   const adminCount = adminCheck.length > 0 ? adminCheck[0].values[0][0] : 0;
   if (adminCount === 0) {
@@ -311,15 +481,23 @@ async function initDatabase() {
   if (userCount === 0) {
     console.log('Seeding sample citizen users...');
     const users = [
-      ['PROP001', 'Ramesh Kumar', '9876543210', 'ramesh@example.com', 'user123', 45, 'Male', 'Agriculture', 75000.0, 2.5, 1, 0, 0],
-      ['PROP002', 'Lakshmi Devi', '9876543211', 'lakshmi@example.com', 'user123', 38, 'Female', 'Laborer', 48000.0, 0.2, 0, 0, 0],
-      ['PROP003', 'Suresh Reddy', '9876543212', 'suresh@example.com', 'user123', 62, 'Male', 'Business', 240000.0, 1.2, 0, 0, 1],
-      ['PROP004', 'Kamala Devi', '9876543213', 'kamala@example.com', 'user123', 21, 'Female', 'Student', 35000.0, 0.0, 0, 1, 0]
+      ['PROP001', 'Ramesh Kumar', '9876543210', 'ramesh@example.com', 'user123', 45, 'Male', 'Agriculture', 75000.0, 2.5, 1, 0, 0, 'Village Main Road, Block A', 'Ward 1', '123456789012', 'ramesh'],
+      ['PROP002', 'Lakshmi Devi', '9876543211', 'lakshmi@example.com', 'user123', 38, 'Female', 'Laborer', 48000.0, 0.2, 0, 0, 0, 'Near Temple Road, Block B', 'Ward 2', '223456789012', 'lakshmi'],
+      ['PROP003', 'Suresh Reddy', '9876543212', 'suresh@example.com', 'user123', 62, 'Male', 'Business', 240000.0, 1.2, 0, 0, 1, 'Market Street, Block C', 'Ward 3', '323456789012', 'suresh'],
+      ['PROP004', 'Kamala Devi', '9876543213', 'kamala@example.com', 'user123', 21, 'Female', 'Student', 35000.0, 0.0, 0, 1, 0, 'School Road, Block A', 'Ward 1', '423456789012', 'kamala']
     ];
     users.forEach(u => {
-      db.run('INSERT INTO users (property_id, name, phone, email, password, age, gender, occupation, income, land_size, is_farmer, is_student, disability) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', u);
+      db.run('INSERT INTO users (property_id, name, phone, email, password, age, gender, occupation, income, land_size, is_farmer, is_student, disability, address, ward, aadhaar, username) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', u);
     });
   }
+
+  // Force update seeded usernames in case database already exists
+  try {
+    db.run("UPDATE users SET username = 'ramesh', address = 'Village Main Road, Block A', ward = 'Ward 1', aadhaar = '123456789012' WHERE property_id = 'PROP001' AND (username IS NULL OR username = '')");
+    db.run("UPDATE users SET username = 'lakshmi', address = 'Near Temple Road, Block B', ward = 'Ward 2', aadhaar = '223456789012' WHERE property_id = 'PROP002' AND (username IS NULL OR username = '')");
+    db.run("UPDATE users SET username = 'suresh', address = 'Market Street, Block C', ward = 'Ward 3', aadhaar = '323456789012' WHERE property_id = 'PROP003' AND (username IS NULL OR username = '')");
+    db.run("UPDATE users SET username = 'kamala', address = 'School Road, Block A', ward = 'Ward 1', aadhaar = '423456789012' WHERE property_id = 'PROP004' AND (username IS NULL OR username = '')");
+  } catch(e) {}
 
   saveDatabase();
   return db;
@@ -358,6 +536,11 @@ function prepare(sql) {
       try {
         const boundParams = (params.length === 1 && Array.isArray(params[0])) ? params[0] : params;
         console.log('SQL GET:', sql, boundParams);
+        
+        if (sql.toLowerCase().includes('last_insert_rowid')) {
+          return { id: global.lastInsertRowId || 0 };
+        }
+
         const stmt = db.prepare(sql);
         const result = stmt.getAsObject(boundParams);
         stmt.free();
@@ -372,11 +555,20 @@ function prepare(sql) {
       try {
         const boundParams = (params.length === 1 && Array.isArray(params[0])) ? params[0] : params;
         console.log('SQL RUN:', sql, boundParams);
-        const stmt = db.prepare(sql);
-        stmt.run(boundParams);
-        stmt.free();
+        db.run(sql, boundParams);
+        
+        // Cache last insert row ID before database serialization resets it
+        try {
+          const res = db.exec("SELECT last_insert_rowid() AS id");
+          if (res && res.length > 0 && res[0].values && res[0].values.length > 0) {
+            global.lastInsertRowId = res[0].values[0][0];
+          }
+        } catch (e) {
+          console.error("Failed to fetch last_insert_rowid:", e.message);
+        }
+
         saveDatabase();
-        return { changes: 1 };
+        return { changes: 1, lastInsertRowid: global.lastInsertRowId || 0 };
       } catch (e) {
         console.error('SQL Error:', e.message, sql, params);
         throw e;
@@ -389,5 +581,6 @@ function prepare(sql) {
 module.exports = {
   init: initDatabase,
   prepare: prepare,
-  getDb: () => db
+  getDb: () => db,
+  saveDatabase: saveDatabase
 };
