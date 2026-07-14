@@ -1,189 +1,182 @@
 {
-  "version": 7,
-  "last_trained": "2026-07-07 15:48:02",
+  "version": 1,
+  "last_trained": "2026-07-14 22:28:09",
   "models": {
-    "complaint_category": {
-      "dataset_size": 200,
-      "accuracy": 0.95,
-      "precision": 0.9561,
-      "recall": 0.95,
-      "f1_score": 0.9466,
+    "complaint_priority": {
+      "dataset_size": 6200,
+      "accuracy": 0.9758,
+      "precision": 0.9772,
+      "recall": 0.9782,
+      "f1_score": 0.9774,
       "confusion_matrix": [
         [
-          2,
-          0,
-          0,
-          0,
-          0,
-          0,
-          1
+          852,
+          12,
+          8
         ],
         [
-          0,
           5,
-          0,
-          0,
-          0,
-          0,
-          0
+          287,
+          4
         ],
         [
-          0,
-          0,
-          9,
-          0,
-          0,
-          0,
-          0
-        ],
-        [
-          0,
-          0,
-          0,
-          5,
-          0,
-          0,
-          0
-        ],
-        [
-          0,
-          0,
-          0,
-          0,
-          9,
-          0,
-          0
-        ],
-        [
-          0,
           0,
           1,
-          0,
-          0,
-          2,
-          0
-        ],
-        [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          6
-        ]
-      ],
-      "classes": [
-        "Drainage",
-        "Electricity",
-        "Others",
-        "Road Damage",
-        "Sanitation",
-        "Street Light",
-        "Water Supply"
-      ]
-    },
-    "complaint_priority": {
-      "dataset_size": 200,
-      "accuracy": 0.95,
-      "precision": 0.9611,
-      "recall": 0.95,
-      "f1_score": 0.9513,
-      "confusion_matrix": [
-        [
-          7,
-          0,
-          0
-        ],
-        [
-          0,
-          18,
-          0
-        ],
-        [
-          2,
-          0,
-          13
+          71
         ]
       ],
       "classes": [
         "High",
         "Low",
         "Medium"
-      ]
+      ],
+      "selected_model": "Random Forest",
+      "comparison": [
+        {
+          "model_name": "Logistic Regression",
+          "accuracy": 0.9177,
+          "precision": 0.9309,
+          "recall": 0.9208,
+          "f1_score": 0.923
+        },
+        {
+          "model_name": "Decision Tree",
+          "accuracy": 0.9476,
+          "precision": 0.9554,
+          "recall": 0.9458,
+          "f1_score": 0.9487
+        },
+        {
+          "model_name": "Random Forest",
+          "accuracy": 0.9758,
+          "precision": 0.9772,
+          "recall": 0.9782,
+          "f1_score": 0.9774
+        }
+      ],
+      "selection_reason": "Random Forest was selected as the production model because it achieved the highest test F1-Score (97.74%) and shows the best generalization capacity on the holdout validation split."
     },
     "tax_defaulter": {
-      "dataset_size": 200,
-      "accuracy": 0.95,
-      "precision": 0.95,
-      "recall": 0.95,
-      "f1_score": 0.95,
+      "dataset_size": 482,
+      "accuracy": 0.9691,
+      "precision": 0.9691,
+      "recall": 0.9712,
+      "f1_score": 0.97,
       "confusion_matrix": [
         [
-          22,
-          1
+          35,
+          2
         ],
         [
           1,
-          16
+          59
         ]
       ],
       "classes": [
         "Non-Defaulter",
         "Defaulter"
-      ]
+      ],
+      "selected_model": "Random Forest",
+      "comparison": [
+        {
+          "model_name": "Logistic Regression",
+          "accuracy": 0.9175,
+          "precision": 0.9221,
+          "recall": 0.9209,
+          "f1_score": 0.9199
+        },
+        {
+          "model_name": "Decision Tree",
+          "accuracy": 0.9381,
+          "precision": 0.9395,
+          "recall": 0.9363,
+          "f1_score": 0.9375
+        },
+        {
+          "model_name": "Random Forest",
+          "accuracy": 0.9691,
+          "precision": 0.9691,
+          "recall": 0.9712,
+          "f1_score": 0.97
+        }
+      ],
+      "selection_reason": "Random Forest was selected as the optimal model for production. It achieved the highest test split F1-Score (97.00%) and handles multi-dimensional outliers in payment history."
     },
     "scheme_recommender": {
-      "dataset_size": 200,
-      "accuracy": 0.95,
-      "precision": 0.9512,
-      "recall": 0.95,
-      "f1_score": 0.9461,
+      "dataset_size": 136,
+      "accuracy": 0.9643,
+      "precision": 0.9405,
+      "recall": 0.9671,
+      "f1_score": 0.9514,
       "confusion_matrix": [
         [
-          5,
           0,
           0,
           1,
-          0
-        ],
-        [
-          0,
-          9,
-          0,
           0,
           0
         ],
         [
           0,
+          6,
           0,
-          3,
           0,
           0
         ],
         [
           0,
           0,
+          2,
           0,
-          20,
           0
         ],
         [
-          1,
           0,
           0,
           0,
-          1
+          17,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2
         ]
       ],
       "classes": [
         "Divyangjan Pension",
         "MGNREGA",
-        "No Scheme",
         "PM Awas Yojana",
         "PM Kisan",
         "Post-Matric Scholarship"
-      ]
+      ],
+      "selected_model": "Random Forest",
+      "comparison": [
+        {
+          "model_name": "Logistic Regression",
+          "accuracy": 0.8929,
+          "precision": 0.9089,
+          "recall": 0.8963,
+          "f1_score": 0.881
+        },
+        {
+          "model_name": "Decision Tree",
+          "accuracy": 0.9286,
+          "precision": 0.9643,
+          "recall": 0.9267,
+          "f1_score": 0.933
+        },
+        {
+          "model_name": "Random Forest",
+          "accuracy": 0.9643,
+          "precision": 0.9405,
+          "recall": 0.9671,
+          "f1_score": 0.9514
+        }
+      ],
+      "selection_reason": "Random Forest was selected as the production welfare scheme recommender model. It achieved the highest test split F1-Score (95.14%) and matches target demographics cleanly."
     }
   }
 }

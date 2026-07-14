@@ -333,6 +333,63 @@
           </table>
         </div>
       </div>
+
+      <!-- Offline Payment Appointments Section -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-calendar-check"></i> Offline Payment Appointments</h3>
+        </div>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Property ID</th>
+                <th>Citizen Name</th>
+                <th>Mobile</th>
+                <th>Date & Time</th>
+                <th>Tax Amount</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (typeof appointments !== 'undefined' && appointments && appointments.length > 0) { %>
+                <% appointments.forEach(function(app) { %>
+                  <tr>
+                    <td><strong><%= app.property_id %></strong></td>
+                    <td><%= app.citizen_name %></td>
+                    <td><%= app.phone %></td>
+                    <td><%= app.appointment_date %> at <%= app.appointment_time %></td>
+                    <td><strong>₹<%= app.tax_amount.toLocaleString('en-IN') %></strong></td>
+                    <td><span class="status-badge active" style="font-size: 0.75rem;"><%= app.payment_type %></span></td>
+                    <td>
+                      <span class="status-badge <%= app.status === 'Completed' ? 'paid' : app.status === 'Rejected' ? 'overdue' : app.status === 'Approved' ? 'active' : 'unpaid' %>" style="font-size: 0.75rem;">
+                        <%= app.status %>
+                      </span>
+                    </td>
+                    <td>
+                      <% if (app.status === 'Pending') { %>
+                        <button onclick="updateAppointment('<%= app.id %>', 'Approved')" class="btn btn-sm btn-success" style="padding: 4px 8px; margin-right: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fas fa-check"></i> Approve</button>
+                        <button onclick="updateAppointment('<%= app.id %>', 'Rejected')" class="btn btn-sm btn-danger" style="padding: 4px 8px; font-size: 0.75rem; cursor: pointer;"><i class="fas fa-times"></i> Reject</button>
+                      <% } else if (app.status === 'Approved') { %>
+                        <button onclick="updateAppointment('<%= app.id %>', 'Completed')" class="btn btn-sm btn-primary" style="padding: 4px 8px; margin-right: 4px; font-size: 0.75rem; cursor: pointer;"><i class="fas fa-check-double"></i> Complete</button>
+                        <button onclick="updateAppointment('<%= app.id %>', 'Rejected')" class="btn btn-sm btn-danger" style="padding: 4px 8px; font-size: 0.75rem; cursor: pointer;"><i class="fas fa-times"></i> Reject</button>
+                      <% } else { %>
+                        <span class="text-muted" style="font-size: 0.8rem;"><i class="fas fa-lock"></i> Finalized</span>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="8" class="text-center text-muted">No offline payment appointments booked.</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -416,6 +473,28 @@
           });
         });
       });
+
+      // Update Appointment Status
+      window.updateAppointment = function(id, status) {
+        if (!confirm(`Are you sure you want to mark this appointment as ${status}?`)) return;
+        fetch('/api/admin/update-appointment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, status })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert('Appointment status updated successfully!');
+            window.location.reload();
+          } else {
+            alert(data.error || 'Failed to update appointment.');
+          }
+        })
+        .catch(err => {
+          alert('Error: ' + err.message);
+        });
+      };
 
       // 2. Render Chart.js Analytics Graphs
       const chartData = <%- JSON.stringify(charts) %>;

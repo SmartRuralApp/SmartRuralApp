@@ -57,7 +57,6 @@
 
         <!-- Models Cards -->
         <% const modelKeys = {
-          complaint_category: "Complaint Category Suggestion Classifier",
           complaint_priority: "Complaint Priority Classifier",
           tax_defaulter: "Tax Payment Defaulter Predictor",
           scheme_recommender: "Government Scheme Eligibility Recommender"
@@ -94,6 +93,57 @@
                       <span class="value"><%= (model.f1_score * 100).toFixed(2) %>%</span>
                     </div>
                   </div>
+                  
+                  <% if (model.comparison) { %>
+                    <div class="mt-4" style="border-top: 1px solid #EEE; padding-top: 20px; margin-bottom: 20px;">
+                      <h4 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--text-primary);">
+                        <i class="fas fa-balance-scale"></i> Classifier Models Comparison
+                      </h4>
+                      <div class="table-responsive">
+                        <table class="table" style="font-size: 0.85rem; width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                          <thead>
+                            <tr style="background-color: #F5F5F5;">
+                              <th style="padding: 10px; border: 1px solid #DDD; text-align: left; font-weight: 600;">Model Name</th>
+                              <th style="padding: 10px; border: 1px solid #DDD; text-align: center; font-weight: 600;">Accuracy</th>
+                              <th style="padding: 10px; border: 1px solid #DDD; text-align: center; font-weight: 600;">Precision</th>
+                              <th style="padding: 10px; border: 1px solid #DDD; text-align: center; font-weight: 600;">Recall</th>
+                              <th style="padding: 10px; border: 1px solid #DDD; text-align: center; font-weight: 600;">F1-Score</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% model.comparison.forEach(m => { %>
+                              <tr style="<%= m.model_name === model.selected_model ? 'background-color: #E8F5E9; font-weight: 600;' : '' %>">
+                                <td style="padding: 10px; border: 1px solid #DDD; text-align: left; vertical-align: middle;">
+                                  <%= m.model_name %>
+                                  <% if (m.model_name === model.selected_model) { %>
+                                    <span class="status-badge active" style="font-size: 0.7rem; padding: 2px 6px; margin-left: 8px; background: #C8E6C9; color: #2E7D32;">Selected</span>
+                                  <% } %>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #DDD; text-align: center; vertical-align: middle;"><%= (m.accuracy * 100).toFixed(2) %>%</td>
+                                <td style="padding: 10px; border: 1px solid #DDD; text-align: center; vertical-align: middle;"><%= (m.precision * 100).toFixed(2) %>%</td>
+                                <td style="padding: 10px; border: 1px solid #DDD; text-align: center; vertical-align: middle;"><%= (m.recall * 100).toFixed(2) %>%</td>
+                                <td style="padding: 10px; border: 1px solid #DDD; text-align: center; vertical-align: middle;"><%= (m.f1_score * 100).toFixed(2) %>%</td>
+                              </tr>
+                            <% }); %>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="alert alert-success" style="padding: 12px 18px; border-radius: var(--radius-sm); background: #E8F5E9; border-left: 4px solid #2E7D32; color: #1B5E20; font-size: 0.88rem; line-height: 1.4;">
+                        <strong>Selected Model:</strong> <%= model.selected_model %> <br>
+                        <span style="font-size: 0.83rem; font-style: italic; display: block; margin-top: 4px; opacity: 0.95;">
+                          <i class="fas fa-info-circle"></i> <%= model.selection_reason %>
+                        </span>
+                      </div>
+                      
+                      <!-- Model Comparison Grouped Bar Chart Graph -->
+                      <div class="mt-4 mb-2" style="border-top: 1px solid #EEE; padding-top: 20px;">
+                        <h4 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--text-primary);"><i class="fas fa-chart-bar"></i> Performance Comparison Graph</h4>
+                        <div style="text-align: center;">
+                          <img src="/img/comparison_<%= key %>.png?v=<%= Date.now() %>" alt="Model comparison chart for <%= key %>" style="max-width: 100%; height: auto; border: 1px solid #E0E0E0; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                        </div>
+                      </div>
+                    </div>
+                  <% } %>
 
                   <!-- Confusion Matrix -->
                   <div class="mt-4">

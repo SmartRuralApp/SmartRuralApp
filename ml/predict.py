@@ -69,56 +69,61 @@ def predict_category(description):
 
 def predict_priority(description, category, ward, similar_count=0, is_duplicate=0):
     model = load_pkl('complaint_priority_model.pkl')
-    vec = load_pkl('complaint_priority_vectorizer.pkl')
     
-    if not model or not vec:
+    if not model:
         pred = "Medium"
         confidence = 1.0
         reasons = ["Default baseline priority"]
     else:
-        vec_desc = vec.transform([description])
-        pred = model.predict(vec_desc)[0]
-        probs = model.predict_proba(vec_desc)[0]
-        confidence = float(np.max(probs))
-        
-        # XAI Reasons
-        reasons = []
-        desc_lower = description.lower()
-        
-        if pred == "High":
-            matched_k = [k for k in HIGH_PRIO_KEYWORDS if k in desc_lower]
-            if matched_k:
-                reasons.append(f"High-severity threat warning keywords detected: {', '.join(matched_k[:3])}.")
-            if category in ["Electricity", "Water Supply", "Drainage"]:
-                reasons.append(f"Critical public utility category ('{category}') increases urgency rating.")
-            if not reasons:
-                reasons.append("Semantic analysis indicates immediate resolution is required.")
-        elif pred == "Medium":
-            reasons.append("The issue requires prompt maintenance, but does not present an immediate safety hazard.")
-        else: # Low
-            reasons.append("Request is classified as general public inquiry, request for new installations, or routine sweeping.")
+        import pandas as pd
+        ward_str = str(ward)
+        if not ward_str.startswith("Ward "):
+            ward_str = f"Ward {ward_str}"
             
-    # Business Rules (Emergency override & Location frequency / Duplicate escalation)
-    desc_lower = description.lower()
-    has_emergency_keyword = any(k in desc_lower for k in ["burst", "danger", "wire", "manhole", "overflow", "sparking", "fallen", "accident"])
-    if has_emergency_keyword and pred != "High" and pred != "Critical":
-        pred = "High"
-        confidence = 0.98
-        reasons = ["Automatically set to High Priority based on emergency keyword detection (e.g. wire, burst, overflow, manhole, etc.)."]
+        input_df = pd.DataFrame([{
+            'Ward': ward_str,
+            'Complaint Category': category,
+            'Complaint Description': description,
+            'Similar Complaints in Same Ward': similar_count,
+            'Status': 'Pending'  # New complaints default to Pending status
+        }])
         
-    total_similar = similar_count + 1
-    if total_similar >= 4:
-        pred = "Critical"
+        try:
+            pred = model.predict(input_df)[0]
+            probs = model.predict_proba(input_df)[0]
+            confidence = float(np.max(probs))
+        except Exception as e:
+            pred = "Medium"
+            confidence = 0.5
+            print(f"Prediction failed: {e}", file=sys.stderr)
+            
+        # Apply final priority rules
+        emergency_keywords = [
+            "live electric wire", "electric pole sparking", "transformer blast", "fire",
+            "gas leak", "road collapse", "pipeline burst", "sewage overflow", "flooding",
+            "tree fallen blocking road", "dangerous open manhole"
+        ]
+        desc_lower = description.lower()
+        is_emergency = any(k in desc_lower for k in emergency_keywords) or \
+                       "life-threatening" in desc_lower or \
+                       "life threatening" in desc_lower or \
+                       "accident hazard" in desc_lower or \
+                       "electrocution" in desc_lower
+                       
+        if is_emergency:
+            pred = "High"
+            reasons = ["Automatically set to High Priority due to emergency keyword detection."]
+        else:
+            if similar_count == 1:
+                pred = "Medium"
+                reasons = [f"Assigned Medium Priority due to 2 similar complaints in {ward_str}."]
+            elif similar_count >= 2:
+                pred = "High"
+                reasons = [f"Assigned High Priority due to {similar_count + 1} similar complaints in {ward_str}."]
+            else:
+                pred = "Low"
+                reasons = [f"Assigned Low Priority due to 1 complaint in {ward_str}."]
         confidence = 1.0
-        reasons = [f"Upgraded to Critical priority because multiple citizens ({total_similar}) reported similar issues in {ward} recently."]
-    elif total_similar >= 2:
-        pred = "High"
-        confidence = 1.0
-        reasons = [f"Upgraded to High priority because multiple citizens ({total_similar}) reported similar issues in {ward} recently."]
-    elif is_duplicate == 1:
-        pred = "High"
-        confidence = 0.95
-        reasons = [f"Upgraded to High priority as this is a confirmed duplicate of an active issue in {ward}."]
 
     return {
         "priority": pred,
@@ -179,44 +184,50 @@ def recommend_schemes(age, gender, occupation, income, land_size, is_farmer, is_
 
 # ----------------- Tax Defaulter Risk -----------------
 def predict_defaulter(property_type, tax_amount, year, history_paid_ratio, late_payments, status="Unpaid"):
-    if status.lower() == 'paid':
-        return {
-            "risk": "No Risk",
-            "probability": 0.0,
-            "reasons": ["Tax is fully paid; no default risk."]
-        }
-
     model = load_pkl('tax_defaulter_model.pkl')
+    scaler = load_pkl('tax_scaler.pkl')
     
-    if not model:
-        return {"risk": "Low Risk", "probability": 0.0, "reasons": ["Default baseline tax risk"]}
-        
-    p_type_enc = 1 if property_type.lower() == 'commercial' else 0
-    features = np.array([[p_type_enc, tax_amount, history_paid_ratio, late_payments]])
-    
-    probs = model.predict_proba(features)[0]
-    classes = model.classes_
-    defaulter_idx = np.where(classes == 1)[0][0]
-    prob_defaulter = float(probs[defaulter_idx])
-    
-    # Realistic logic adjustments
-    if status.lower() == 'paid':
-        risk = "No Risk"
-        prob_percent = 0.0
-    elif status.lower() == 'overdue':
+    prob_percent = 0.0
+    if model:
+        try:
+            p_type_enc = 1 if property_type.lower() == 'commercial' else 0
+            # Feature engineering
+            tax_per_late_payment = tax_amount * late_payments
+            payment_risk_index = (1.0 - history_paid_ratio) * late_payments
+            
+            raw_features = np.array([[p_type_enc, tax_amount, history_paid_ratio, late_payments, tax_per_late_payment, payment_risk_index]])
+            if scaler:
+                features = scaler.transform(raw_features)
+            else:
+                features = raw_features
+                
+            probs = model.predict_proba(features)[0]
+            classes = model.classes_
+            defaulter_idx = np.where(classes == 1)[0][0]
+            prob_defaulter = float(probs[defaulter_idx])
+            prob_percent = prob_defaulter * 100
+        except Exception as e:
+            print("Defaulter prediction error:", e, file=sys.stderr)
+            pass
+
+    # Status-based Risk Mapping
+    status_lower = status.lower()
+    if status_lower == 'paid':
+        risk = "Low Risk"
+        prob_percent = max(5.0, min(25.0, prob_percent))
+        reasons = ["Tax is fully paid; low default risk."]
+    elif status_lower == 'overdue':
         risk = "High Risk"
-        prob_percent = max(75.0, prob_defaulter * 100)
+        prob_percent = max(75.0, min(98.0, prob_percent))
+        reasons = ["Status is Overdue, indicating high likelihood of default."]
+    elif status_lower in ['pending', 'unpaid']:
+        risk = "Medium Risk"
+        prob_percent = max(45.0, min(70.0, prob_percent))
+        reasons = ["Status is Pending, representing moderate delinquency risk."]
     else:
         risk = "Medium Risk"
-        prob_percent = max(45.0, min(70.0, prob_defaulter * 100))
-
-    reasons = []
-    if status.lower() == 'overdue':
-        reasons.append("Status is Overdue, indicating high likelihood of default.")
-    elif status.lower() == 'unpaid':
-        reasons.append("Status is Unpaid, representing moderate delinquency risk.")
-    elif status.lower() == 'paid':
-        reasons.append("Tax is fully paid; no default risk.")
+        prob_percent = max(45.0, min(70.0, prob_percent))
+        reasons = ["Status is Pending, representing moderate delinquency risk."]
 
     if status.lower() != 'paid':
         if late_payments > 1:

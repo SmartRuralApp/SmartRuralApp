@@ -325,7 +325,7 @@ function initForms() {
         if (result.success) {
           showAlert(result.message, 'success');
           taxForm.reset();
-          setTimeout(() => window.location.reload(), 1500);
+          setTimeout(() => window.location.reload(), 150);
         } else {
           showAlert(result.message, 'error');
         }
@@ -772,7 +772,7 @@ window.updateTaxRecord = async function() {
     if (result.success) {
       showAlert(result.message, 'success');
       closeEditTaxModal();
-      setTimeout(() => window.location.reload(), 1500);
+      setTimeout(() => window.location.reload(), 150);
     } else {
       showAlert(result.message, 'error');
     }

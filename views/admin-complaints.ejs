@@ -155,11 +155,6 @@
                         </td>
                         <td style="max-width: 250px;">
                           <div style="font-size: 0.9rem; line-height: 1.3;"><%= complaint.description %></div>
-                          <% if (complaint.xai_explanation) { %>
-                            <div style="font-size: 0.75rem; color: #78909C; margin-top: 5px; font-style: italic;">
-                              <i class="fas fa-info-circle"></i> XAI: <%= complaint.xai_explanation %>
-                            </div>
-                          <% } %>
                           <% if (complaint.is_duplicate) { %>
                             <div class="mt-1">
                               <span class="status-badge overdue" style="font-size: 0.75rem; padding: 2px 8px; background: #FFEBEE; color: #C62828;">
@@ -170,17 +165,9 @@
                         </td>
                         <td><%= complaint.ward %></td>
                         <td>
-                          <span class="status-badge <%= (complaint.priority === 'Critical' || complaint.priority === 'High') ? 'overdue' : complaint.priority === 'Medium' ? 'unpaid' : 'paid' %>" style="<%= complaint.priority === 'Critical' ? 'background: #4A148C; color: white;' : '' %>" title="Admin Approved Priority">
+                          <span class="status-badge <%= complaint.priority === 'High' ? 'overdue' : complaint.priority === 'Medium' ? 'unpaid' : 'paid' %>" title="Complaint Priority">
                             <%= complaint.priority %>
                           </span>
-                          <% if (complaint.priority !== complaint.predicted_priority) { %>
-                            <div style="font-size: 0.75rem; color: #78909C; margin-top: 4px;">
-                              <i class="fas fa-brain"></i> ML predicted: <strong><%= complaint.predicted_priority %></strong>
-                            </div>
-                          <% } %>
-                          <% if (complaint.confidence_score) { %>
-                            <br><small class="text-muted">Conf: <%= Math.round(complaint.confidence_score * 100) %>%</small>
-                          <% } %>
                         </td>
                         <td>
                           <span class="status-badge <%= complaint.status === 'Resolved' ? 'paid' : complaint.status === 'In Progress' ? 'unpaid' : 'inactive' %>">
@@ -223,24 +210,13 @@
   <div class="modal-overlay" id="overrideModal">
     <div class="modal">
       <div class="modal-header">
-        <h3>Override ML Predictions</h3>
+        <h3>Override ML Priority Prediction</h3>
         <button class="modal-close" onclick="closeOverrideModal()">&times;</button>
       </div>
       <div class="modal-body">
         <form id="overrideForm">
           <input type="hidden" id="overrideComplaintId">
-          <div class="form-group">
-            <label class="form-label" for="overrideCategory">Category</label>
-            <select class="form-control" id="overrideCategory" required>
-              <option value="Water Supply">Water Supply</option>
-              <option value="Road Damage">Road Damage</option>
-              <option value="Street Light">Street Light</option>
-              <option value="Sanitation">Sanitation</option>
-              <option value="Drainage">Drainage</option>
-              <option value="Electricity">Electricity</option>
-              <option value="Others">Others</option>
-            </select>
-          </div>
+          <input type="hidden" id="overrideCategory">
           <div class="form-group">
             <label class="form-label" for="overridePriority">Priority Rating</label>
             <select class="form-control" id="overridePriority" required>

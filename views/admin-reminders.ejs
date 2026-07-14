@@ -40,15 +40,27 @@
       </div>
 
       <!-- Gateway Connection Status -->
-      <div class="card mb-4" style="border-left: 5px solid <%= isRealSMS ? '#2E7D32' : '#E65100' %>; background: <%= isRealSMS ? '#E8F5E9' : '#FFF3E0' %>; color: <%= isRealSMS ? '#1B5E20' : '#E65100' %>;">
+      <% 
+        let cardStyle = 'border-left: 5px solid #D32F2F; background: #FFEBEE; color: #C62828;';
+        let badgeClass = 'overdue';
+        if (smsGatewayStatus === 'Connected') {
+          cardStyle = 'border-left: 5px solid #2E7D32; background: #E8F5E9; color: #1B5E20;';
+          badgeClass = 'paid';
+        }
+      %>
+      <div class="card mb-4" style="<%= cardStyle %>">
         <div class="card-body" style="padding: 12px 20px; display: flex; align-items: center; justify-content: space-between;">
           <div>
-            <i class="fas <%= isRealSMS ? 'fa-check-circle' : 'fa-exclamation-triangle' %> fa-lg"></i>
+            <i class="fas <%= smsGatewayStatus === 'Connected' ? 'fa-check-circle' : 'fa-exclamation-triangle' %> fa-lg"></i>
             <strong style="margin-left: 8px;">SMS Gateway Status:</strong> 
-            <%= isRealSMS ? 'Real SMS Gateway Connected (Twilio/Fast2SMS)' : 'Simulation Mode (No credentials configured in .env)' %>
+            <% if (smsGatewayStatus === 'Connected') { %>
+              Connected
+            <% } else { %>
+              Error (<%= smsGatewayError || 'Configuration failed.' %>)
+            <% } %>
           </div>
-          <span class="status-badge <%= isRealSMS ? 'paid' : 'unpaid' %>" style="margin: 0; font-size: 0.8rem;">
-            <%= isRealSMS ? 'Active' : 'Simulation Mode' %>
+          <span class="status-badge <%= badgeClass %>" style="margin: 0; font-size: 0.8rem;">
+            <%= smsGatewayStatus %>
           </span>
         </div>
       </div>
@@ -158,6 +170,7 @@
                 <th>Property ID</th>
                 <th>Mobile</th>
                 <th>Tax Status</th>
+                <th>Provider</th>
                 <th>Date & Time</th>
                 <th>Status</th>
                 <th>Details / Error</th>
@@ -200,7 +213,7 @@
           <td>${r.owner_name}</td>
           <td>₹${r.tax_amount.toLocaleString('en-IN')}</td>
           <td>${r.due_date}</td>
-          <td>${r.reminder_days} days</td>
+          <td>${r.reminder_days}</td>
           <td>${r.reminder_date}</td>
           <td>
             <button class="btn btn-sm btn-warning" onclick="sendReminder('${r.property_id}', '${r.reminder_days}')">
@@ -216,11 +229,9 @@
       document.getElementById('smsCount').textContent = logs.length;
       tbody.innerHTML = logs.map(log => {
         let badgeColor = 'paid'; // green for Sent
-        if (log.status === 'Simulation') badgeColor = 'unpaid'; // orange/yellow
-        else if (log.status === 'Failed') badgeColor = 'overdue'; // red
+        if (log.status === 'Failed') badgeColor = 'overdue'; // red
 
         let statusText = log.status;
-        if (log.status === 'Simulation') statusText = 'Simulation Mode';
 
         let taxBadgeColor = 'unpaid';
         if (log.tax_status === 'Overdue') taxBadgeColor = 'overdue';
@@ -231,6 +242,7 @@
             <td><strong>${log.property_id}</strong></td>
             <td>${log.phone}</td>
             <td><span class="status-badge ${taxBadgeColor}">${log.tax_status || 'Pending'}</span></td>
+            <td><span class="status-badge active" style="background:#E0F7FA; color:#006064; font-size:0.75rem;">${log.provider || 'None'}</span></td>
             <td>${new Date(log.sent_at).toLocaleString('en-IN')}</td>
             <td>
               <span class="status-badge ${badgeColor}">

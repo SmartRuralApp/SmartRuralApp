@@ -115,6 +115,14 @@
                   <label for="year" class="form-label">Year</label>
                   <input type="number" id="year" name="year" class="form-control" placeholder="2026" required>
                 </div>
+                <div class="form-group">
+                  <label for="status" class="form-label">Status</label>
+                  <select id="status" name="status" class="form-control" required>
+                    <option value="Pending" selected>Pending</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Overdue">Overdue</option>
+                  </select>
+                </div>
               </div>
               <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Tax Record</button>
@@ -251,7 +259,7 @@
             <div class="form-group">
               <label for="editStatus" class="form-label">Status</label>
               <select id="editStatus" name="status" class="form-control" required>
-                <option value="Unpaid">Unpaid</option>
+                <option value="Pending">Pending</option>
                 <option value="Paid">Paid</option>
                 <option value="Overdue">Overdue</option>
               </select>
