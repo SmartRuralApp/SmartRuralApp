@@ -839,15 +839,23 @@ app.post('/api/complaints', async (req, res) => {
     }
 
     // 3. Apply final priority rules based on active Count (Pending + In Progress)
-    const emergencyKeywords = [
-      "tree fallen", "electric pole fallen", "pole fallen", "live wire", "electric shock", "fire",
-      "pipeline burst", "water pipeline burst", "burst pipe", "gas leak", "gas leakage", "building collapse",
-      "road accident", "flood", "landslide", "drain overflow", "drainage overflow",
-      "sewage overflow", "sewer overflow", "transformer blast", "power failure",
-      "dangerous pothole", "road blocked", "road block", "bridge damage", "bridge damaged",
-      "water contamination", "contaminated water", "immediate action", "life threatening",
-      "life-threatening", "emergency", "accident hazard", "electrocution"
-    ];
+    let emergencyKeywords = [];
+    try {
+      const kwPath = path.join(__dirname, 'models', 'emergency_keywords.json');
+      if (fs.existsSync(kwPath)) {
+        emergencyKeywords = JSON.parse(fs.readFileSync(kwPath, 'utf8'));
+      }
+    } catch (err) {
+      console.error("Failed to load emergency keywords config in server:", err.message);
+    }
+    if (emergencyKeywords.length === 0) {
+      emergencyKeywords = [
+        "tree fallen", "fallen tree", "electric wire", "live wire", "fire",
+        "accident", "flood", "landslide", "building collapse", "bridge collapse",
+        "gas leak", "water pipeline burst", "transformer blast", "road blocked",
+        "road collapse", "emergency", "urgent", "immediate"
+      ];
+    }
     const descLower = description.toLowerCase();
     const isEmergency = emergencyKeywords.some(keyword => descLower.includes(keyword));
 
@@ -855,11 +863,11 @@ app.post('/api/complaints', async (req, res) => {
     if (isEmergency) {
       priority = 'High';
     } else {
-      if (similarCount === 0) {
+      if (similarCount <= 1) {
         priority = 'Low';
-      } else if (similarCount === 1) {
+      } else if (similarCount === 2) {
         priority = 'Medium';
-      } else if (similarCount >= 2) {
+      } else if (similarCount >= 3) {
         priority = 'High';
       }
     }
@@ -873,11 +881,11 @@ app.post('/api/complaints', async (req, res) => {
       if (compIsEmergency) {
         newPrio = 'High';
       } else {
-        if (similarCount === 0) {
+        if (similarCount <= 1) {
           newPrio = 'Low';
-        } else if (similarCount === 1) {
+        } else if (similarCount === 2) {
           newPrio = 'Medium';
-        } else if (similarCount >= 2) {
+        } else if (similarCount >= 3) {
           newPrio = 'High';
         }
       }

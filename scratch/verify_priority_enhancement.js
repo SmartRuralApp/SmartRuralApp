@@ -11,7 +11,6 @@ function predictPriority(description, category, ward, similarCount = 0, historic
       historical_frequency: historicalFrequency
     });
     
-    // Exact path to predict script in user workspace
     const predictPath = 'C:\\MAJOR PROJECT\\ml\\predict.py';
     const cmd = `python "${predictPath}" --predict-priority "${payload.replace(/"/g, '\\"')}"`;
     
@@ -36,54 +35,54 @@ async function main() {
   let pass = true;
 
   const testCases = [
-    // 1. Emergency cases
+    // 1. Emergency cases (override prediction to High)
     {
-      description: "A huge tree fallen on the road blocking traffic",
+      description: "tree fallen in our area",
       category: "Road Damage",
       ward: "Ward 1",
       similarCount: 0,
       expected: "High",
-      label: "Emergency: Tree fallen"
+      label: "Emergency: tree fallen"
     },
     {
-      description: "An electric pole fallen near the school, sparking wire danger",
+      description: "electric wire fell on road",
       category: "Electricity",
       ward: "Ward 2",
       similarCount: 0,
       expected: "High",
-      label: "Emergency: Electric pole fallen"
+      label: "Emergency: electric wire"
     },
     {
-      description: "There is a live wire hanging low over the pathway",
-      category: "Electricity",
+      description: "fire near school",
+      category: "Sanitation",
       ward: "Ward 3",
       similarCount: 0,
       expected: "High",
-      label: "Emergency: Live wire"
-    },
-    {
-      description: "Fire broke out near the local trash yard",
-      category: "Sanitation",
-      ward: "Ward 4",
-      similarCount: 0,
-      expected: "High",
-      label: "Emergency: Fire"
+      label: "Emergency: fire"
     },
     
-    // 2. Normal / non-emergency cases
+    // 2. Normal / non-emergency cases (relying on similar complaint count mapping)
     {
       description: "The street light in our street has been flickering since last week.",
       category: "Street Light",
       ward: "Ward 1",
-      similarCount: 0,
+      similarCount: 0, // First complaint -> Low
       expected: "Low",
-      label: "First normal complaint"
+      label: "First normal complaint (similar count = 0)"
     },
     {
       description: "The street light in our street has been flickering since last week.",
       category: "Street Light",
       ward: "Ward 1",
-      similarCount: 1, // 2 complaints total
+      similarCount: 1, // 1 similar complaint -> Low
+      expected: "Low",
+      label: "One similar complaint in same ward"
+    },
+    {
+      description: "The street light in our street has been flickering since last week.",
+      category: "Street Light",
+      ward: "Ward 1",
+      similarCount: 2, // 2 similar complaints -> Medium
       expected: "Medium",
       label: "Two similar complaints in same ward"
     },
@@ -91,7 +90,7 @@ async function main() {
       description: "The street light in our street has been flickering since last week.",
       category: "Street Light",
       ward: "Ward 1",
-      similarCount: 2, // 3 complaints total
+      similarCount: 3, // More than 2 similar complaints -> High
       expected: "High",
       label: "More than two similar complaints in same ward"
     }

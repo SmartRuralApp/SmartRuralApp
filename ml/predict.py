@@ -67,20 +67,26 @@ def predict_category(description):
         "reasons": reasons
     }
 
-# Emergency Keywords List
-EMERGENCY_KEYWORDS = [
-    "tree fallen", "electric pole fallen", "pole fallen", "live wire", "electric shock", "fire",
-    "pipeline burst", "water pipeline burst", "burst pipe", "gas leak", "gas leakage", "building collapse",
-    "road accident", "flood", "landslide", "drain overflow", "drainage overflow",
-    "sewage overflow", "sewer overflow", "transformer blast", "power failure",
-    "dangerous pothole", "road blocked", "road block", "bridge damage", "bridge damaged",
-    "water contamination", "contaminated water", "immediate action", "life threatening",
-    "life-threatening", "emergency", "accident hazard", "electrocution"
-]
+# Load emergency keywords from config
+def load_emergency_keywords():
+    kw_path = os.path.join(MODELS_DIR, 'emergency_keywords.json')
+    if os.path.exists(kw_path):
+        try:
+            with open(kw_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return [
+        "tree fallen", "fallen tree", "electric wire", "live wire", "fire",
+        "accident", "flood", "landslide", "building collapse", "bridge collapse",
+        "gas leak", "water pipeline burst", "transformer blast", "road blocked",
+        "road collapse", "emergency", "urgent", "immediate"
+    ]
 
 def check_emergency(desc):
     desc_lower = str(desc).lower()
-    return 1 if any(kw in desc_lower for kw in EMERGENCY_KEYWORDS) else 0
+    keywords = load_emergency_keywords()
+    return 1 if any(kw in desc_lower for kw in keywords) else 0
 
 def predict_priority(description, category, ward, similar_count=0, is_duplicate=0, historical_frequency=0):
     model = load_pkl('complaint_priority_model.pkl')
@@ -115,26 +121,16 @@ def predict_priority(description, category, ward, similar_count=0, is_duplicate=
             confidence = 0.5
             print(f"Prediction failed: {e}", file=sys.stderr)
             
-    # 3. Combine emergency detection, similar complaint count, and ML prediction
-    # If emergency keywords are detected, they immediately classify as High Priority
+    # 3. Combine emergency detection and ML prediction
+    # If emergency keywords are detected, automatically override to High Priority (3)
     if emergency_val == 1:
         pred = "High"
-        reasons = ["High Priority: Emergency or hazard keywords detected in complaint description."]
+        reasons = ["High Priority: Automatically set to High Priority due to emergency keyword detection override."]
         confidence = 1.0
     else:
-        # Resolve priority based on similar counts and ML predictions
-        if similar_count >= 2:
-            pred = "High"
-            reasons = [f"High Priority: {similar_count + 1} similar complaints registered in {ward_str}."]
-            confidence = 1.0
-        elif similar_count == 1:
-            pred = "Medium"
-            reasons = [f"Medium Priority: 2 similar complaints registered in {ward_str}."]
-            confidence = 1.0
-        else:
-            # First complaint, default to ML model prediction
-            pred = ml_pred
-            reasons = [f"ML Model Prediction: Determined as {pred} Priority based on text and historical ward frequency of {historical_frequency}."]
+        # If no emergency keyword is detected, use the ML model prediction normally
+        pred = ml_pred
+        reasons = [f"ML Model Prediction: Determined as {pred} Priority based on text features."]
             
     return {
         "priority": pred,
