@@ -840,59 +840,44 @@ app.post('/api/complaints', async (req, res) => {
 
     // 3. Apply final priority rules based on active Count (Pending + In Progress)
     const emergencyKeywords = [
-      "live electric wire",
-      "electric pole sparking",
-      "transformer blast",
-      "fire",
-      "gas leak",
-      "road collapse",
-      "pipeline burst",
-      "sewage overflow",
-      "flooding",
-      "tree fallen blocking road",
-      "dangerous open manhole"
+      "tree fallen", "electric pole fallen", "pole fallen", "live wire", "electric shock", "fire",
+      "pipeline burst", "water pipeline burst", "burst pipe", "gas leak", "gas leakage", "building collapse",
+      "road accident", "flood", "landslide", "drain overflow", "drainage overflow",
+      "sewage overflow", "sewer overflow", "transformer blast", "power failure",
+      "dangerous pothole", "road blocked", "road block", "bridge damage", "bridge damaged",
+      "water contamination", "contaminated water", "immediate action", "life threatening",
+      "life-threatening", "emergency", "accident hazard", "electrocution"
     ];
     const descLower = description.toLowerCase();
-    const isEmergency = emergencyKeywords.some(keyword => descLower.includes(keyword)) ||
-                        descLower.includes("life-threatening") || 
-                        descLower.includes("life threatening") ||
-                        descLower.includes("accident hazard") ||
-                        descLower.includes("electrocution");
+    const isEmergency = emergencyKeywords.some(keyword => descLower.includes(keyword));
 
-    const activeCount = similarCount + 1;
     let priority = 'Low';
     if (isEmergency) {
       priority = 'High';
     } else {
-      if (activeCount === 1) {
+      if (similarCount === 0) {
         priority = 'Low';
-      } else if (activeCount === 2) {
+      } else if (similarCount === 1) {
         priority = 'Medium';
-      } else if (activeCount >= 3) {
+      } else if (similarCount >= 2) {
         priority = 'High';
-      } else {
-        priority = 'Low';
       }
     }
 
     // Immediately recalculate priority of existing active complaints in this ward/category
     for (const comp of existing) {
       const compDescLower = comp.description.toLowerCase();
-      const compIsEmergency = emergencyKeywords.some(keyword => compDescLower.includes(keyword)) ||
-                              compDescLower.includes("life-threatening") || 
-                              compDescLower.includes("life threatening") ||
-                              compDescLower.includes("accident hazard") ||
-                              compDescLower.includes("electrocution");
+      const compIsEmergency = emergencyKeywords.some(keyword => compDescLower.includes(keyword));
       
       let newPrio = 'Low';
       if (compIsEmergency) {
         newPrio = 'High';
       } else {
-        if (activeCount === 1) {
+        if (similarCount === 0) {
           newPrio = 'Low';
-        } else if (activeCount === 2) {
+        } else if (similarCount === 1) {
           newPrio = 'Medium';
-        } else if (activeCount >= 3) {
+        } else if (similarCount >= 2) {
           newPrio = 'High';
         }
       }
@@ -904,12 +889,14 @@ app.post('/api/complaints', async (req, res) => {
     let prioConfidence = 1.0;
     let xaiExplanation = 'Grievance lodged in Panchayat records.';
     try {
+      const historicalFrequency = db.prepare('SELECT COUNT(*) as count FROM complaints WHERE ward = ?').get(ward).count || 0;
       const prioResult = await runMLInference('--predict-priority', {
         description,
         category: predictedCategory,
         ward,
         similar_count: similarCount,
-        is_duplicate: isDuplicate
+        is_duplicate: isDuplicate,
+        historical_frequency: historicalFrequency
       });
       predictedPriority = prioResult.priority;
       prioConfidence = prioResult.confidence;

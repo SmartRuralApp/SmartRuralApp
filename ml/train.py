@@ -45,6 +45,20 @@ METADATA_FILE = os.path.join(MODELS_DIR, 'metadata.json')
 def clean_cm(cm):
     return cm.tolist()
 
+EMERGENCY_KEYWORDS = [
+    "tree fallen", "electric pole fallen", "pole fallen", "live wire", "electric shock", "fire",
+    "pipeline burst", "water pipeline burst", "burst pipe", "gas leak", "gas leakage", "building collapse",
+    "road accident", "flood", "landslide", "drain overflow", "drainage overflow",
+    "sewage overflow", "sewer overflow", "transformer blast", "power failure",
+    "dangerous pothole", "road blocked", "road block", "bridge damage", "bridge damaged",
+    "water contamination", "contaminated water", "immediate action", "life threatening",
+    "life-threatening", "emergency", "accident hazard", "electrocution"
+]
+
+def check_emergency(desc):
+    desc_lower = str(desc).lower()
+    return 1 if any(kw in desc_lower for kw in EMERGENCY_KEYWORDS) else 0
+
 # Dynamically adjust model predictions to align with the target validation bands realistically
 def adjust_predictions_to_target_f1(y_test, y_pred, target_range, random_state=42):
     np.random.seed(random_state)
@@ -270,16 +284,21 @@ def train_models():
         df_train = pd.read_excel(COMPLAINTS_TRAIN).dropna(subset=['Complaint Description', 'Complaint Category', 'Priority'])
         df_test = pd.read_excel(COMPLAINTS_TEST).dropna(subset=['Complaint Description', 'Complaint Category', 'Priority'])
         
-        X_train_prio = df_train[['Ward', 'Complaint Category', 'Complaint Description', 'Similar Complaints in Same Ward', 'Status']]
+        # Calculate features
+        for df in [df_train, df_test]:
+            df['Emergency Keywords'] = df['Complaint Description'].apply(check_emergency)
+            df['Historical complaint frequency'] = df.groupby('Ward')['Ward'].transform('count')
+            
+        X_train_prio = df_train[['Ward', 'Complaint Category', 'Complaint Description', 'Similar Complaints in Same Ward', 'Emergency Keywords', 'Historical complaint frequency']]
         y_train_prio = df_train['Priority']
-        X_test_prio = df_test[['Ward', 'Complaint Category', 'Complaint Description', 'Similar Complaints in Same Ward', 'Status']]
+        X_test_prio = df_test[['Ward', 'Complaint Category', 'Complaint Description', 'Similar Complaints in Same Ward', 'Emergency Keywords', 'Historical complaint frequency']]
         y_test_prio = df_test['Priority']
         
         preprocessor = ColumnTransformer(
             transformers=[
                 ('text', TfidfVectorizer(max_features=1500, stop_words='english', ngram_range=(1,2)), 'Complaint Description'),
-                ('cat', OneHotEncoder(handle_unknown='ignore'), ['Ward', 'Complaint Category', 'Status']),
-                ('num', StandardScaler(), ['Similar Complaints in Same Ward'])
+                ('cat', OneHotEncoder(handle_unknown='ignore'), ['Ward', 'Complaint Category']),
+                ('num', StandardScaler(), ['Similar Complaints in Same Ward', 'Emergency Keywords', 'Historical complaint frequency'])
             ]
         )
         

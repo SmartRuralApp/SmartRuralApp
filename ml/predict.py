@@ -67,64 +67,75 @@ def predict_category(description):
         "reasons": reasons
     }
 
-def predict_priority(description, category, ward, similar_count=0, is_duplicate=0):
+# Emergency Keywords List
+EMERGENCY_KEYWORDS = [
+    "tree fallen", "electric pole fallen", "pole fallen", "live wire", "electric shock", "fire",
+    "pipeline burst", "water pipeline burst", "burst pipe", "gas leak", "gas leakage", "building collapse",
+    "road accident", "flood", "landslide", "drain overflow", "drainage overflow",
+    "sewage overflow", "sewer overflow", "transformer blast", "power failure",
+    "dangerous pothole", "road blocked", "road block", "bridge damage", "bridge damaged",
+    "water contamination", "contaminated water", "immediate action", "life threatening",
+    "life-threatening", "emergency", "accident hazard", "electrocution"
+]
+
+def check_emergency(desc):
+    desc_lower = str(desc).lower()
+    return 1 if any(kw in desc_lower for kw in EMERGENCY_KEYWORDS) else 0
+
+def predict_priority(description, category, ward, similar_count=0, is_duplicate=0, historical_frequency=0):
     model = load_pkl('complaint_priority_model.pkl')
     
-    if not model:
-        pred = "Medium"
-        confidence = 1.0
-        reasons = ["Default baseline priority"]
-    else:
-        import pandas as pd
-        ward_str = str(ward)
-        if not ward_str.startswith("Ward "):
-            ward_str = f"Ward {ward_str}"
-            
-        input_df = pd.DataFrame([{
-            'Ward': ward_str,
-            'Complaint Category': category,
-            'Complaint Description': description,
-            'Similar Complaints in Same Ward': similar_count,
-            'Status': 'Pending'  # New complaints default to Pending status
-        }])
+    # 1. Run emergency keyword detection
+    emergency_val = check_emergency(description)
+    
+    # Format ward string
+    ward_str = str(ward)
+    if not ward_str.startswith("Ward "):
+        ward_str = f"Ward {ward_str}"
         
+    input_df = pd.DataFrame([{
+        'Ward': ward_str,
+        'Complaint Category': category,
+        'Complaint Description': description,
+        'Similar Complaints in Same Ward': similar_count,
+        'Emergency Keywords': emergency_val,
+        'Historical complaint frequency': historical_frequency
+    }])
+    
+    # 2. Run ML model prediction if loaded
+    ml_pred = "Medium"
+    confidence = 1.0
+    if model:
         try:
-            pred = model.predict(input_df)[0]
+            ml_pred = model.predict(input_df)[0]
             probs = model.predict_proba(input_df)[0]
             confidence = float(np.max(probs))
         except Exception as e:
-            pred = "Medium"
+            ml_pred = "Medium"
             confidence = 0.5
             print(f"Prediction failed: {e}", file=sys.stderr)
             
-        # Apply final priority rules
-        emergency_keywords = [
-            "live electric wire", "electric pole sparking", "transformer blast", "fire",
-            "gas leak", "road collapse", "pipeline burst", "sewage overflow", "flooding",
-            "tree fallen blocking road", "dangerous open manhole"
-        ]
-        desc_lower = description.lower()
-        is_emergency = any(k in desc_lower for k in emergency_keywords) or \
-                       "life-threatening" in desc_lower or \
-                       "life threatening" in desc_lower or \
-                       "accident hazard" in desc_lower or \
-                       "electrocution" in desc_lower
-                       
-        if is_emergency:
-            pred = "High"
-            reasons = ["Automatically set to High Priority due to emergency keyword detection."]
-        else:
-            if similar_count == 1:
-                pred = "Medium"
-                reasons = [f"Assigned Medium Priority due to 2 similar complaints in {ward_str}."]
-            elif similar_count >= 2:
-                pred = "High"
-                reasons = [f"Assigned High Priority due to {similar_count + 1} similar complaints in {ward_str}."]
-            else:
-                pred = "Low"
-                reasons = [f"Assigned Low Priority due to 1 complaint in {ward_str}."]
+    # 3. Combine emergency detection, similar complaint count, and ML prediction
+    # If emergency keywords are detected, they immediately classify as High Priority
+    if emergency_val == 1:
+        pred = "High"
+        reasons = ["High Priority: Emergency or hazard keywords detected in complaint description."]
         confidence = 1.0
-
+    else:
+        # Resolve priority based on similar counts and ML predictions
+        if similar_count >= 2:
+            pred = "High"
+            reasons = [f"High Priority: {similar_count + 1} similar complaints registered in {ward_str}."]
+            confidence = 1.0
+        elif similar_count == 1:
+            pred = "Medium"
+            reasons = [f"Medium Priority: 2 similar complaints registered in {ward_str}."]
+            confidence = 1.0
+        else:
+            # First complaint, default to ML model prediction
+            pred = ml_pred
+            reasons = [f"ML Model Prediction: Determined as {pred} Priority based on text and historical ward frequency of {historical_frequency}."]
+            
     return {
         "priority": pred,
         "confidence": round(confidence, 2),
@@ -306,7 +317,8 @@ def main():
         ward = data.get("ward", "Ward 1")
         similar = int(data.get("similar_count", 0))
         is_dup = int(data.get("is_duplicate", 0))
-        result = predict_priority(desc, cat, ward, similar, is_dup)
+        hist_freq = int(data.get("historical_frequency", 0))
+        result = predict_priority(desc, cat, ward, similar, is_dup, hist_freq)
 
     elif task == "--recommend-schemes":
         age = int(data.get("age", 30))

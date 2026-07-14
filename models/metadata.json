@@ -1,28 +1,28 @@
 {
-  "version": 1,
-  "last_trained": "2026-07-14 22:28:09",
+  "version": 3,
+  "last_trained": "2026-07-14 22:45:22",
   "models": {
     "complaint_priority": {
-      "dataset_size": 6200,
-      "accuracy": 0.9758,
-      "precision": 0.9772,
-      "recall": 0.9782,
-      "f1_score": 0.9774,
+      "dataset_size": 6225,
+      "accuracy": 0.9759,
+      "precision": 0.976,
+      "recall": 0.9783,
+      "f1_score": 0.9766,
       "confusion_matrix": [
         [
-          852,
-          12,
-          8
+          876,
+          0,
+          0
         ],
         [
-          5,
-          287,
-          4
+          17,
+          280,
+          0
         ],
         [
           0,
-          1,
-          71
+          13,
+          59
         ]
       ],
       "classes": [
@@ -34,27 +34,27 @@
       "comparison": [
         {
           "model_name": "Logistic Regression",
-          "accuracy": 0.9177,
-          "precision": 0.9309,
-          "recall": 0.9208,
-          "f1_score": 0.923
+          "accuracy": 0.9173,
+          "precision": 0.9409,
+          "recall": 0.9204,
+          "f1_score": 0.9197
         },
         {
           "model_name": "Decision Tree",
-          "accuracy": 0.9476,
-          "precision": 0.9554,
-          "recall": 0.9458,
-          "f1_score": 0.9487
+          "accuracy": 0.9478,
+          "precision": 0.9477,
+          "recall": 0.946,
+          "f1_score": 0.9449
         },
         {
           "model_name": "Random Forest",
-          "accuracy": 0.9758,
-          "precision": 0.9772,
-          "recall": 0.9782,
-          "f1_score": 0.9774
+          "accuracy": 0.9759,
+          "precision": 0.976,
+          "recall": 0.9783,
+          "f1_score": 0.9766
         }
       ],
-      "selection_reason": "Random Forest was selected as the production model because it achieved the highest test F1-Score (97.74%) and shows the best generalization capacity on the holdout validation split."
+      "selection_reason": "Random Forest was selected as the production model because it achieved the highest test F1-Score (97.66%) and shows the best generalization capacity on the holdout validation split."
     },
     "tax_defaulter": {
       "dataset_size": 482,
