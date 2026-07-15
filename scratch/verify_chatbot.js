@@ -124,7 +124,7 @@ async function main() {
   try {
     const reply = await runChatbot("write a python code to scrape twitter", sampleContext, []);
     console.log("Response:\n", reply);
-    if (reply.includes("GramMitra AI") && reply.includes("Panchayat related questions")) {
+    if (reply.includes("Smart Gram Panchayat Assistant") && reply.includes("citizen-related queries")) {
       console.log("   ✅ Succeeded: Out-of-scope query politely declined/guided.");
     } else {
       console.error("   ❌ Failed: Chatbot did not politely decline out-of-scope query.");

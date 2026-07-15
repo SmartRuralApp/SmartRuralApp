@@ -325,29 +325,28 @@
       <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 20px; line-height: 1.5;">Our production Machine Learning models match your profile against state welfare benefits to suggest eligible schemes.</p>
       
       <% if (recommendedSchemes && recommendedSchemes.length > 0) { %>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px;">
-          <% recommendedSchemes.forEach(rec => { %>
-            <div style="padding: 15px; border: 1px solid #ECEFF1; border-radius: 8px; background: #FAF9F6; border-left: 4px solid var(--gov-primary); display: flex; flex-direction: column; justify-content: space-between;">
-              <div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-                  <h4 style="margin: 0; color: var(--gov-primary); font-weight: 600; font-size: 1rem;"><%= rec.scheme %></h4>
-                  <span class="status-badge active" style="font-size: 0.8rem; background: #E8F5E9; color: #2E7D32; font-weight: 600; padding: 2px 8px; border-radius: 4px;">
-                    Score: <%= Math.round(rec.confidence * 100) %>%
-                  </span>
-                </div>
-                <ul style="margin: 0; padding-left: 20px; font-size: 0.85rem; color: #546E7A; line-height: 1.5;">
-                  <% rec.reasons.forEach(r => { %>
-                    <li><%= r %></li>
-                  <% }); %>
-                </ul>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+          <% const rec = recommendedSchemes[0]; %>
+          <div style="padding: 15px; border: 1px solid #ECEFF1; border-radius: 8px; background: #FAF9F6; border-left: 4px solid var(--gov-primary); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                <h4 style="margin: 0; color: var(--gov-primary); font-weight: 600; font-size: 1rem;"><%= rec.scheme %></h4>
+                <span class="status-badge active" style="font-size: 0.8rem; background: #E8F5E9; color: #2E7D32; font-weight: 600; padding: 2px 8px; border-radius: 4px;">
+                  Score: <%= Math.round(rec.confidence * 100) %>%
+                </span>
               </div>
+              <ul style="margin: 0; padding-left: 20px; font-size: 0.85rem; color: #546E7A; line-height: 1.5;">
+                <% rec.reasons.forEach(r => { %>
+                  <li><%= r %></li>
+                <% }); %>
+              </ul>
             </div>
-          <% }); %>
+          </div>
         </div>
       <% } else { %>
-        <div style="text-align: center; padding: 30px; color: #90A4AE;">
-          <i class="fas fa-user-tag fa-2x mb-2" style="color: #CFD8DC;"></i>
-          <p style="margin: 0; font-size: 0.9rem;">No matching schemes found for your current demographic profile.</p>
+        <div style="text-align: center; padding: 30px; color: #546E7A; background: #FAF9F6; border-radius: 8px; border: 1px solid #ECEFF1; border-left: 4px solid #B0BEC5;">
+          <i class="fas fa-info-circle fa-2x mb-2" style="color: #B0BEC5;"></i>
+          <p style="margin: 0; font-size: 0.95rem; font-weight: 600;">No Government Welfare Scheme matches your current profile.</p>
         </div>
       <% } %>
     </div>
@@ -360,10 +359,10 @@
       <form id="complaintForm">
         <div class="form-group" style="margin-bottom: 15px;">
           <label class="form-label" for="complaintDesc" style="font-weight: 600; display: block; margin-bottom: 5px; color: #37474F;">Describe your grievance:</label>
-          <div style="background-color: #E3F2FD; color: #0D47A1; border-left: 3px solid #2196F3; padding: 8px 12px; border-radius: 4px; font-size: 0.8rem; margin-bottom: 8px; font-family: inherit; line-height: 1.4;">
-            <strong>Note:</strong> Use clear words for urgent situations (for example: <em>tree fallen, fire, electric wire, road blocked, gas leak</em>) so emergency complaints can be prioritized immediately.
-          </div>
           <textarea id="complaintDesc" class="form-control" rows="4" placeholder="Describe the issue in detail (e.g. Street light on main road Block B is sparking, open manhole blocking the main drain...)" required style="width: 100%; padding: 10px; border: 1px solid #CCC; border-radius: 6px; box-sizing: border-box; resize: vertical;"></textarea>
+          <div style="background-color: #FFF9C4; color: #F57F17; border-left: 3px solid #FBC02D; padding: 8px 12px; border-radius: 4px; font-size: 0.8rem; margin-top: 8px; font-family: inherit; line-height: 1.4; margin-bottom: 4px;">
+            <strong>Tip:</strong> Clearly describe emergency situations (for example, tree fallen, fire, electric wire, gas leak, road blocked) so the system can prioritize urgent complaints correctly.
+          </div>
           <small class="text-muted" style="font-size: 0.75rem; color: #78909C; display: block; margin-top: 4px;"><i class="fas fa-info-circle"></i> Minimum 10 characters required. Priority predicted dynamically.</small>
         </div>
 

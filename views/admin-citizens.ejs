@@ -201,6 +201,7 @@
                 <th>Annual Income</th>
                 <th>Landholdings</th>
                 <th>Status (F/S/D)</th>
+                <th>Matching Government Welfare Scheme</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -227,6 +228,13 @@
                     <td><%= cit.land_size %> acres</td>
                     <td>
                       <span class="status-badge active" style="font-size: 0.7rem; padding: 2px 5px;"><%= cit.is_farmer ? 'F' : '' %><%= cit.is_student ? 'S' : '' %><%= cit.disability ? 'D' : '' %></span>
+                    </td>
+                    <td>
+                      <% if (cit.matching_scheme && cit.matching_scheme !== "No Matching Scheme") { %>
+                        <strong><%= cit.matching_scheme %></strong> <span style="color: #2E7D32; font-weight: 600;">(<%= Math.round(cit.matching_confidence * 100) %>%)</span>
+                      <% } else { %>
+                        <span class="text-muted" style="font-style: italic;">No Matching Scheme</span>
+                      <% } %>
                     </td>
                     <td class="table-actions">
                       <button class="btn btn-sm btn-outline" onclick="editCitizen(this)"

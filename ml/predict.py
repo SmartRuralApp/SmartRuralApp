@@ -5,6 +5,7 @@ import pickle
 import pandas as pd
 import numpy as np
 import io
+import sqlite3
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -153,17 +154,23 @@ def recommend_schemes(age, gender, occupation, income, land_size, is_farmer, is_
     gender_enc = gender_map.get(gender, 2) # default to Other
     occ_enc = occ_map.get(occupation, 5) # default to Other
     
-    # Input vector: age, gender, occupation, income, land_size, is_farmer, is_student, disability
-    features = np.array([[age, gender_enc, occ_enc, income, land_size, is_farmer, is_student, disability]])
+    # Input vector: age, gender, occupation, income, land_size, is_farmer, is_student, disability, income_per_acre
+    income_per_acre = float(income) / (float(land_size) + 0.1)
+    features = np.array([[age, gender_enc, occ_enc, income, land_size, is_farmer, is_student, disability, income_per_acre]])
     
     probs = model.predict_proba(features)[0]
     classes = model.classes_
     
-    recs = []
+    valid_recs = []
     for cls, prob in zip(classes, probs):
-        if cls == "None" or prob < 0.05:
-            continue
+        if cls != "None":
+            valid_recs.append((cls, float(prob)))
             
+    valid_recs = sorted(valid_recs, key=lambda x: x[1], reverse=True)
+    
+    recs = []
+    if len(valid_recs) > 0 and valid_recs[0][1] >= 0.70:
+        cls, prob = valid_recs[0]
         # Determine XAI reason based on scheme
         reasons = []
         if cls == "PM Kisan":
@@ -181,13 +188,69 @@ def recommend_schemes(age, gender, occupation, income, land_size, is_farmer, is_
             
         recs.append({
             "scheme": cls,
-            "confidence": round(float(prob), 2),
+            "confidence": round(prob, 2),
             "reasons": reasons
         })
         
-    # Sort by confidence descending
-    recs = sorted(recs, key=lambda x: x['confidence'], reverse=True)
     return {"recommendations": recs}
+
+# ----------------- Recalculate All User Schemes -----------------
+def recalculate_all_user_schemes():
+    db_path = os.path.join(BASE_DIR, 'data', 'panchayat.db')
+    if not os.path.exists(db_path):
+        return {"status": "error", "message": f"Database not found at {db_path}"}
+        
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        cursor.execute("PRAGMA table_info(users)")
+        cols = [col[1] for col in cursor.fetchall()]
+        if "matching_scheme" not in cols or "matching_confidence" not in cols:
+            try:
+                cursor.execute("ALTER TABLE users ADD COLUMN matching_scheme TEXT DEFAULT 'No Matching Scheme'")
+                cursor.execute("ALTER TABLE users ADD COLUMN matching_confidence REAL DEFAULT 0.0")
+                conn.commit()
+            except Exception:
+                pass
+                
+        cursor.execute("SELECT id, age, gender, occupation, income, land_size, is_farmer, is_student, disability FROM users")
+        users = cursor.fetchall()
+        
+        updated_count = 0
+        for u in users:
+            uid, age, gender, occ, income, land, is_farmer, is_student, disability = u
+            
+            res = recommend_schemes(
+                age=int(age or 30),
+                gender=gender or "Male",
+                occupation=occ or "Agriculture",
+                income=float(income or 80000.0),
+                land_size=float(land or 1.5),
+                is_farmer=int(is_farmer or 0),
+                is_student=int(is_student or 0),
+                disability=int(disability or 0)
+            )
+            
+            recs = res.get("recommendations", [])
+            if len(recs) > 0:
+                scheme_name = recs[0]["scheme"]
+                confidence = float(recs[0]["confidence"])
+            else:
+                scheme_name = "No Matching Scheme"
+                confidence = 0.0
+                
+            cursor.execute(
+                "UPDATE users SET matching_scheme = ?, matching_confidence = ? WHERE id = ?",
+                (scheme_name, confidence, uid)
+            )
+            updated_count += 1
+            
+        conn.commit()
+        conn.close()
+        return {"status": "success", "updated_users": updated_count}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 # ----------------- Tax Defaulter Risk -----------------
 def predict_defaulter(property_type, tax_amount, year, history_paid_ratio, late_payments, status="Unpaid"):
@@ -289,11 +352,20 @@ def detect_duplicate(description, category, existing_complaints):
 
 # ----------------- Main CLI Handler -----------------
 def main():
-    if len(sys.argv) < 3:
-        print(json.dumps({"error": "Missing task and data arguments"}))
+    if len(sys.argv) < 2:
+        print(json.dumps({"error": "Missing task argument"}))
         return
         
     task = sys.argv[1]
+    if task == "--recalculate-all-user-schemes":
+        result = recalculate_all_user_schemes()
+        print(json.dumps(result))
+        return
+        
+    if len(sys.argv) < 3:
+        print(json.dumps({"error": "Missing data argument"}))
+        return
+        
     data_str = sys.argv[2]
     
     try:

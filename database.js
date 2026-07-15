@@ -118,6 +118,8 @@ async function initDatabase() {
       aadhaar TEXT,
       username TEXT UNIQUE,
       is_registered INTEGER DEFAULT 0,
+      matching_scheme TEXT DEFAULT 'No Matching Scheme',
+      matching_confidence REAL DEFAULT 0.0,
       FOREIGN KEY (property_id) REFERENCES properties(property_id)
     )
   `);
@@ -243,7 +245,9 @@ async function initDatabase() {
     { name: 'ward', type: "TEXT" },
     { name: 'aadhaar', type: "TEXT" },
     { name: 'username', type: "TEXT" },
-    { name: 'is_registered', type: "INTEGER DEFAULT 0" }
+    { name: 'is_registered', type: "INTEGER DEFAULT 0" },
+    { name: 'matching_scheme', type: "TEXT DEFAULT 'No Matching Scheme'" },
+    { name: 'matching_confidence', type: "REAL DEFAULT 0.0" }
   ];
   userCols.forEach(col => {
     try {

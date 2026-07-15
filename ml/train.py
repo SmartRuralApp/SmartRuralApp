@@ -716,6 +716,13 @@ def train_models():
         json.dump(metadata, f, indent=2)
     print(f"[OK] Metadata written successfully to {METADATA_FILE}")
     
+    try:
+        from predict import recalculate_all_user_schemes
+        res = recalculate_all_user_schemes()
+        print(f"[OK] Recalculated all user welfare schemes: {res}")
+    except Exception as e:
+        print(f"Error recalculating user welfare schemes: {e}")
+        
     return metadata
 
 if __name__ == "__main__":

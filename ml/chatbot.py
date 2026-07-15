@@ -2,105 +2,134 @@ import os
 import sys
 import json
 import base64
-import urllib.request
-import urllib.error
 import io
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-# Timing and Contact Info
+# Office details
 TIMINGS_EN = "The Gram Panchayat office is open Monday to Friday, from 9:00 AM to 5:00 PM. Closed on weekends and public holidays."
 TIMINGS_KN = "ಗ್ರಾಮ ಪಂಚಾಯತ್ ಕಚೇರಿಯು ಸೋಮವಾರದಿಂದ ಶುಕ್ರವಾರದವರೆಗೆ ಬೆಳಿಗ್ಗೆ 9:00 ರಿಂದ ಸಂಜೆ 5:00 ರವರೆಗೆ ತೆರೆದಿರುತ್ತದೆ. ವಾರಾಂತ್ಯ ಮತ್ತು ಸಾರ್ವಜನಿಕ ರಜಾದಿನಗಳಲ್ಲಿ ಮುಚ್ಚಿರುತ್ತದೆ."
 
 CONTACT_EN = "Email: contact@smartpanchayat.gov.in | Phone: +91 80 2843 1234 | Location: Panchayat Office, Main Road."
 CONTACT_KN = "ಇಮೇಲ್: contact@smartpanchayat.gov.in | ಫೋನ್: +91 80 2843 1234 | ಸ್ಥಳ: ಪಂಚಾಯತ್ ಕಚೇರಿ, ಮುಖ್ಯ ರಸ್ತೆ."
 
-# ----------------- OpenAI API Handler -----------------
-def ask_openai(query, context, history, api_key):
-    messages = []
+def detect_intent(query):
+    query_lower = query.lower().strip()
     
-    # System prompt
-    system_prompt = (
-        "You are GramMitra AI, a helpful, intelligent assistant for the Smart Gram Panchayat portal.\n"
-        "Your goal is to answer queries related to Gram Panchayat services, property tax, complaints, government schemes, timings, contact details, certificates, application procedures, property information, citizen portal help, and general Gram Panchayat information.\n"
-        "Provide the most relevant answer using the project database, local knowledge base, or fallback logic.\n"
-        "For queries outside the project's scope, politely inform the user and guide them to the appropriate Panchayat office or available services instead of generating incorrect information.\n"
-        "Negative Constraint: You MUST NEVER reply with 'I don't know', 'I cannot answer', or 'This information is unavailable' for normal Gram Panchayat queries. You must always formulate the best possible answer using the provided database context or general Panchayat knowledge.\n"
-        "Always respond politely, clearly, and concisely. Use markdown where helpful.\n"
-        "You MUST support both English and Kannada depending on the language used by the user.\n\n"
-        "Here is live database context from the portal:\n"
-    )
-    
-    if 'services' in context and len(context['services']) > 0:
-        system_prompt += "- Active Services: " + ", ".join([f"{s['title']}: {s.get('description', '')}" for s in context['services']]) + "\n"
-    if 'schemes' in context and len(context['schemes']) > 0:
-        system_prompt += "- Government Schemes: " + "; ".join([f"{s['title']} (Criteria: {s.get('target_criteria', s.get('eligibility_criteria', ''))}, Documents: {s.get('required_documents', '')})" for s in context['schemes']]) + "\n"
-    if 'announcements' in context and len(context['announcements']) > 0:
-        system_prompt += "- Announcements: " + "; ".join([f"{a['title']}: {a['message']}" for a in context['announcements']]) + "\n"
-    
-    if 'property' in context and context['property']:
-        p = context['property']
-        system_prompt += f"- Logged-in Property: ID: {p.get('property_id')}, Owner: {p.get('owner_name')}, Address: {p.get('address')}, Type: {p.get('property_type')}\n"
-    if 'tax_info' in context and context['tax_info']:
-        t = context['tax_info']
-        system_prompt += f"- Unpaid Tax Record: ID: {t.get('id')}, Year: {t.get('year')}, Tax Due: ₹{t.get('tax_amount')}, Status: {t.get('status')}, Due Date: {t.get('due_date')}, Predicted Default Risk: {t.get('predicted_status')}\n"
-    if 'tax_records' in context and len(context['tax_records']) > 0:
-        system_prompt += "- All Tax Records: " + ", ".join([f"Year {t['year']}: ₹{t['tax_amount']} ({t['status']})" for t in context['tax_records']]) + "\n"
-    if 'complaints' in context and len(context['complaints']) > 0:
-        system_prompt += "- Citizen Complaints: " + "; ".join([f"ID #{c['id']} {c['category']}: '{c['description']}' - Status: {c['status']}, Remarks: {c.get('admin_remarks', 'None')}" for c in context['complaints']]) + "\n"
-    if 'notifications' in context and len(context['notifications']) > 0:
-        system_prompt += "- Citizen Notifications: " + "; ".join([f"[{n['type']}] {n['title']}: {n['message']}" for n in context['notifications']]) + "\n"
-
-    messages.append({"role": "system", "content": system_prompt})
-    
-    # Add conversation history
-    for msg in history:
-        messages.append({"role": msg['role'], "content": msg['content']})
-        
-    # Prevent duplicate user query appending
-    if len(messages) == 1 or messages[-1]['content'] != query:
-        messages.append({"role": "user", "content": query})
-        
-    payload = {
-        "model": "gpt-4o-mini",
-        "messages": messages,
-        "temperature": 0.3,
-        "max_tokens": 500
+    # NLP keyword patterns
+    intents = {
+        "greeting": [
+            "hello", "hi", "hey", "namaste", "good morning", "good afternoon", "greetings", "helper", "assistant",
+            "ಹಲೋ", "ನಮಸ್ಕಾರ", "ಶುಭೋದಯ"
+        ],
+        "timings": [
+            "timing", "hour", "open", "close", "schedule", "work time", "working hour", "when open", "time table", "office hour",
+            "ಸಮಯ", "ಯಾವಾಗ", "ತೆರೆದಿರುತ್ತದೆ", "ಅಧಿಕೃತ ಸಮಯ"
+        ],
+        "contact": [
+            "contact", "phone", "email", "number", "location", "address", "call", "where is", "office map", "telephone",
+            "ಸಂಪರ್ಕ", "ಫೋನ್", "ಇಮೇಲ್", "ವಿಳಾಸ", "ಸ್ಥಳ"
+        ],
+        "tax": [
+            "tax", "property tax", "due", "pay", "outstanding", "pending tax", "check tax", "tax status", "tax record", "bill",
+            "ತೆರಿಗೆ", "ಬಾಕಿ", "ಪಾವತಿ", "ಹಣ", "ಆಸ್ತಿ ತೆರಿಗೆ"
+        ],
+        "complaint_register": [
+            "file complaint", "lodge complaint", "register complaint", "submit complaint", "report issue", "file grievance", "new complaint", "how to complain",
+            "ದೂರು ಸಲ್ಲಿಸಲು", "ಹೊಸ ದೂರು", "ನೋಂದಣಿ ದೂರು"
+        ],
+        "complaint_status": [
+            "complaint status", "track complaint", "my complaint", "complaint history", "complaint progress", "grievance status", "complaint list",
+            "ದೂರು ಸ್ಥಿತಿ", "ನನ್ನ ದೂರುಗಳು", "ದೂರುಗಳ ಪ್ರಗತಿ"
+        ],
+        "schemes": [
+            "scheme", "welfare", "eligible scheme", "my scheme", "subsidy", "pension", "pm kisan", "awas yojana", "mgnrega", "scholarship",
+            "ಯೋಜನೆ", "ಪಿಂಚಣಿ", "ಸಹಾಯಧನ", "ಕಲ್ಯಾಣ ಯೋಜನೆ"
+        ],
+        "birth_certificate": [
+            "birth certificate", "birth cert", "new born register", "child registration",
+            "ಜನನ ಪ್ರಮಾಣಪತ್ರ", "ಜನನ ದಾಖಲೆ"
+        ],
+        "death_certificate": [
+            "death certificate", "death cert", "deceased certificate",
+            "ಮರಣ ಪ್ರಮಾಣಪತ್ರ"
+        ],
+        "income_certificate": [
+            "income certificate", "income cert", "salary certificate",
+            "ಆದಾಯ ಪ್ರಮಾಣಪತ್ರ"
+        ],
+        "caste_certificate": [
+            "caste certificate", "caste cert", "obc certificate", "sc st certificate",
+            "ಜಾತಿ ಪ್ರಮಾಣಪತ್ರ"
+        ],
+        "residence_certificate": [
+            "residence certificate", "residence cert", "domicile", "address certificate",
+            "ನಿವಾಸಿ ಪ್ರಮಾಣಪತ್ರ", "ವಾಸಸ್ಥಳ ಪ್ರಮಾಣಪತ್ರ"
+        ],
+        "certificates": [
+            "certificate", "certificates", "documents required for cert", "apply cert",
+            "ಪ್ರಮಾಣಪತ್ರ", "ಪ್ರಮಾಣಪತ್ರಗಳು"
+        ],
+        "registration": [
+            "property registration", "citizen registration", "register property", "register citizen", "sign up", "create account",
+            "ನೋಂದಣಿ", "ಖಾತೆ ತೆರೆಯಿರಿ"
+        ],
+        "water_supply": [
+            "water supply", "water connection", "drinking water", "water tap", "water leak", "water pipe",
+            "ನೀರು ಸರಬರಾಜು", "ನೀರಿನ ಸಂಪರ್ಕ", "ಕುಡಿಯುವ ನೀರು"
+        ],
+        "roads": [
+            "road", "pothole", "tar road", "street repair", "road damage",
+            "ರಸ್ತೆ", "ಗುಂಡಿ", "ರಸ್ತೆ ಹಾನಿ"
+        ],
+        "drainage": [
+            "drainage", "sewage", "gutter", "manhole", "drain block", "sewer",
+            "ಒಳಚರಂಡಿ", "ಚರಂಡಿ"
+        ],
+        "waste_management": [
+            "waste management", "garbage", "trash", "cleanliness", "dustbin", "waste disposal",
+            "ತ್ಯಾಜ್ಯ ನಿರ್ವಹಣೆ", "ಕಸ ಸಂಗ್ರಹಣೆ"
+        ],
+        "street_lights": [
+            "street light", "lamp post", "bulb broken", "dark street", "light pole",
+            "ಬೀದಿ ದೀಪ", "ಕಂಬ"
+        ],
+        "general_services": [
+            "general services", "panchayat services", "what services", "list services",
+            "ಸೇವೆಗಳು", "ಪಂಚಾಯತ್ ಸೇವೆಗಳು"
+        ],
+        "documents": [
+            "required document", "documents needed", "what document", "file upload",
+            "ದಾಖಲೆಗಳು", "ಯಾವ ದಾಖಲೆ"
+        ],
+        "process": [
+            "application process", "how to apply", "procedure",
+            "ಅರ್ಜಿ ಪ್ರಕ್ರಿಯೆ", "ಹೇಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಬೇಕು"
+        ]
     }
     
-    url = "https://api.openai.com/v1/chat/completions"
-    req_data = json.dumps(payload).encode('utf-8')
-    req = urllib.request.Request(
-        url,
-        data=req_data,
-        headers={
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {api_key}'
-        }
-    )
-    
-    try:
-        with urllib.request.urlopen(req, timeout=10) as response:
-            res_data = json.loads(response.read().decode('utf-8'))
-            text = res_data['choices'][0]['message']['content']
-            return text.strip()
-    except Exception as e:
-        sys.stderr.write(f"OpenAI API Error: {str(e)}\n")
-        return None
+    scores = {}
+    for intent, keywords in intents.items():
+        score = 0
+        for kw in keywords:
+            if kw in query_lower:
+                score += (len(kw.split()) * 5)
+        scores[intent] = score
+        
+    best_intent = max(scores, key=scores.get)
+    if scores[best_intent] > 0:
+        return best_intent
+    return "out-of-scope"
 
-# ----------------- Local Rule-Based NLP Engine (Offline Fallback) -----------------
-def local_nlp(query, context, history):
-    query_lower = query.lower()
-    
-    # 1. Detect language (simple check for Kannada character range)
+def local_nlp(query, context, history=None):
     is_kannada = any(0x0C80 <= ord(c) <= 0x0CFF for c in query)
     
-    # 2. Extract last topic from chat history to resolve follow-ups
+    # Resolve last topic from history to handle follow-up queries
     last_topic = None
     if history:
         for msg in reversed(history):
-            if msg['role'] == 'user':
-                text = msg['content'].lower()
+            if msg.get('role') == 'user':
+                text = msg.get('content', '').lower()
                 if any(k in text for k in ["tax", "due", "pay", "amount", "defaulter", "payment", "ತೆರಿಗೆ", "ಬಾಕಿ", "ಪಾವತಿ"]):
                     last_topic = "tax"
                     break
@@ -108,86 +137,104 @@ def local_nlp(query, context, history):
                     last_topic = "schemes"
                     break
                 elif any(k in text for k in ["service", "certificate", "birth", "death", "marriage", "water", "connection", "licence", "license", "ಸೇವೆ", "ಪ್ರಮಾಣಪತ್ರ"]):
-                    last_topic = "services"
+                    last_topic = "certificates"
                     break
                 elif any(k in text for k in ["complaint", "file", "register", "report", "issue", "ದೂರು", "ನೋಂದಣಿ"]):
                     last_topic = "complaints"
                     break
-
-    # Determine current topic
-    current_topic = None
-    if any(k in query_lower for k in ["tax", "due", "pay", "amount", "defaulter", "payment", "ತೆರಿಗೆ", "ಬಾಕಿ", "ಪಾವತಿ", "ಹಣ"]):
-        current_topic = "tax"
-    elif any(k in query_lower for k in ["scheme", "welfare", "subsidy", "pension", "farmer", "ಯೋಜನೆ", "ಪಿಂಚಣಿ", "ಸಹಾಯಧನ"]) or any(s['title'].lower() in query_lower for s in context.get('schemes', [])):
-        current_topic = "schemes"
-    elif any(k in query_lower for k in ["service", "certificate", "birth", "death", "marriage", "water", "connection", "licence", "license", "ಸೇವೆ", "ಪ್ರಮಾಣಪತ್ರ", "ಜನನ", "ಮರಣ", "ವಿವಾಹ", "ನೀರು"]) or any(s['title'].lower() in query_lower for s in context.get('services', [])):
-        current_topic = "services"
-    elif any(k in query_lower for k in ["complaint", "file", "register", "report", "issue", "ದೂರು", "ನೋಂದಣಿ", "ಸಲ್ಲಿಸಲು"]):
-        current_topic = "complaints"
-    elif any(k in query_lower for k in ["notification", "alert", "notice", "ಅಧಿಸೂಚನೆ"]):
-        current_topic = "notifications"
-    elif any(k in query_lower for k in ["timing", "hour", "open", "close", "schedule", "work time", "ಸಮಯ", "ಯಾವಾಗ", "ತೆರೆದಿರುತ್ತದೆ", "ಅಧಿಕೃತ ಸಮಯ"]):
-        current_topic = "timings"
-    elif any(k in query_lower for k in ["contact", "phone", "email", "number", "location", "address", "call", "ಸಂಪರ್ಕ", "ಫೋನ್", "ಇಮೇಲ್", "ವಿಳಾಸ"]):
-        current_topic = "contact"
-    elif any(k in query_lower for k in ["hello", "hi", "hey", "namaste", "good morning", "ನಮಸ್ಕಾರ", "ಹಲೋ"]):
-        current_topic = "greeting"
-        
-    # Resolve follow-up if no current topic is explicitly mentioned, but we have a last topic
-    if not current_topic and last_topic:
+                    
+    intent = detect_intent(query)
+    
+    # Follow-up topic override
+    if intent == "out-of-scope" and last_topic:
         follow_up_indicators = ["it", "them", "how to", "pay", "documents", "required", "status", "detail", "ಅದಕ್ಕೆ", "ಯಾವಾಗ", "ಹೇಗೆ", "ದಾಖಲೆ", "ಸ್ಥಿತಿ"]
-        if any(ind in query_lower for ind in follow_up_indicators):
-            current_topic = last_topic
+        if any(ind in query.lower() for ind in follow_up_indicators):
+            if last_topic == "tax":
+                intent = "tax"
+            elif last_topic == "schemes":
+                intent = "schemes"
+            elif last_topic == "certificates":
+                intent = "certificates"
+            elif last_topic == "complaints":
+                intent = "complaint_status"
 
-    # Compile the response based on the detected topic
-    if current_topic == "timings":
+    # 1. TIMINGS INTENT
+    if intent == "timings":
         return TIMINGS_KN if is_kannada else TIMINGS_EN
         
-    elif current_topic == "contact":
+    # 2. CONTACT INTENT
+    elif intent == "contact":
         return CONTACT_KN if is_kannada else CONTACT_EN
         
-    elif current_topic == "tax":
-        tax_t = context.get('tax_info')
-        if tax_t:
+    # 3. PROPERTY TAX INTENT
+    elif intent == "tax":
+        tax_info = context.get('tax_info')
+        tax_records = context.get('tax_records', [])
+        
+        if tax_info:
             if is_kannada:
                 return (
                     f"ನಿಮ್ಮ ಬಾಕಿ ಆಸ್ತಿ ತೆರಿಗೆ ವಿವರಗಳು:\n"
-                    f"• ಆಸ್ತಿ ID: {tax_t.get('property_id')}\n"
-                    f"• ಮಾಲೀಕರು: {tax_t.get('owner_name')}\n"
-                    f"• ಬಾಕಿ ತೆರಿಗೆ: ₹{tax_t.get('tax_amount')}\n"
-                    f"• ಸ್ಥಿತಿ: {tax_t.get('status')}\n"
-                    f"• ಕೊನೆಯ ದಿನಾಂಕ: {tax_t.get('due_date')}\n"
-                    f"ಆನ್‌ಲೈನ್ ಪಾವತಿಗಾಗಿ 'Tax Search' ಪೋರ್ಟಲ್ ಬಳಸಿ ಅಥವಾ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಪಾವತಿಸಲು ದಯವಿಟ್ಟು ಪಂಚಾಯತ್ ಕಚೇರಿಗೆ ಭೇಟಿ ನೀಡಿ."
+                    f"• ಆಸ್ತಿ ID: {tax_info.get('property_id')}\n"
+                    f"• ಮಾಲೀಕರು: {tax_info.get('owner_name')}\n"
+                    f"• ಬಾಕಿ ತೆರಿಗೆ: ₹{tax_info.get('tax_amount')}\n"
+                    f"• ಸ್ಥಿತಿ: {tax_info.get('status')}\n"
+                    f"• ಕೊನೆಯ ದಿನಾಂಕ: {tax_info.get('due_date')}\n"
+                    f"ಆನ್‌ಲೈನ್ ಪಾವತಿಗಾಗಿ 'Tax Search' ಪೋರ್ಟಲ್ ಬಳಸಿ ಅಥವಾ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಪಾವತಿಸಲು ಪಂಚಾಯತ್ ಕಚೇರಿಗೆ ಭೇಟಿ ನೀಡಿ."
                 )
             else:
                 return (
                     f"Your outstanding property tax details:\n"
-                    f"• Property ID: {tax_t.get('property_id')}\n"
-                    f"• Owner: {tax_t.get('owner_name')}\n"
-                    f"• Pending Tax: ₹{tax_t.get('tax_amount')}\n"
-                    f"• Status: {tax_t.get('status')}\n"
-                    f"• Due Date: {tax_t.get('due_date')}\n"
+                    f"• Property ID: {tax_info.get('property_id')}\n"
+                    f"• Owner: {tax_info.get('owner_name')}\n"
+                    f"• Pending Tax: ₹{tax_info.get('tax_amount')}\n"
+                    f"• Status: {tax_info.get('status')}\n"
+                    f"• Due Date: {tax_info.get('due_date')}\n"
                     f"You can pay online via the citizen portal ('Tax Search' tab) or visit the Panchayat office for offline payments."
                 )
+        elif len(tax_records) > 0:
+            lines = [f"• Year {t['year']}: ₹{t['tax_amount']} - Status: {t['status']}" for t in tax_records]
+            if is_kannada:
+                return "ನಿಮ್ಮ ಆಸ್ತಿ ತೆರಿಗೆ ಇತಿಹಾಸ:\n" + "\n".join(lines) + "\nಎಲ್ಲಾ ತೆರಿಗೆ ಬಾಕಿ ಪಾವತಿಗಳನ್ನು ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಮಾಡಬಹುದು."
+            else:
+                return "Your Property Tax history:\n" + "\n".join(lines) + "\nAll taxes can be viewed and paid online via the Citizen Portal."
         else:
-            tax_recs = context.get('tax_records', [])
-            if tax_recs:
-                lines = [f"• Year {t['year']}: ₹{t['tax_amount']} - Status: {t['status']}" for t in tax_recs]
-                if is_kannada:
-                    return "ನಿಮ್ಮ ಆಸ್ತಿ ತೆರಿಗೆ ಇತಿಹಾಸ:\n" + "\n".join(lines) + "\nಎಲ್ಲಾ ತೆರಿಗೆ ಬಾಕಿ ಪಾವತಿಗಳನ್ನು ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಮಾಡಬಹುದು."
-                else:
-                    return "Your Property Tax history:\n" + "\n".join(lines) + "\nAll taxes can be viewed and paid online via the Citizen Portal."
-            
             if is_kannada:
                 return "ಆಸ್ತಿ ತೆರಿಗೆಯನ್ನು ಆಸ್ತಿಯ ಗಾತ್ರ ಮತ್ತು ಪ್ರಕಾರದ ಮೇಲೆ ನಿರ್ಧರಿಸಲಾಗುತ್ತದೆ. ನಾಗರಿಕರು ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ 'Tax Search' ಮೂಲಕ ಅಥವಾ ಗ್ರಾಮ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಪಾವತಿಸಬಹುದು."
             else:
-                return "Property tax is determined based on property dimensions and category (residential/commercial). Citizens can search and pay their tax online via the 'Search & Pay Tax' section or offline at the Gram Panchayat office."
-
-    elif current_topic == "schemes":
+                return "Property tax is determined based on property dimensions and category. Citizens can search and pay their tax online via the 'Search & Pay Tax' section or offline at the Gram Panchayat office."
+                
+    # 4. COMPLAINT REGISTRATION INTENT
+    elif intent == "complaint_register":
+        if is_kannada:
+            return "ದೂರು ಸಲ್ಲಿಸಲು: ನಾಗರಿಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನಲ್ಲಿ 'Register Complaint' ವಿಭಾಗಕ್ಕೆ ಹೋಗಿ, ವರ್ಗವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ, ಸಮಸ್ಯೆಯನ್ನು ವಿವರಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ. ಗ್ರಾಮಿತ್ರ ಎಐ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ವರ್ಗ ಮತ್ತು ಆದ್ಯತೆಯನ್ನು ವರ್ಗೀಕರಿಸುತ್ತದೆ."
+        else:
+            return "To file a complaint: Go to the Citizen Dashboard, click on 'Register Complaint', select the category, describe the issue in detail, and click submit. Priority is predicted dynamically."
+            
+    # 5. COMPLAINT STATUS INTENT
+    elif intent == "complaint_status":
+        compls = context.get('complaints', [])
+        if compls:
+            lines = [f"• ID #{c['id']} ({c['category']}): Status is '{c['status']}', Priority: '{c['priority']}' (Remarks: {c.get('admin_remarks') or 'No remarks yet'})" for c in compls]
+            if is_kannada:
+                return f"ನಿಮ್ಮ ದೂರುಗಳ ಪ್ರಗತಿ:\n" + "\n".join(lines)
+            else:
+                return f"Your registered complaints progress:\n" + "\n".join(lines)
+        else:
+            if is_kannada:
+                return "ನಿಮ್ಮ ಖಾತೆಯಲ್ಲಿ ಯಾವುದೇ ನೋಂದಾಯಿತ ದೂರುಗಳು ಕಂಡುಬಂದಿಲ್ಲ."
+            else:
+                return "No registered complaints found in your account."
+                
+    # 6. WELFARE SCHEMES INTENT
+    elif intent == "schemes":
+        user = context.get('user')
         schemes = context.get('schemes', [])
+        
+        # Check if the query is asking about a specific scheme
         target_scheme = None
         for s in schemes:
-            if s['title'].lower() in query_lower:
+            if s['title'].lower() in query.lower():
                 target_scheme = s
                 break
                 
@@ -196,127 +243,140 @@ def local_nlp(query, context, history):
             criteria = target_scheme.get('target_criteria') or target_scheme.get('eligibility_criteria') or "N/A"
             docs = target_scheme.get('required_documents') or "N/A"
             benefits = target_scheme.get('benefits') or "Financial support/subsidy"
-            process = target_scheme.get('application_process') or "Apply online on portal or submit application at Gram Panchayat."
-            
+            process = target_scheme.get('application_process') or "Apply online on portal."
             if is_kannada:
-                return (
-                    f"ಯೋಜನೆಯ ವಿವರಗಳು: **{title}**\n"
-                    f"• ಅರ್ಹತಾ ಮಾನದಂಡಗಳು: {criteria}\n"
-                    f"• ಅಗತ್ಯ ದಾಖಲೆಗಳು: {docs}\n"
-                    f"• ಪ್ರಯೋಜನಗಳು: {benefits}\n"
-                    f"• ಅರ್ಜಿ ಸಲ್ಲಿಸುವ ವಿಧಾನ: {process}"
-                )
+                return f"ಯೋಜನೆಯ ವಿವರಗಳು: **{title}**\n• ಅರ್ಹತಾ ಮಾನದಂಡಗಳು: {criteria}\n• ಅಗತ್ಯ ದಾಖಲೆಗಳು: {docs}\n• ಪ್ರಯೋಜನಗಳು: {benefits}"
             else:
-                return (
-                    f"Scheme Details: **{title}**\n"
-                    f"• Eligibility Criteria: {criteria}\n"
-                    f"• Required Documents: {docs}\n"
-                    f"• Benefits: {benefits}\n"
-                    f"• Application Process: {process}"
-                )
+                return f"Scheme Details: **{title}**\n• Eligibility Criteria: {criteria}\n• Required Documents: {docs}\n• Benefits: {benefits}"
                 
-        if len(schemes) > 0:
-            lines = [f"• {s['title']} (Eligibility: {s.get('target_criteria', s.get('eligibility_criteria', 'N/A'))})" for s in schemes]
+        if user and user.get('matching_scheme') and user.get('matching_scheme') != "No Matching Scheme":
+            scheme = user.get('matching_scheme')
+            conf = float(user.get('matching_confidence') or 0.0)
             if is_kannada:
-                return f"ಗ್ರಾಮ ಪಂಚಾಯತ್ ಅಡಿಯಲ್ಲಿ ಲಭ್ಯವಿರುವ ಕಲ್ಯಾಣ ಯೋಜನೆಗಳು:\n" + "\n".join(lines) + "\nಯಾವುದೇ ನಿರ್ದಿಷ್ಟ ಯೋಜನೆಯ ಅರ್ಹತೆ ಅಥವಾ ದಾಖಲೆಗಳನ್ನು ತಿಳಿಯಲು ಅದರ ಹೆಸರನ್ನು ಕೇಳಿ."
+                return f"ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಪ್ರಕಾರ, ನಿಮ್ಮ ಅರ್ಹತಾ ಕಲ್ಯಾಣ ಯೋಜನೆ: **{scheme}** (Confidence: {conf*100:.0f}%). ನಾಗರಿಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನ ಯೋಜನೆಗಳ ವಿಭಾಗದಲ್ಲಿ ನೀವು ಅರ್ಜಿ ಸಲ್ಲಿಸಬಹುದು."
             else:
-                return f"Welfare schemes available under Gram Panchayat:\n" + "\n".join(lines) + "\nTo know details of any specific scheme, ask with its name (e.g., 'eligibility for PM Kisan')."
+                return f"Based on your profile, your eligible scheme is: **{scheme}** (Confidence: {conf*100:.0f}%). You can apply via the Welfare Schemes section."
         else:
+            if len(schemes) > 0:
+                lines = [f"• {s['title']} (Eligibility: {s.get('target_criteria', 'N/A')})" for s in schemes]
+                if is_kannada:
+                    return "ಲಭ್ಯವಿರುವ ಕಲ್ಯಾಣ ಯೋಜನೆಗಳು:\n" + "\n".join(lines)
+                else:
+                    return "Welfare schemes available under Gram Panchayat:\n" + "\n".join(lines)
             if is_kannada:
-                return "ಲಭ್ಯವಿರುವ ಯೋಜನೆಗಳು: PM Kisan (ರೈತರಿಗೆ ಸಹಾಯಧನ), MGNREGA (ಉದ್ಯೋಗ ಖಾತರಿ), ಮತ್ತು PM Awas Yojana (ವಸತಿ ಸಹಾಯ). ಅರ್ಜಿ ಸಲ್ಲಿಸಲು ನಾಗರಿಕ ಪೋರ್ಟಲ್ ಬಳಸಿ."
+                return "ನಿಮ್ಮ ಪ್ರಸ್ತುತ ವಿವರಕ್ಕೆ ಯಾವುದೇ ಸರ್ಕಾರಿ ಕಲ್ಯಾಣ ಯೋಜನೆಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ."
             else:
-                return "Active welfare schemes include PM Kisan (Farmer Subsidy), MGNREGA (Rural Employment), and PM Awas Yojana (Housing Support). Apply directly via the schemes section."
-
-    elif current_topic == "services":
-        services = context.get('services', [])
-        target_service = None
-        for s in services:
-            if s['title'].lower() in query_lower or (s.get('description') and s['description'].lower() in query_lower):
-                target_service = s
-                break
+                return "No Government Welfare Scheme matches your current profile."
                 
-        if target_service:
-            title = target_service['title']
-            desc = target_service.get('description') or "Panchayat service"
-            docs = target_service.get('required_documents') or "Identity proof, Address proof, Property documents"
-            fees = target_service.get('fees') or "As per Panchayat norms"
-            
-            if is_kannada:
-                return (
-                    f"ಸೇವೆಯ ವಿವರಗಳು: **{title}**\n"
-                    f"• ವಿವರಣೆ: {desc}\n"
-                    f"• ಅಗತ್ಯ ದಾಖಲೆಗಳು: {docs}\n"
-                    f"• ಶುಲ್ಕಗಳು: {fees}\n"
-                    f"ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನ 'Services' ವಿಭಾಗದಲ್ಲಿ ನೀವು ಇದಕ್ಕೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಬಹುದು."
-                )
-            else:
-                return (
-                    f"Service Details: **{title}**\n"
-                    f"• Description: {desc}\n"
-                    f"• Required Documents: {docs}\n"
-                    f"• Fees/Charges: {fees}\n"
-                    f"You can apply for this directly online via the 'Services' tab in the Citizen Portal."
-                )
-
-        if len(services) > 0:
-            titles = [s['title'] for s in services]
-            if is_kannada:
-                return f"ಗ್ರಾಮ ಪಂಚಾಯತಿಯಲ್ಲಿ ಲಭ್ಯವಿರುವ ಸಕ್ರಿಯ ಸೇವೆಗಳು:\n" + "\n".join([f"• {t}" for t in titles]) + "\nನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ಇವುಗಳಿಗೆ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಬಹುದು."
-            else:
-                return f"Active services available at our Panchayat:\n" + "\n".join([f"• {t}" for t in titles]) + "\nYou can apply for these online in the 'Services' section of the portal."
-        else:
-            if is_kannada:
-                return "ಗ್ರಾಮ ಪಂಚಾಯತಿ ಸೇವೆಗಳು: ಜನನ/ಮರಣ ಪ್ರಮಾಣಪತ್ರಗಳು, ನೀರು ಸಂಪರ್ಕ, ಮತ್ತು ಕಟ್ಟಡ ಅನುಮತಿ. ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ."
-            else:
-                return "Panchayat services include Birth/Death Certificates, Water Connection, and Building Permissions. Apply directly via the 'Services' section of the portal."
-
-    elif current_topic == "complaints":
-        compls = context.get('complaints', [])
-        if compls:
-            lines = [f"• ID #{c['id']} ({c['category']}): Status is '{c['status']}', Priority: '{c['priority']}' (Remarks: {c.get('admin_remarks') or 'No remarks yet'})" for c in compls]
-            if is_kannada:
-                return f"ನಿಮ್ಮ ದೂರುಗಳ ಪ್ರಗತಿ:\n" + "\n".join(lines)
-            else:
-                return f"Your registered complaints progress:\n" + "\n".join(lines)
-                
+    # 7. CERTIFICATES INTENT
+    elif intent == "birth_certificate":
         if is_kannada:
-            return "ದೂರು ಸಲ್ಲಿಸಲು: ನಾಗರಿಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನಲ್ಲಿ 'Register Complaint' ವಿಭಾಗಕ್ಕೆ ಹೋಗಿ, ವರ್ಗವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ, ಸಮಸ್ಯೆಯನ್ನು ವಿವರಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ. ಗ್ರಾಮಿತ್ರ ಎಐ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ವರ್ಗ ಮತ್ತು ಆದ್ಯತೆಯನ್ನು ವರ್ಗೀಕರಿಸುತ್ತದೆ."
+            return "ಜನನ ಪ್ರಮಾಣಪತ್ರ ಪ್ರಕ್ರಿಯೆ:\n- ಅಗತ್ಯ ದಾಖಲೆಗಳು: ಆಸ್ಪತ್ರೆಯ ವರದಿ, ಪೋಷಕರ ಆಧಾರ್ ಕಾರ್ಡ್, ಮತ್ತು ವಿಳಾಸದ ಪುರಾವೆ.\n- ಅರ್ಜಿ: 'Services' ಟ್ಯಾಬ್ ಅಡಿಯಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ. 21 ದಿನಗಳಲ್ಲಿ ಉಚಿತವಾಗಿ ಸಿಗುತ್ತದೆ."
         else:
-            return "To file a complaint: Go to the Citizen Dashboard, click on 'Register Complaint', select the category, describe the issue in detail, and click submit. GramMitra AI will automatically classify the category and predict priority."
-
-    elif current_topic == "notifications":
-        notifs = context.get('notifications', [])
-        if notifs:
-            lines = [f"• [{n['type']}] {n['title']}: {n['message']}" for n in notifs]
-            if is_kannada:
-                return "ನಿಮ್ಮ ಇತ್ತೀಚಿನ ಅಧಿಸೂಚನೆಗಳು:\n" + "\n".join(lines)
-            else:
-                return "Your recent notifications:\n" + "\n".join(lines)
-        else:
-            if is_kannada:
-                return "ನಿಮ್ಮ ಖಾತೆಗೆ ಯಾವುದೇ ಹೊಸ ಅಧಿಸೂಚನೆಗಳಿಲ್ಲ."
-            else:
-                return "No new notifications found in your account."
-
-    elif current_topic == "greeting":
+            return "Birth Certificate process:\n- Documents required: Hospital discharge summary / birth report, parents' Aadhaar card, and address proof.\n- Application: Apply online under 'Services' tab or submit offline.\n- Fees: Free of charge if registered within 21 days."
+            
+    elif intent == "death_certificate":
         if is_kannada:
-            return "ನಮಸ್ಕಾರ! ನಾನು ಗ್ರಾಮಿತ್ರ ಎಐ, ನಿಮ್ಮ ಪಂಚಾಯತ್ ಸಹಾಯಕ. ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ? ನೀವು ತೆರಿಗೆ ಬಾಕಿ, ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು, ನಾಗರಿಕ ಸೇವೆಗಳು, ಅಥವಾ ದೂರುಗಳ ಬಗ್ಗೆ ಕೇಳಬಹುದು."
+            return "ಮರಣ ಪ್ರಮಾಣಪತ್ರ ಪ್ರಕ್ರಿಯೆ:\n- ಅಗತ್ಯ ದಾಖಲೆಗಳು: ಆಸ್ಪತ್ರೆಯ ಮರಣ ವರದಿ, ಮೃತರ ಆಧಾರ್ ಕಾರ್ಡ್, ಅರ್ಜಿದಾರರ ಐಡಿ.\n- ಅರ್ಜಿ: 'Services' ಟ್ಯಾಬ್ ಅಡಿಯಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ."
         else:
-            return "Hello! I am GramMitra AI, your Gram Panchayat assistant. How can I help you today? You can ask me about tax dues, government schemes, citizen services, timings, contact info, or complaints."
+            return "Death Certificate process:\n- Documents required: Hospital death report / cremation report, deceased person's Aadhaar, and applicant's ID.\n- Application: Apply online under 'Services' tab or submit offline."
+            
+    elif intent == "income_certificate":
+        if is_kannada:
+            return "ಆದಾಯ ಪ್ರಮಾಣಪತ್ರ ಪ್ರಕ್ರಿಯೆ:\n- ಅಗತ್ಯ ದಾಖಲೆಗಳು: ವೇತನ ಪತ್ರ / ಕೃಷಿ ಆದಾಯ ಸ್ವಯಂ ಘೋಷಣೆ, ಭೂ ದಾಖಲೆಗಳು (RTC), ಆಧಾರ್ ಕಾರ್ಡ್.\n- ಅರ್ಜಿ: 'Services' ಟ್ಯಾಬ್ ಅಡಿಯಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ."
+        else:
+            return "Income Certificate process:\n- Documents required: Salary slips / agricultural income self-declaration, land records (RTC), and Aadhaar card.\n- Application: Apply online under 'Services' tab or at the Panchayat office."
+            
+    elif intent == "caste_certificate":
+        if is_kannada:
+            return "ಜಾತಿ ಪ್ರಮಾಣಪತ್ರ ಪ್ರಕ್ರಿಯೆ:\n- ಅಗತ್ಯ ದಾಖಲೆಗಳು: ತಂದೆಯ ಜಾತಿ ಪುರಾವೆ, ಶಾಲಾ ಪ್ರಮಾಣಪತ್ರ, ಆದಾಯ ಪ್ರಮಾಣಪತ್ರ, ಮತ್ತು ಆಧಾರ್ ಕಾರ್ಡ್.\n- ಅರ್ಜಿ: 'Services' ಟ್ಯಾಬ್ ಅಡಿಯಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ."
+        else:
+            return "Caste Certificate process:\n- Documents required: Father's caste proof / school certificate, family income certificate, and Aadhaar card.\n- Application: Apply online under 'Services' tab or at the Panchayat office."
+            
+    elif intent == "residence_certificate":
+        if is_kannada:
+            return "ನಿವಾಸಿ ಪ್ರಮಾಣಪತ್ರ ಪ್ರಕ್ರಿಯೆ:\n- ಅಗತ್ಯ ದಾಖಲೆಗಳು: ವಿಳಾಸದ ಪುರಾವೆ (ಆಧಾರ್/ಮತದಾರರ ಐಡಿ), ಸ್ಥಳೀಯ ಪರಿಶೀಲನಾ ವರದಿ, ಮತ್ತು ಫೋಟೋ.\n- ಅರ್ಜಿ: 'Services' ಟ್ಯಾಬ್ ಅಡಿಯಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ."
+        else:
+            return "Residence Certificate process:\n- Documents required: Address proof (Aadhaar/Voter ID/Ration Card), local verification report, and passport photo.\n- Application: Apply online under 'Services' tab or at the Panchayat office."
+            
+    elif intent == "certificates":
+        if is_kannada:
+            return "ನಾವು ಜನನ, ಮರಣ, ಆದಾಯ, ಜಾತಿ, ಮತ್ತು ನಿವಾಸಿ ಪ್ರಮಾಣಪತ್ರಗಳನ್ನು ನೀಡುತ್ತೇವೆ. ನೀವು ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನ 'Services' ಟ್ಯಾಬ್ ಅಡಿಯಲ್ಲಿ ಇವುಗಳಿಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಬಹುದು."
+        else:
+            return "We issue Birth, Death, Income, Caste, and Residence certificates. You can apply for all of them under the 'Services' tab of the Citizen Portal."
+            
+    # 8. SERVICES & GENERAL
+    elif intent == "water_supply":
+        if is_kannada:
+            return "ನೀರು ಸರಬರಾಜು ಸೇವೆಗಳು:\n- ಹೊಸ ಸಂಪರ್ಕಕ್ಕಾಗಿ: 'Services' ಟ್ಯಾಬ್ ಅಡಿಯಲ್ಲಿ ಆಸ್ತಿ ತೆರಿಗೆ ರಶೀದಿಯೊಂದಿಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ.\n- ಸೋರಿಕೆ ಅಥವಾ ಪೈಪ್‌ಲೈನ್ ಒಡೆದರೆ ದೂರು ನೋಂದಾಯಿಸಿ."
+        else:
+            return "Water Supply Services:\n- For new connections: Submit application under 'Services' tab with property tax receipt and identity proof.\n- Report leakages, pipeline bursts, or water contamination using the 'Register Complaint' module."
+            
+    elif intent == "roads":
+        if is_kannada:
+            return "ರಸ್ತೆ ಸೇವೆಗಳು: ರಸ್ತೆ ತಡೆಗಳು, ಗುಂಡಿಗಳು, ಅಥವಾ ರಸ್ತೆ ಹಾನಿಗಳನ್ನು 'Register Complaint' ಮಾಡ್ಯೂಲ್ ಅಡಿಯಲ್ಲಿ ವರದಿ ಮಾಡಿ."
+        else:
+            return "Road Services: Report road blockages, potholes, bridge collapses, or dangerous street conditions under the 'Register Complaint' module (Road Damage category)."
+            
+    elif intent == "drainage":
+        if is_kannada:
+            return "ಒಳಚರಂಡಿ ಸೇವೆಗಳು: ಮ್ಯಾನ್‌ಹೋಲ್ ಬ್ಲಾಕ್, ಒಳಚರಂಡಿ ಉಕ್ಕಿ ಹರಿಯುವಿಕೆಯನ್ನು 'Register Complaint' ಅಡಿಯಲ್ಲಿ ವರದಿ ಮಾಡಿ."
+        else:
+            return "Drainage Services: The Panchayat manages public drainage systems. Report manhole blocks, sewage overflows, or clogged public gutters in the 'Register Complaint' module (Drainage category)."
+            
+    elif intent == "waste_management":
+        if is_kannada:
+            return "ತ್ಯಾಜ್ಯ ನಿರ್ವಹಣೆ: ಕಸ ಸಂಗ್ರಹಣೆ ವಾಹನಗಳು ಪ್ರತಿದಿನ ವಾರ್ಡ್‌ಗಳಿಗೆ ಭೇಟಿ ನೀಡುತ್ತವೆ. ಕಸ ಸಂಗ್ರಹಣೆ ಸಮಸ್ಯೆಗಳನ್ನು ವರದಿ ಮಾಡಿ."
+        else:
+            return "Waste Management: Garbage collection vehicles visit wards daily. Please use waste bins for disposal. Report garbage accumulation or illegal dumping in the 'Register Complaint' module (Sanitation category)."
+            
+    elif intent == "street_lights":
+        if is_kannada:
+            return "ಬೀದಿ ದೀಪಗಳು: ಬೀದಿ ದೀಪಗಳು ಕೆಲಸ ಮಾಡದಿದ್ದರೆ ಅಥವಾ ಕಂಬಗಳು ಹಾನಿಯಾಗಿದ್ದರೆ ದೂರು ನೋಂದಾಯಿಸಿ."
+        else:
+            return "Street Lights: The Panchayat installs and maintains street lamps. Report non-functioning lamps, broken poles, or dark spots using the 'Register Complaint' module (Street Light category)."
+            
+    elif intent == "general_services":
+        if is_kannada:
+            return "ಸಕ್ರಿಯ ಸೇವೆಗಳು: ಜನನ/ಮರಣ ಪ್ರಮಾಣಪತ್ರಗಳು, ನೀರು ಸಂಪರ್ಕ, ಮತ್ತು ಕಟ್ಟಡ ಅನುಮತಿ. ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ."
+        else:
+            return "Active Panchayat services include Birth/Death Certificates, Water Connection, Building Permissions, and Property Registration. Apply directly online in the 'Services' tab."
+            
+    elif intent == "documents":
+        if is_kannada:
+            return "ಸಾಮಾನ್ಯವಾಗಿ ಆಧಾರ್ ಕಾರ್ಡ್, ವಿಳಾಸ ಪುರಾವೆ, ಆದಾಯ ಪುರಾವೆ, ಮತ್ತು ಆಸ್ತಿ ತೆರಿಗೆ ರಶೀದಿಗಳನ್ನು ಸಿದ್ಧವಾಗಿಡಿ."
+        else:
+            return "For general applications, keep your Aadhaar Card, Address Proof (Voter ID/Ration Card), Income Proof, and Property Tax receipts ready."
+            
+    elif intent == "process":
+        if is_kannada:
+            return "ಅರ್ಜಿ ಪ್ರಕ್ರಿಯೆ: ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ, 'Services' ಗೆ ಹೋಗಿ, ವಿವರಗಳನ್ನು ತುಂಬಿ ಮತ್ತು ದಾಖಲೆಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ."
+        else:
+            return "Panchayat application process:\n1. Log into your Citizen Portal.\n2. Go to 'Services' and choose the certificate/service.\n3. Fill details and upload documents.\n4. Pay nominal fees if applicable.\n5. Track application status from dashboard."
+            
+    elif intent == "registration":
+        if is_kannada:
+            return "ಲಾಗಿನ್ ಪರದೆಯಲ್ಲಿ 'Register' ಕ್ಲಿಕ್ ಮಾಡುವ ಮೂಲಕ ನಾಗರಿಕ ನೋಂದಣಿ ಮಾಡಬಹುದು. ಆಸ್ತಿ ನೋಂದಣಿಗೆ ಆಸ್ತಿ ಮಾಲೀಕತ್ವದ ದಾಖಲೆಗಳು ಬೇಕಾಗುತ್ತವೆ."
+        else:
+            return "Citizen Registration can be done online by clicking 'Register' on the login screen. Property registration requires land ownership papers, identity verification, and tax clearance certificates."
 
-    # Fallback response for out of scope queries
+    elif intent == "greeting":
+        if is_kannada:
+            return "ಸ್ಮಾರ್ಟ್ ಗ್ರಾಮ ಪಂಚಾಯತ್ ಸಹಾಯಕರಿಗೆ ಸುಸ್ವಾಗತ. ನಾನು ಇಂದು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?"
+        else:
+            return "Welcome to Smart Gram Panchayat Assistant. How can I help you today?"
+            
+    # 9. OUT OF SCOPE FALLBACK
     if is_kannada:
-        return "ಕ್ಷಮಿಸಿ, ನಾನು ಗ್ರಾಮಿತ್ರ ಎಐ. ಪಂಚಾಯತ್ ಸೇವೆಗಳು, ತೆರಿಗೆಗಳು, ಕಚೇರಿ ಸಮಯ ಅಥವಾ ದೂರುಗಳಿಗೆ ಸಂಬಂಧಿಸಿದ ಪ್ರಶ್ನೆಗಳಿಗೆ ಮಾತ್ರ ನಾನು ಉತ್ತರಿಸಬಲ್ಲೆ. ಇತರ ವಿಷಯಗಳಿಗಾಗಿ ದಯವಿಟ್ಟು ಸಂಬಂಧಿತ ಇಲಾಖೆಯನ್ನು ಸಂಪರ್ಕಿಸಿ."
+        return "ನಾನು ಸ್ಮಾರ್ಟ್ ಗ್ರಾಮ ಪಂಚಾಯತ್ ಸಹಾಯಕ. ನಾನು ಗ್ರಾಮ ಪಂಚಾಯತ್ ಸೇವೆಗಳು ಮತ್ತು ನಾಗರಿಕ ಸಂಬಂಧಿತ ಪ್ರಶ್ನೆಗಳಿಗೆ ಮಾತ್ರ ಸಹಾಯ ಮಾಡಬಲ್ಲೆ."
     else:
-        return "I am GramMitra AI. I can only assist you with Gram Panchayat related questions regarding services, property tax, complaints, timings, or government schemes. For other queries, please visit the Gram Panchayat Office or contact support."
+        return "I am the Smart Gram Panchayat Assistant. I can assist only with Gram Panchayat services and citizen-related queries."
 
-# ----------------- Main CLI Handler -----------------
 def main():
     query = ""
     context = {}
     history = []
     
-    # Parse arguments
     config_path = None
     for i in range(1, len(sys.argv)):
         if sys.argv[i] == "--config_path" and i+1 < len(sys.argv):
@@ -360,16 +420,8 @@ def main():
                 history = config_data.get("history", history)
         except Exception:
             pass
-        
-    api_key = os.environ.get("OPENAI_API_KEY") or context.get("openai_api_key")
-    
-    response = None
-    if api_key and api_key.strip() != "" and not api_key.startswith("your_openai_"):
-        response = ask_openai(query, context, history, api_key)
-        
-    if not response:
-        response = local_nlp(query, context, history)
-        
+            
+    response = local_nlp(query, context, history)
     print(response)
 
 if __name__ == "__main__":

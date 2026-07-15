@@ -750,6 +750,16 @@ app.get('/user-dashboard', async (req, res) => {
     
     recommendedSchemes = mlResult.recommendations || [];
     
+    let cacheScheme = "No Matching Scheme";
+    let cacheConf = 0.0;
+    if (recommendedSchemes.length > 0) {
+      cacheScheme = recommendedSchemes[0].scheme;
+      cacheConf = recommendedSchemes[0].confidence;
+    }
+    db.prepare('UPDATE users SET matching_scheme = ?, matching_confidence = ? WHERE id = ?').run(cacheScheme, cacheConf, user.id);
+    user.matching_scheme = cacheScheme;
+    user.matching_confidence = cacheConf;
+    
     // Create notifications for newly eligible schemes
     recommendedSchemes.forEach(rec => {
       const existingNotif = db.prepare(`
@@ -768,6 +778,13 @@ app.get('/user-dashboard', async (req, res) => {
     });
   } catch (mlErr) {
     console.error("Scheme recommendation ML error:", mlErr.message);
+    if (user.matching_scheme && user.matching_scheme !== "No Matching Scheme") {
+      recommendedSchemes = [{
+        scheme: user.matching_scheme,
+        confidence: user.matching_confidence,
+        reasons: ["Loaded from saved profile recommendations."]
+      }];
+    }
   }
 
   res.render('user-dashboard', {
@@ -1211,7 +1228,7 @@ app.post('/api/admin/add-citizen', requireAdmin, (req, res) => {
     return res.json({ success: false, message: 'Property ID, Name, Phone, and Username are required.' });
   }
   try {
-    db.prepare(`
+    const info = db.prepare(`
       INSERT INTO users (property_id, name, phone, email, password, age, gender, occupation, income, land_size, is_farmer, is_student, disability, address, ward, aadhaar, username)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
@@ -1228,6 +1245,23 @@ app.post('/api/admin/add-citizen', requireAdmin, (req, res) => {
       `Citizen ${name} has been registered successfully with Property ID ${propertyId.toUpperCase()}.`,
       'System'
     );
+
+    const citizenId = info.lastInsertRowid;
+    runMLInference('--recommend-schemes', {
+      age: parseInt(age) || 30,
+      gender: gender || 'Male',
+      occupation: occupation || 'Agriculture',
+      income: parseFloat(income) || 80000.0,
+      land_size: parseFloat(landSize) || 1.5,
+      is_farmer: parseInt(isFarmer) || 0,
+      is_student: parseInt(isStudent) || 0,
+      disability: parseInt(disability) || 0
+    }).then(mlResult => {
+      const recs = mlResult.recommendations || [];
+      const scheme = recs.length > 0 ? recs[0].scheme : "No Matching Scheme";
+      const confidence = recs.length > 0 ? recs[0].confidence : 0.0;
+      db.prepare('UPDATE users SET matching_scheme = ?, matching_confidence = ? WHERE id = ?').run(scheme, confidence, citizenId);
+    }).catch(err => console.error("Scheme prediction error during add citizen:", err));
 
     res.json({ success: true, message: 'Citizen profile registered successfully!' });
   } catch (e) {
@@ -1253,6 +1287,23 @@ app.post('/api/admin/update-citizen', requireAdmin, (req, res) => {
       parseFloat(income), parseFloat(landSize), parseInt(isFarmer), parseInt(isStudent), parseInt(disability),
       address || '', ward || 'Ward 1', aadhaar || '', username, id
     );
+
+    runMLInference('--recommend-schemes', {
+      age: parseInt(age) || 30,
+      gender: gender || 'Male',
+      occupation: occupation || 'Agriculture',
+      income: parseFloat(income) || 80000.0,
+      land_size: parseFloat(landSize) || 1.5,
+      is_farmer: parseInt(isFarmer) || 0,
+      is_student: parseInt(isStudent) || 0,
+      disability: parseInt(disability) || 0
+    }).then(mlResult => {
+      const recs = mlResult.recommendations || [];
+      const scheme = recs.length > 0 ? recs[0].scheme : "No Matching Scheme";
+      const confidence = recs.length > 0 ? recs[0].confidence : 0.0;
+      db.prepare('UPDATE users SET matching_scheme = ?, matching_confidence = ? WHERE id = ?').run(scheme, confidence, id);
+    }).catch(err => console.error("Scheme prediction error during update citizen:", err));
+
     res.json({ success: true, message: 'Citizen profile updated successfully!' });
   } catch (e) {
     let msg = e.message;
@@ -2000,6 +2051,8 @@ app.post('/api/chat', async (req, res) => {
       notifications = db.prepare('SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 5').all(propertyId) || [];
     }
     
+    const user = propertyId ? db.prepare('SELECT * FROM users WHERE property_id = ?').get(propertyId) : null;
+    
     const context = {
       services,
       schemes,
@@ -2009,7 +2062,8 @@ app.post('/api/chat', async (req, res) => {
       property,
       tax_records: taxRecords,
       notifications,
-      openai_api_key: process.env.OPENAI_API_KEY || null
+      user,
+      openai_api_key: null
     };
 
     // Manage conversation history in session
