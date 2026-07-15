@@ -1,6 +1,6 @@
 {
-  "version": 8,
-  "last_trained": "2026-07-15 11:28:54",
+  "version": 9,
+  "last_trained": "2026-07-15 12:14:20",
   "models": {
     "complaint_priority": {
       "dataset_size": 6373,

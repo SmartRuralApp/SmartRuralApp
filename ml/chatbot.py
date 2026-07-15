@@ -2,6 +2,8 @@ import os
 import sys
 import json
 import base64
+import urllib.request
+import urllib.error
 import io
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -13,6 +15,138 @@ TIMINGS_KN = "ಗ್ರಾಮ ಪಂಚಾಯತ್ ಕಚೇರಿಯು ಸೋ
 CONTACT_EN = "Email: contact@smartpanchayat.gov.in | Phone: +91 80 2843 1234 | Location: Panchayat Office, Main Road."
 CONTACT_KN = "ಇಮೇಲ್: contact@smartpanchayat.gov.in | ಫೋನ್: +91 80 2843 1234 | ಸ್ಥಳ: ಪಂಚಾಯತ್ ಕಚೇರಿ, ಮುಖ್ಯ ರಸ್ತೆ."
 
+# ----------------- OpenAI API Handler -----------------
+def ask_openai(query, context, history, api_key):
+    system_prompt = f"""
+You are GramMitra AI, an intelligent AI assistant for the Smart Gram Panchayat Portal.
+
+Your personality:
+- Friendly
+- Professional
+- Helpful
+- Conversational like ChatGPT
+- Never sound robotic.
+
+Rules:
+
+1. Always answer naturally.
+
+2. Use the database context below whenever possible.
+
+3. If the database contains the requested information,
+always use it.
+
+4. If the answer is NOT present in the database,
+use your knowledge about:
+
+• Gram Panchayat
+• Property Tax
+• Water Connection
+• Birth Certificate
+• Death Certificate
+• Marriage Certificate
+• Building Permission
+• Trade License
+• Government Schemes
+• PM Kisan
+• PMAY
+• MGNREGA
+• Complaints
+• Citizen Services
+• Karnataka Panchayat procedures
+• Digital Governance
+
+5. Never create fake citizen records.
+
+6. If the user asks:
+
+"My tax"
+
+"My complaints"
+
+"My notifications"
+
+"My property"
+
+"My application"
+
+only answer using the provided database.
+
+7. If the user asks something unrelated like
+
+"Who won IPL?"
+
+"What is Python?"
+
+"What is AI?"
+
+politely explain that you are a Gram Panchayat assistant.
+
+8. Answer follow-up questions using previous conversation.
+
+9. Reply in Kannada if the user's message is in Kannada.
+Reply in English otherwise.
+
+10. Format answers using bullet points whenever helpful.
+
+Database Context:
+
+{json.dumps(context, indent=2)}
+
+"""
+
+    messages = [
+        {
+            "role": "system",
+            "content": system_prompt
+        }
+    ]
+
+    # Add previous chat history
+    for msg in history[-15:]:
+        messages.append({
+            "role": msg["role"],
+            "content": msg["content"]
+        })
+
+    messages.append({
+        "role": "user",
+        "content": query
+    })
+
+    payload = {
+        "model": "gpt-4o-mini",
+        "messages": messages,
+        "temperature": 0.5,
+        "top_p": 0.9,
+        "max_tokens": 700,
+        "presence_penalty": 0.3,
+        "frequency_penalty": 0.2
+    }
+
+    req = urllib.request.Request(
+        "https://api.openai.com/v1/chat/completions",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}"
+        }
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=30) as response:
+            result = json.loads(response.read().decode("utf-8"))
+            return result["choices"][0]["message"]["content"]
+
+    except urllib.error.HTTPError as e:
+        sys.stderr.write(f"HTTPError: {e.read().decode()}\n")
+        return None
+
+    except Exception as e:
+        sys.stderr.write(f"Error: {e}\n")
+        return None
+
+# ----------------- Local Rule-Based NLP Engine (Offline Fallback) -----------------
 def detect_intent(query):
     query_lower = query.lower().strip()
     
@@ -105,6 +239,10 @@ def detect_intent(query):
         "process": [
             "application process", "how to apply", "procedure",
             "ಅರ್ಜಿ ಪ್ರಕ್ರಿಯೆ", "ಹೇಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಬೇಕು"
+        ],
+        "citizen_info": [
+            "profile", "my details", "citizen info", "citizen details", "my information", "about me", "my name", "my profile",
+            "ನನ್ನ ಮಾಹಿತಿ", "ನನ್ನ ವಿವರ", "ನನ್ನ ಪ್ರೊಫೈಲ್"
         ]
     }
     
@@ -243,7 +381,6 @@ def local_nlp(query, context, history=None):
             criteria = target_scheme.get('target_criteria') or target_scheme.get('eligibility_criteria') or "N/A"
             docs = target_scheme.get('required_documents') or "N/A"
             benefits = target_scheme.get('benefits') or "Financial support/subsidy"
-            process = target_scheme.get('application_process') or "Apply online on portal."
             if is_kannada:
                 return f"ಯೋಜನೆಯ ವಿವರಗಳು: **{title}**\n• ಅರ್ಹತಾ ಮಾನದಂಡಗಳು: {criteria}\n• ಅಗತ್ಯ ದಾಖಲೆಗಳು: {docs}\n• ಪ್ರಯೋಜನಗಳು: {benefits}"
             else:
@@ -271,7 +408,7 @@ def local_nlp(query, context, history=None):
     # 7. CERTIFICATES INTENT
     elif intent == "birth_certificate":
         if is_kannada:
-            return "ಜನನ ಪ್ರಮಾಣಪತ್ರ ಪ್ರಕ್ರಿಯೆ:\n- ಅಗತ್ಯ ದಾಖಲೆಗಳು: ಆಸ್ಪತ್ರೆಯ ವರದಿ, ಪೋಷಕರ ಆಧಾರ್ ಕಾರ್ಡ್, ಮತ್ತು ವಿಳಾಸದ ಪುರಾವೆ.\n- ಅರ್ಜಿ: 'Services' ಟ್ಯಾಬ್ ಅಡಿಯಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ. 21 ದಿನಗಳಲ್ಲಿ ಉಚಿತವಾಗಿ ಸಿಗುತ್ತದೆ."
+            return "ಜನನ ಪ್ರಮಾಣಪತ್ರ ಪ್ರಕ್ರಿಯೆ:\n- ಅಗತ್ಯ ದಾಖಲೆಗಳು: ಆಸ್ಪತ್ರೆಯ ವರದಿ, ಪೋಷಕರ ಆಧಾರ್ ಕಾರ್ಧ್, ಮತ್ತು ವಿಳಾಸದ ಪುರಾವೆ.\n- ಅರ್ಜಿ: 'Services' ಟ್ಯಾಬ್ ಅಡಿಯಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ. 21 ದಿನಗಳಲ್ಲಿ ಉಚಿತವಾಗಿ ಸಿಗುತ್ತದೆ."
         else:
             return "Birth Certificate process:\n- Documents required: Hospital discharge summary / birth report, parents' Aadhaar card, and address proof.\n- Application: Apply online under 'Services' tab or submit offline.\n- Fees: Free of charge if registered within 21 days."
             
@@ -360,6 +497,55 @@ def local_nlp(query, context, history=None):
         else:
             return "Citizen Registration can be done online by clicking 'Register' on the login screen. Property registration requires land ownership papers, identity verification, and tax clearance certificates."
 
+    elif intent == "citizen_info":
+        user = context.get('user')
+        if user:
+            is_farmer_str = "Yes" if user.get('is_farmer') else "No"
+            is_student_str = "Yes" if user.get('is_student') else "No"
+            disability_str = "Yes" if user.get('disability') else "No"
+            
+            income = user.get('income', 0)
+            try:
+                income_str = f"₹{float(income):,.2f}"
+            except Exception:
+                income_str = f"₹{income}"
+                
+            if is_kannada:
+                return (
+                    f"ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ವಿವರಗಳು:\n"
+                    f"• ಹೆಸರು: {user.get('name')}\n"
+                    f"• ಬಳಕೆದಾರ ಹೆಸರು: {user.get('username')}\n"
+                    f"• ಫೋನ್: {user.get('phone')}\n"
+                    f"• ಇಮೇಲ್: {user.get('email') or 'N/A'}\n"
+                    f"• ವಯಸ್ಸು/ಲಿಂಗ: {user.get('age')} / {user.get('gender')}\n"
+                    f"• ಉದ್ಯೋಗ: {user.get('occupation')}\n"
+                    f"• ವಾರ್ಷಿಕ ಆದಾಯ: {income_str}\n"
+                    f"• ಜಮೀನು: {user.get('land_size')} ಎಕರೆ\n"
+                    f"• ರೈತರು: {'ಹೌದು' if user.get('is_farmer') else 'ಇಲ್ಲ'}\n"
+                    f"• ವಿದ್ಯಾರ್ಥಿ: {'ಹೌದು' if user.get('is_student') else 'ಇಲ್ಲ'}\n"
+                    f"• ವಿಕಲಚೇತನರು: {'ಹೌದು' if user.get('is_disability') or user.get('disability') else 'ಇಲ್ಲ'}"
+                )
+            else:
+                return (
+                    f"Your citizen profile details:\n"
+                    f"• Name: {user.get('name')}\n"
+                    f"• Username: {user.get('username')}\n"
+                    f"• Phone: {user.get('phone')}\n"
+                    f"• Email: {user.get('email') or 'N/A'}\n"
+                    f"• Age/Gender: {user.get('age')} yrs / {user.get('gender')}\n"
+                    f"• Occupation: {user.get('occupation')}\n"
+                    f"• Annual Income: {income_str}\n"
+                    f"• Landholdings: {user.get('land_size')} acres\n"
+                    f"• Farmer Status: {is_farmer_str}\n"
+                    f"• Student Status: {is_student_str}\n"
+                    f"• Disability Status: {disability_str}"
+                )
+        else:
+            if is_kannada:
+                return "ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಪಡೆಯಲು ದಯವಿಟ್ಟು ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ."
+            else:
+                return "Please log into the Citizen Portal to view your profile details."
+
     elif intent == "greeting":
         if is_kannada:
             return "ಸ್ಮಾರ್ಟ್ ಗ್ರಾಮ ಪಂಚಾಯತ್ ಸಹಾಯಕರಿಗೆ ಸುಸ್ವಾಗತ. ನಾನು ಇಂದು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?"
@@ -377,6 +563,7 @@ def main():
     context = {}
     history = []
     
+    # Parse arguments
     config_path = None
     for i in range(1, len(sys.argv)):
         if sys.argv[i] == "--config_path" and i+1 < len(sys.argv):
@@ -420,9 +607,19 @@ def main():
                 history = config_data.get("history", history)
         except Exception:
             pass
-            
-    response = local_nlp(query, context, history)
-    print(response)
+
+    api_key = os.environ.get("OPENAI_API_KEY") or context.get("openai_api_key")
+
+    if api_key and api_key.strip() != "" and not api_key.startswith("your_openai_"):
+        response = ask_openai(query, context, history, api_key)
+        if response:
+            print(response)
+        else:
+            response = local_nlp(query, context, history)
+            print(response)
+    else:
+        response = local_nlp(query, context, history)
+        print(response)
 
 if __name__ == "__main__":
     main()

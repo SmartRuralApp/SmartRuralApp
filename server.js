@@ -1561,7 +1561,11 @@ app.post('/api/admin/retrain', requireAdmin, async (req, res) => {
         console.error("Retrain child process error:", stderr || error.message);
         return res.status(500).json({ success: false, error: error.message, logs: stderr });
       }
-      res.json({ success: true, message: 'Latest database records exported and ML models retrained successfully!', logs: stdout });
+      db.reload().then(() => {
+        res.json({ success: true, message: 'Latest database records exported and ML models retrained successfully!', logs: stdout });
+      }).catch(err => {
+        res.json({ success: true, message: 'ML models retrained successfully, but DB reload failed: ' + err.message, logs: stdout });
+      });
     });
 
     child.stdin.write(JSON.stringify(payload));

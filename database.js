@@ -557,6 +557,15 @@ function saveDatabase() {
   }
 }
 
+async function reloadDatabase() {
+  const SQL = await initSqlJs();
+  if (fs.existsSync(dbPath)) {
+    const fileBuffer = fs.readFileSync(dbPath);
+    db = new SQL.Database(fileBuffer);
+    console.log("Database reloaded from disk successfully.");
+  }
+}
+
 // Helper functions to match better-sqlite3 API
 function prepare(sql) {
   return {
@@ -625,6 +634,7 @@ function prepare(sql) {
 // Export initialization and database access
 module.exports = {
   init: initDatabase,
+  reload: reloadDatabase,
   prepare: prepare,
   getDb: () => db,
   saveDatabase: saveDatabase

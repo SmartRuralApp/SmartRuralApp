@@ -46,7 +46,21 @@ async function main() {
     },
     complaints: [
       { id: 1, category: "Sanitation", description: "Drainage overflow near Main Road.", status: "In Progress", priority: "High" }
-    ]
+    ],
+    user: {
+      name: "Purusha Gowda",
+      username: "purusha1001",
+      phone: "9876543210",
+      email: "purusha@gmail.com",
+      age: 45,
+      gender: "Male",
+      occupation: "Agriculture",
+      income: 120000,
+      land_size: 2.5,
+      is_farmer: 1,
+      is_student: 0,
+      disability: 0
+    }
   };
 
   let pass = true;
@@ -128,6 +142,22 @@ async function main() {
       console.log("   ✅ Succeeded: Out-of-scope query politely declined/guided.");
     } else {
       console.error("   ❌ Failed: Chatbot did not politely decline out-of-scope query.");
+      pass = false;
+    }
+  } catch (e) {
+    console.error("   ❌ Error:", e.message);
+    pass = false;
+  }
+
+  // 6. Citizen Profile Information Query
+  console.log("\n[Test 6] Query: 'show my profile details'");
+  try {
+    const reply = await runChatbot("show my profile details", sampleContext, []);
+    console.log("Response:\n", reply);
+    if (reply.includes("Purusha Gowda") && reply.includes("purusha1001") && reply.includes("Agriculture")) {
+      console.log("   ✅ Succeeded: Citizen profile information displayed correctly.");
+    } else {
+      console.error("   ❌ Failed: Did not retrieve profile details correctly.");
       pass = false;
     }
   } catch (e) {
