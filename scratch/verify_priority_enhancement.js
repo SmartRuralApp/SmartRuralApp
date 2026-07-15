@@ -37,62 +37,118 @@ async function main() {
   const testCases = [
     // 1. Emergency cases (override prediction to High)
     {
-      description: "tree fallen in our area",
+      description: "Tree fallen near school",
       category: "Road Damage",
       ward: "Ward 1",
       similarCount: 0,
       expected: "High",
-      label: "Emergency: tree fallen"
+      label: "Emergency: Tree fallen near school"
     },
     {
-      description: "electric wire fell on road",
+      description: "Live electric wire",
       category: "Electricity",
       ward: "Ward 2",
       similarCount: 0,
       expected: "High",
-      label: "Emergency: electric wire"
+      label: "Emergency: Live electric wire"
     },
     {
-      description: "fire near school",
-      category: "Sanitation",
+      description: "Transformer blast",
+      category: "Electricity",
       ward: "Ward 3",
       similarCount: 0,
       expected: "High",
-      label: "Emergency: fire"
+      label: "Emergency: Transformer blast"
+    },
+    {
+      description: "Gas leak",
+      category: "Others",
+      ward: "Ward 1",
+      similarCount: 0,
+      expected: "High",
+      label: "Emergency: Gas leak"
+    },
+    {
+      description: "Fire in market",
+      category: "Sanitation",
+      ward: "Ward 2",
+      similarCount: 0,
+      expected: "High",
+      label: "Emergency: Fire in market"
+    },
+    {
+      description: "Building collapse",
+      category: "Road Damage",
+      ward: "Ward 3",
+      similarCount: 0,
+      expected: "High",
+      label: "Emergency: Building collapse"
+    },
+    {
+      description: "Flood in village",
+      category: "Water Supply",
+      ward: "Ward 1",
+      similarCount: 0,
+      expected: "High",
+      label: "Emergency: Flood in village"
+    },
+    {
+      description: "Road blocked due to landslide",
+      category: "Road Damage",
+      ward: "Ward 2",
+      similarCount: 0,
+      expected: "High",
+      label: "Emergency: Road blocked due to landslide"
     },
     
     // 2. Normal / non-emergency cases (relying on similar complaint count mapping)
     {
-      description: "The street light in our street has been flickering since last week.",
-      category: "Street Light",
+      description: "Garbage collection delayed",
+      category: "Sanitation",
       ward: "Ward 1",
-      similarCount: 0, // First complaint -> Low
+      similarCount: 0, // 0/1 similar -> Low
       expected: "Low",
-      label: "First normal complaint (similar count = 0)"
+      label: "Normal: Garbage collection delayed (similar=0)"
     },
     {
-      description: "The street light in our street has been flickering since last week.",
-      category: "Street Light",
+      description: "Garbage collection delayed",
+      category: "Sanitation",
       ward: "Ward 1",
-      similarCount: 1, // 1 similar complaint -> Low
-      expected: "Low",
-      label: "One similar complaint in same ward"
-    },
-    {
-      description: "The street light in our street has been flickering since last week.",
-      category: "Street Light",
-      ward: "Ward 1",
-      similarCount: 2, // 2 similar complaints -> Medium
+      similarCount: 2, // 2 similar -> Medium
       expected: "Medium",
-      label: "Two similar complaints in same ward"
+      label: "Normal: Garbage collection delayed (similar=2)"
     },
     {
-      description: "The street light in our street has been flickering since last week.",
+      description: "Street light not working",
       category: "Street Light",
-      ward: "Ward 1",
-      similarCount: 3, // More than 2 similar complaints -> High
+      ward: "Ward 2",
+      similarCount: 0, // 0/1 similar -> Low
+      expected: "Low",
+      label: "Normal: Street light not working (similar=0)"
+    },
+    {
+      description: "Street light not working",
+      category: "Street Light",
+      ward: "Ward 2",
+      similarCount: 3, // >=3 similar -> High
       expected: "High",
-      label: "More than two similar complaints in same ward"
+      label: "Normal: Street light not working (similar=3)"
+    },
+    {
+      description: "Water supply issue",
+      category: "Water Supply",
+      ward: "Ward 3",
+      similarCount: 0, // 0/1 similar -> Low
+      expected: "Low",
+      label: "Normal: Water supply issue (similar=0)"
+    },
+    {
+      description: "Water supply issue",
+      category: "Water Supply",
+      ward: "Ward 3",
+      similarCount: 2, // 2 similar -> Medium
+      expected: "Medium",
+      label: "Normal: Water supply issue (similar=2)"
     }
   ];
 

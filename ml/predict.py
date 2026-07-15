@@ -38,14 +38,15 @@ def predict_category(description):
     if not model or not vec:
         return {"category": "Others", "confidence": 1.0, "reasons": ["Baseline classification (models not initialized)"]}
         
-    vec_desc = vec.transform([description])
+    cleaned_desc = preprocess_text(description)
+    vec_desc = vec.transform([cleaned_desc])
     pred = model.predict(vec_desc)[0]
     probs = model.predict_proba(vec_desc)[0]
     confidence = float(np.max(probs))
     
     # XAI Reasons
     reasons = []
-    desc_lower = description.lower()
+    desc_lower = cleaned_desc
     
     if pred == "Water Supply" and any(k in desc_lower for k in WATER_KEYWORDS):
         reasons.append("Keywords related to water infrastructure detected (e.g. 'water', 'pipe', 'leak').")
@@ -68,6 +69,16 @@ def predict_category(description):
         "reasons": reasons
     }
 
+import re
+
+def preprocess_text(text):
+    if not isinstance(text, str):
+        return ""
+    text = text.lower().strip()
+    text = re.sub(r'[^\w\s]', ' ', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
 # Load emergency keywords from config
 def load_emergency_keywords():
     kw_path = os.path.join(MODELS_DIR, 'emergency_keywords.json')
@@ -85,9 +96,13 @@ def load_emergency_keywords():
     ]
 
 def check_emergency(desc):
-    desc_lower = str(desc).lower()
+    desc_clean = preprocess_text(desc)
     keywords = load_emergency_keywords()
-    return 1 if any(kw in desc_lower for kw in keywords) else 0
+    for kw in keywords:
+        kw_clean = preprocess_text(kw)
+        if kw_clean and kw_clean in desc_clean:
+            return 1
+    return 0
 
 def predict_priority(description, category, ward, similar_count=0, is_duplicate=0, historical_frequency=0):
     model = load_pkl('complaint_priority_model.pkl')
@@ -103,7 +118,7 @@ def predict_priority(description, category, ward, similar_count=0, is_duplicate=
     input_df = pd.DataFrame([{
         'Ward': ward_str,
         'Complaint Category': category,
-        'Complaint Description': description,
+        'Complaint Description': preprocess_text(description),
         'Similar Complaints in Same Ward': similar_count,
         'Emergency Keywords': emergency_val,
         'Historical complaint frequency': historical_frequency

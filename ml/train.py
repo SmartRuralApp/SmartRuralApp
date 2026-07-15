@@ -119,6 +119,16 @@ def merge_database_data(payload_json):
             
     return True
 
+import re
+
+def preprocess_text(text):
+    if not isinstance(text, str):
+        return ""
+    text = text.lower().strip()
+    text = re.sub(r'[^\w\s]', ' ', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
 def load_emergency_keywords():
     kw_path = os.path.join(MODELS_DIR, 'emergency_keywords.json')
     if os.path.exists(kw_path):
@@ -135,9 +145,13 @@ def load_emergency_keywords():
     ]
 
 def check_emergency(desc):
-    desc_lower = str(desc).lower()
+    desc_clean = preprocess_text(desc)
     keywords = load_emergency_keywords()
-    return 1 if any(kw in desc_lower for kw in keywords) else 0
+    for kw in keywords:
+        kw_clean = preprocess_text(kw)
+        if kw_clean and kw_clean in desc_clean:
+            return 1
+    return 0
 
 # Dynamically adjust model predictions to align with the target validation bands realistically
 def adjust_predictions_to_target_f1(y_test, y_pred, target_range, random_state=42):
@@ -255,7 +269,28 @@ def split_datasets():
     if os.path.exists(COMPLAINTS_SRC):
         try:
             df = pd.read_excel(COMPLAINTS_SRC)
-            df = df.dropna(subset=['Priority'])
+            
+            # Fill/assign rule-based Priority and Emergency Keywords on the full dataset before dropping NaN
+            df['Emergency Keywords'] = df['Complaint Description'].astype(str).apply(check_emergency)
+            df['Similar Complaints in Same Ward'] = df['Similar Complaints in Same Ward'].fillna(0).astype(int)
+            
+            def get_rule_priority(row):
+                if row['Emergency Keywords'] == 1:
+                    return 'High'
+                sc = row['Similar Complaints in Same Ward']
+                if sc <= 1:
+                    return 'Low'
+                elif sc == 2:
+                    return 'Medium'
+                else:
+                    return 'High'
+            
+            if 'Priority' not in df.columns:
+                df['Priority'] = df.apply(get_rule_priority, axis=1)
+            else:
+                df['Priority'] = df['Priority'].fillna(df.apply(get_rule_priority, axis=1))
+                
+            df = df.dropna(subset=['Priority', 'Complaint Description', 'Complaint Category'])
             train_df, test_df = train_test_split(df, test_size=0.2, stratify=df['Priority'], random_state=42)
             train_df.to_excel(COMPLAINTS_TRAIN, index=False)
             test_df.to_excel(COMPLAINTS_TEST, index=False)
@@ -345,6 +380,7 @@ def train_models():
     if os.path.exists(COMPLAINTS_TRAIN):
         df_train = pd.read_excel(COMPLAINTS_TRAIN)
         df_train = df_train.dropna(subset=['Complaint Description', 'Complaint Category'])
+        df_train['Complaint Description'] = df_train['Complaint Description'].astype(str).apply(preprocess_text)
         
         vec_cat = TfidfVectorizer(max_features=1500, stop_words='english', ngram_range=(1,2))
         X_train_cat_vec = vec_cat.fit_transform(df_train['Complaint Description'])
@@ -366,6 +402,7 @@ def train_models():
         
         # Calculate features and adjust target labels to match ground-truth priority rules
         for df in [df_train, df_test]:
+            df['Complaint Description'] = df['Complaint Description'].astype(str).apply(preprocess_text)
             df['Emergency Keywords'] = df['Complaint Description'].apply(check_emergency)
             df['Historical complaint frequency'] = df.groupby('Ward')['Ward'].transform('count')
             
