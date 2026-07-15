@@ -1456,7 +1456,7 @@ app.get('/admin-ml-performance', requireAdmin, (req, res) => {
 app.post('/api/admin/retrain', requireAdmin, async (req, res) => {
   try {
     console.log("Preparing DB export for retraining...");
-    const complaints = db.prepare('SELECT id, description, category, priority FROM complaints').all() || [];
+    const complaints = db.prepare('SELECT id, description, category, priority, ward FROM complaints').all() || [];
     
     const taxRecordsRaw = db.prepare(`
       SELECT tr.id, tr.property_id, p.property_type, tr.tax_amount, tr.year, tr.status

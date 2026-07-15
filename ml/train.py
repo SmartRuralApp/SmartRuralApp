@@ -45,6 +45,80 @@ METADATA_FILE = os.path.join(MODELS_DIR, 'metadata.json')
 def clean_cm(cm):
     return cm.tolist()
 
+def merge_database_data(payload_json):
+    try:
+        data = json.loads(payload_json)
+    except Exception as e:
+        print(f"Error parsing JSON payload: {e}")
+        return False
+        
+    print("Merging new database records into Excel datasets...")
+
+    # A. Merge complaints
+    if 'complaints' in data and len(data['complaints']) > 0:
+        db_df = pd.DataFrame(data['complaints'])
+        # Rename database keys to match Excel columns
+        db_df = db_df.rename(columns={
+            'description': 'Complaint Description',
+            'category': 'Complaint Category',
+            'priority': 'Priority',
+            'ward': 'Ward'
+        })
+        
+        # Ensure fallback values for missing columns
+        if 'Ward' not in db_df.columns:
+            db_df['Ward'] = 'Ward 1'
+        if 'Similar Complaints in Same Ward' not in db_df.columns:
+            db_df['Similar Complaints in Same Ward'] = 0
+            
+        if os.path.exists(COMPLAINTS_SRC):
+            ex_df = pd.read_excel(COMPLAINTS_SRC)
+            if 'id' not in ex_df.columns:
+                ex_df['id'] = [f"C_EX_{x}" for x in range(len(ex_df))]
+            
+            # Cast IDs to strings to prevent match mismatch
+            ex_df['id'] = ex_df['id'].astype(str)
+            db_df['id'] = db_df['id'].astype(str)
+            
+            ex_df.set_index('id', inplace=True)
+            db_df.set_index('id', inplace=True)
+            
+            # Update matching IDs
+            ex_df.update(db_df)
+            
+            # Concatenate new IDs
+            new_rows = db_df[~db_df.index.isin(ex_df.index)]
+            ex_df = pd.concat([ex_df, new_rows], sort=False)
+            
+            ex_df.reset_index(inplace=True)
+            ex_df.to_excel(COMPLAINTS_SRC, index=False)
+            print(f"Merged {len(data['complaints'])} complaints into {COMPLAINTS_SRC}.")
+
+    # B. Merge schemes
+    if 'users' in data and len(data['users']) > 0:
+        db_df = pd.DataFrame(data['users'])
+        
+        if os.path.exists(SCHEMES_SRC):
+            ex_df = pd.read_excel(SCHEMES_SRC)
+            if 'id' not in ex_df.columns:
+                ex_df['id'] = [f"S_EX_{x}" for x in range(len(ex_df))]
+                
+            ex_df['id'] = ex_df['id'].astype(str)
+            db_df['id'] = db_df['id'].astype(str)
+            
+            ex_df.set_index('id', inplace=True)
+            db_df.set_index('id', inplace=True)
+            
+            ex_df.update(db_df)
+            new_rows = db_df[~db_df.index.isin(ex_df.index)]
+            ex_df = pd.concat([ex_df, new_rows], sort=False)
+            
+            ex_df.reset_index(inplace=True)
+            ex_df.to_excel(SCHEMES_SRC, index=False)
+            print(f"Merged {len(data['users'])} schemes into {SCHEMES_SRC}.")
+            
+    return True
+
 def load_emergency_keywords():
     kw_path = os.path.join(MODELS_DIR, 'emergency_keywords.json')
     if os.path.exists(kw_path):
