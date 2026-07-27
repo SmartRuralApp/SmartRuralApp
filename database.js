@@ -2,7 +2,9 @@ const initSqlJs = require('sql.js');
 const fs = require('fs');
 const path = require('path');
 
-const dbPath = path.join(__dirname, 'data', 'panchayat.db');
+const dbPath = process.env.DATABASE_PATH 
+  ? path.resolve(process.env.DATABASE_PATH)
+  : path.join(__dirname, 'data', 'panchayat.db');
 
 // Ensure data directory exists
 const dataDir = path.dirname(dbPath);

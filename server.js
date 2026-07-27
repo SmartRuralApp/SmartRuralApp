@@ -1,7 +1,15 @@
 const fs = require('fs');
 const path = require('path');
+const { exec, execSync } = require('child_process');
 
-// Load environment variables
+// Load environment variables via dotenv
+try {
+  require('dotenv').config();
+} catch (e) {
+  // Ignore if dotenv is not available, manual fallback below will run
+}
+
+// Fallback manual parser for .env
 const envPath = path.join(__dirname, '.env');
 if (fs.existsSync(envPath)) {
   const envConfig = fs.readFileSync(envPath, 'utf8');
@@ -11,7 +19,7 @@ if (fs.existsSync(envPath)) {
       const parts = trimmed.split('=');
       const key = parts[0].trim();
       const val = parts.slice(1).join('=').trim().replace(/(^['"]|['"]$)/g, '');
-      if (key) {
+      if (key && !process.env[key]) {
         process.env[key] = val;
       }
     }
@@ -21,9 +29,28 @@ if (fs.existsSync(envPath)) {
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const { exec } = require('child_process');
+const helmet = require('helmet');
+const compression = require('compression');
 const db = require('./database');
 const { saveDatabase } = db;
+
+// Dynamic Python executable detection
+function getPythonExecutable() {
+  if (process.env.PYTHON_EXECUTABLE) {
+    return process.env.PYTHON_EXECUTABLE;
+  }
+  const executables = ['python3', 'python', 'py'];
+  for (const execName of executables) {
+    try {
+      execSync(`${execName} --version`, { stdio: 'ignore' });
+      return execName;
+    } catch (e) {
+      // Try next
+    }
+  }
+  return 'python';
+}
+const pythonExec = getPythonExecutable();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -72,14 +99,32 @@ async function verifySMSGatewayConnection() {
 }
 
 // Middleware
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable CSP to allow CDNs (Bootstrap, FontAwesome, Google Fonts) and inline scripts/styles to work perfectly without modifications
+  crossOriginEmbedderPolicy: false
+}));
+app.use(compression());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Configure production-ready session cookie
+const sessionSecret = process.env.SESSION_SECRET || 'panchayat-secret-key-2026';
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (isProduction) {
+  app.set('trust proxy', 1); // Trust first proxy (Render, Railway, Azure App Service)
+}
+
 app.use(session({
-  secret: 'panchayat-secret-key-2026',
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false }
+  cookie: { 
+    secure: isProduction, // True in production
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
 }));
 
 // Debug request logger
@@ -170,7 +215,7 @@ function generateTransactionId() {
 function runMLInference(task, data) {
   return new Promise((resolve, reject) => {
     const escapedJson = JSON.stringify(data).replace(/"/g, '\\"');
-    const cmd = `python ml/predict.py ${task} "${escapedJson}"`;
+    const cmd = `"${pythonExec}" ml/predict.py ${task} "${escapedJson}"`;
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
         console.error("ML Prediction Error:", stderr || error.message);
@@ -446,7 +491,7 @@ app.post('/api/book-offline-payment', async (req, res) => {
     );
 
     // Send confirmation SMS
-    const smsMsg = `Dear ${citizenName}, Your offline payment appointment has been booked for ${appointmentDate} at ${appointmentTime}. Status: Pending. — Smart Gram Panchayat`;
+    const smsMsg = `Dear ${citizenName}, Your offline payment appointment has been booked for ${appointmentDate} at ${appointmentTime}. Status: Pending. — Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System`;
     const smsResult = await sendSMSGateway(phone, citizenName, propertyId, smsMsg);
     
     // Log SMS transaction
@@ -511,7 +556,7 @@ app.post('/api/admin/update-appointment', requireAdmin, async (req, res) => {
       );
 
       // Send status update SMS
-      const smsMsg = `Dear ${appointment.citizen_name}, Your offline payment appointment scheduled for ${appointment.appointment_date} at ${appointment.appointment_time} has been ${status}. — Smart Gram Panchayat`;
+      const smsMsg = `Dear ${appointment.citizen_name}, Your offline payment appointment scheduled for ${appointment.appointment_date} at ${appointment.appointment_time} has been ${status}. — Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System`;
       const smsResult = await sendSMSGateway(appointment.phone, appointment.citizen_name, appointment.property_id, smsMsg);
       
       // Log SMS transaction
@@ -1555,7 +1600,7 @@ app.post('/api/admin/retrain', requireAdmin, async (req, res) => {
 
     const payload = { complaints, taxes, users };
 
-    const cmd = 'python ml/train.py --retrain';
+    const cmd = `"${pythonExec}" ml/train.py --retrain`;
     const child = exec(cmd, (error, stdout, stderr) => {
       if (error) {
         console.error("Retrain child process error:", stderr || error.message);
@@ -1877,13 +1922,13 @@ app.post('/api/admin/send-reminder', requireAdmin, async (req, res) => {
     let reminderLabel = 'Early Reminder';
     if (calculatedStatus === 'Overdue') {
       reminderLabel = 'Overdue Reminder';
-      msg = `Dear ${name},\n\nThis is an overdue reminder that your Property Tax of ₹${parseFloat(taxRecord.tax_amount).toFixed(2)} for Property ID ${propertyId} is OVERDUE.\n\nDue Date: ${taxRecord.due_date}\n\nPlease pay immediately to avoid further penalties.\n\n– Smart Gram Panchayat`;
+      msg = `Dear ${name},\n\nThis is an overdue reminder that your Property Tax of ₹${parseFloat(taxRecord.tax_amount).toFixed(2)} for Property ID ${propertyId} is OVERDUE.\n\nDue Date: ${taxRecord.due_date}\n\nPlease pay immediately to avoid further penalties.\n\n– Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System`;
     } else if (calculatedStatus === 'Near Due Date') {
       reminderLabel = 'Final Reminder';
-      msg = `Dear ${name},\n\nThis is a final reminder that your Property Tax of ₹${parseFloat(taxRecord.tax_amount).toFixed(2)} for Property ID ${propertyId} is due soon.\n\nDue Date: ${taxRecord.due_date}\n\nPlease pay immediately to avoid penalties.\n\n– Smart Gram Panchayat`;
+      msg = `Dear ${name},\n\nThis is a final reminder that your Property Tax of ₹${parseFloat(taxRecord.tax_amount).toFixed(2)} for Property ID ${propertyId} is due soon.\n\nDue Date: ${taxRecord.due_date}\n\nPlease pay immediately to avoid penalties.\n\n– Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System`;
     } else {
       reminderLabel = 'Early Reminder';
-      msg = `Dear ${name},\n\nThis is an early reminder that your Property Tax of ₹${parseFloat(taxRecord.tax_amount).toFixed(2)} for Property ID ${propertyId} is pending.\n\nDue Date: ${taxRecord.due_date}\n\nPlease pay on time.\n\n– Smart Gram Panchayat`;
+      msg = `Dear ${name},\n\nThis is an early reminder that your Property Tax of ₹${parseFloat(taxRecord.tax_amount).toFixed(2)} for Property ID ${propertyId} is pending.\n\nDue Date: ${taxRecord.due_date}\n\nPlease pay on time.\n\n– Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System`;
     }
     
     const smsResult = await sendSMSGateway(phone, name, propertyId, msg);
@@ -1979,13 +2024,13 @@ app.post('/api/admin/send-bulk-reminder', requireAdmin, async (req, res) => {
       let reminderLabel = 'Early Reminder';
       if (calculatedStatus === 'Overdue') {
         reminderLabel = 'Overdue Reminder';
-        msg = `Dear ${name},\n\nThis is an overdue reminder that your Property Tax of ₹${parseFloat(record.tax_amount).toFixed(2)} for Property ID ${record.property_id} is OVERDUE.\n\nDue Date: ${record.due_date}\n\nPlease pay immediately to avoid further penalties.\n\n– Smart Gram Panchayat`;
+        msg = `Dear ${name},\n\nThis is an overdue reminder that your Property Tax of ₹${parseFloat(record.tax_amount).toFixed(2)} for Property ID ${record.property_id} is OVERDUE.\n\nDue Date: ${record.due_date}\n\nPlease pay immediately to avoid further penalties.\n\n– Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System`;
       } else if (calculatedStatus === 'Near Due Date') {
         reminderLabel = 'Final Reminder';
-        msg = `Dear ${name},\n\nThis is a final reminder that your Property Tax of ₹${parseFloat(record.tax_amount).toFixed(2)} for Property ID ${record.property_id} is due soon.\n\nDue Date: ${record.due_date}\n\nPlease pay immediately to avoid penalties.\n\n– Smart Gram Panchayat`;
+        msg = `Dear ${name},\n\nThis is a final reminder that your Property Tax of ₹${parseFloat(record.tax_amount).toFixed(2)} for Property ID ${record.property_id} is due soon.\n\nDue Date: ${record.due_date}\n\nPlease pay immediately to avoid penalties.\n\n– Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System`;
       } else {
         reminderLabel = 'Early Reminder';
-        msg = `Dear ${name},\n\nThis is an early reminder that your Property Tax of ₹${parseFloat(record.tax_amount).toFixed(2)} for Property ID ${record.property_id} is pending.\n\nDue Date: ${record.due_date}\n\nPlease pay on time.\n\n– Smart Gram Panchayat`;
+        msg = `Dear ${name},\n\nThis is an early reminder that your Property Tax of ₹${parseFloat(record.tax_amount).toFixed(2)} for Property ID ${record.property_id} is pending.\n\nDue Date: ${record.due_date}\n\nPlease pay on time.\n\n– Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System`;
       }
 
       const smsResult = await sendSMSGateway(phone, name, record.property_id, msg);
@@ -2021,7 +2066,7 @@ app.post('/api/admin/send-bulk-reminder', requireAdmin, async (req, res) => {
 // ==================== CHATBOT API ====================
 
 app.post('/api/chat', async (req, res) => {
-  const { message } = req.body;
+  const { message, language } = req.body;
   let propertyId = null;
   if (req.session.user) {
     propertyId = req.session.user.property_id;
@@ -2085,12 +2130,13 @@ app.post('/api/chat', async (req, res) => {
     const payload = {
       query: message,
       context: context,
-      history: req.session.chatHistory
+      history: req.session.chatHistory,
+      language: language || 'auto'
     };
     fs.writeFileSync(tempCtxPath, JSON.stringify(payload, null, 2), 'utf8');
 
-    const cmd = `python ml/chatbot.py --config_path "${tempCtxPath}"`;
-    exec(cmd, (error, stdout, stderr) => {
+    const cmd = `"${pythonExec}" ml/chatbot.py --config_path "${tempCtxPath}"`;
+    exec(cmd, async (error, stdout, stderr) => {
       // delete temp file safely
       try {
         fs.unlinkSync(tempCtxPath);
@@ -2100,6 +2146,14 @@ app.post('/api/chat', async (req, res) => {
         console.error("Chatbot processing error:", stderr || error.message);
         return res.json({ success: false, reply: "I am having trouble processing your query right now. Please try again." });
       }
+      
+      // Reload database to get any chatbot-registered complaints
+      try {
+        await db.reload();
+      } catch (dbErr) {
+        console.error("Failed to reload database after chatbot run:", dbErr);
+      }
+
       const reply = stdout.trim();
       req.session.chatHistory.push({ role: 'assistant', content: reply });
       res.json({ success: true, reply });
@@ -2111,12 +2165,185 @@ app.post('/api/chat', async (req, res) => {
 
 // ==================== START SERVER ====================
 
+function runStartupValidation() {
+  console.log("\n==================================================");
+  console.log("🛠️   STARTUP VALIDATION CHECKLIST (PRODUCTION)   🛠️");
+  console.log("==================================================");
+
+  let allPassed = true;
+
+  // 1. Environment Variables Check
+  const requiredEnv = ['SESSION_SECRET'];
+  const missingEnv = requiredEnv.filter(key => !process.env[key]);
+  if (missingEnv.length > 0) {
+    console.log(`❌ Environment Variables: Missing [${missingEnv.join(', ')}]`);
+    allPassed = false;
+  } else {
+    console.log("✓ Environment Variables: Configured correctly.");
+  }
+
+  // 2. Database Connection Check
+  try {
+    const rawDb = db.getDb();
+    if (rawDb) {
+      console.log("✓ Database Connection: Active.");
+    } else {
+      console.log("❌ Database Connection: Failed to retrieve active DB instance.");
+      allPassed = false;
+    }
+  } catch (e) {
+    console.log(`❌ Database Connection: Error: ${e.message}`);
+    allPassed = false;
+  }
+
+  // 3. SQLite Schema Check
+  try {
+    const tableCheck = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+    const tableNames = tableCheck.map(t => t.name.toLowerCase());
+    const requiredTables = ['properties', 'tax_records', 'payments', 'services', 'reminders', 'users', 'sms_logs', 'admin_users', 'appointments', 'complaints', 'notifications', 'government_schemes'];
+    const missingTables = requiredTables.filter(t => !tableNames.includes(t));
+    if (missingTables.length > 0) {
+      console.log(`❌ SQLite Schema: Missing tables [${missingTables.join(', ')}]`);
+      allPassed = false;
+    } else {
+      console.log("✓ SQLite Schema: Validated (All tables exist).");
+    }
+  } catch (e) {
+    console.log(`❌ SQLite Schema Check Failed: ${e.message}`);
+    allPassed = false;
+  }
+
+  // 4. Python Availability Check
+  try {
+    execSync(`"${pythonExec}" --version`, { stdio: 'ignore' });
+    console.log(`✓ Python Availability: Found "${pythonExec}"`);
+  } catch (e) {
+    console.log(`❌ Python Availability: "${pythonExec}" is not available or command failed.`);
+    allPassed = false;
+  }
+
+  // 5. ML Models Check
+  const modelDir = path.join(__dirname, 'models');
+  const requiredModels = [
+    'complaint_category_model.pkl',
+    'complaint_category_vectorizer.pkl',
+    'complaint_priority_model.pkl',
+    'complaint_priority_vectorizer.pkl',
+    'emergency_keywords.json',
+    'scheme_mappings.pkl',
+    'scheme_model.pkl',
+    'tax_defaulter_model.pkl',
+    'tax_scaler.pkl'
+  ];
+  if (!fs.existsSync(modelDir)) {
+    console.log("❌ ML Models: models/ directory is missing!");
+    allPassed = false;
+  } else {
+    const missingModels = requiredModels.filter(m => !fs.existsSync(path.join(modelDir, m)));
+    if (missingModels.length > 0) {
+      console.log(`❌ ML Models: Missing files [${missingModels.join(', ')}]`);
+      allPassed = false;
+    } else {
+      console.log("✓ ML Models: All model binaries exist.");
+    }
+  }
+
+  // 6. Dataset Files Check
+  const datasetDir = path.join(__dirname, 'datasets');
+  const requiredDatasets = [
+    'Citizen_dataset.xlsx',
+    'Complaint_dataset.xlsx',
+    'Property_dataset.xlsx',
+    'schemes_dataset.xlsx',
+    'tax_dataset.xlsx'
+  ];
+  if (!fs.existsSync(datasetDir)) {
+    console.log("❌ Datasets: datasets/ directory is missing!");
+    allPassed = false;
+  } else {
+    const missingDatasets = requiredDatasets.filter(d => !fs.existsSync(path.join(datasetDir, d)));
+    if (missingDatasets.length > 0) {
+      console.log(`❌ Datasets: Missing files [${missingDatasets.join(', ')}]`);
+      allPassed = false;
+    } else {
+      console.log("✓ Datasets: All source spreadsheets exist.");
+    }
+  }
+
+  // 7. Upload Folders Check & Auto-Creation
+  const uploadDirs = [
+    path.join(__dirname, 'public', 'uploads'),
+    path.join(__dirname, 'public', 'uploads', 'certificates')
+  ];
+  let uploadsStatus = true;
+  uploadDirs.forEach(dir => {
+    try {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+        console.log(`ℹ️  Upload Folders: Created missing directory: ${path.relative(__dirname, dir)}`);
+      }
+    } catch (e) {
+      uploadsStatus = false;
+      console.log(`❌ Upload Folders: Failed to create/verify ${path.relative(__dirname, dir)}: ${e.message}`);
+    }
+  });
+  if (uploadsStatus) {
+    console.log("✓ Upload Folders: Verified & auto-created.");
+  } else {
+    allPassed = false;
+  }
+
+  // 8. Static Folders Check
+  const staticDirs = [
+    path.join(__dirname, 'public', 'css'),
+    path.join(__dirname, 'public', 'js'),
+    path.join(__dirname, 'views')
+  ];
+  let staticStatus = true;
+  staticDirs.forEach(dir => {
+    if (!fs.existsSync(dir)) {
+      staticStatus = false;
+      console.log(`❌ Static Folders: Missing directory: ${path.relative(__dirname, dir)}`);
+    }
+  });
+  if (staticStatus) {
+    console.log("✓ Static/Views Directories: Validated.");
+  } else {
+    allPassed = false;
+  }
+
+  console.log("==================================================");
+  if (allPassed) {
+    console.log("🎉 STARTUP VALIDATION SUCCESSFUL! READY FOR PRODUCTION.");
+  } else {
+    console.log("⚠️  STARTUP VALIDATION WARNING: SOME CHECKS FAILED!");
+  }
+  console.log("==================================================\n");
+
+  return allPassed;
+}
+
+// 404 Page Routing
+app.use((req, res, next) => {
+  res.status(404).render('404', { session: req.session });
+});
+
+// 500 Page Routing
+app.use((err, req, res, next) => {
+  console.error("Unhandled Server Error:", err.stack);
+  res.status(500).render('500', { session: req.session, error: isProduction ? null : err.message });
+});
+
 db.init().then(() => {
   console.log('✓ Wasm SQLite database initialized successfully.');
   updateOutdatedTaxStatuses();
   verifySMSGatewayConnection();
+  
+  // Run startup checks
+  runStartupValidation();
+  
   app.listen(PORT, () => {
-    console.log(`✓ Smart Gram Panchayat Management System running at http://localhost:${PORT}`);
+    console.log(`✓ Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System running at http://localhost:${PORT}`);
   });
 }).catch(err => {
   console.error('Failed to initialize SQLite database:', err);
