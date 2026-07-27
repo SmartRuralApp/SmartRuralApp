@@ -1,7 +1,7 @@
-# Smart Grama Panchayat Management System - Specification
+# Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System: AI-Powered Smart Rural Community Digital Governance System - Specification
 
 ## Project Overview
-- **Project Name**: Smart Grama Panchayat Management System
+- **Project Name**: Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System: AI-Powered Smart Rural Community Digital Governance System
 - **Type**: Web Application
 - **Core Functionality**: A comprehensive platform to digitize Panchayat services enabling citizens to view tax details, make payments, and access services information. Administrators can manage records efficiently.
 - **Target Users**: Rural citizens and Panchayat administrators

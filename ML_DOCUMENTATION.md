@@ -1,6 +1,6 @@
-# Smart Gram Panchayat – Machine Learning Documentation
+# Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System – Machine Learning Documentation
 
-This document explains the data pipeline, train/test splitting methodology, model comparison pipeline, best model auto-selection, and evaluation metrics used inside the Smart Gram Panchayat Management platform.
+This document explains the data pipeline, train/test splitting methodology, model comparison pipeline, best model auto-selection, and evaluation metrics used inside the Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System Management platform.
 
 ---
 

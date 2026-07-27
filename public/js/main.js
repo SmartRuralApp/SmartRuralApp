@@ -1,4 +1,4 @@
-// Smart Grama Panchayat Management System - Main JavaScript
+// Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System: AI-Powered Smart Rural Community Digital Governance System - Main JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize mobile menu

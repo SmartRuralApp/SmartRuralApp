@@ -19,24 +19,24 @@
           <span class="status-online"><span class="dot"></span> Online</span>
         </div>
       </div>
+      <!-- Language Switcher Toggle -->
+      <div class="chatbot-lang-switch">
+        <button id="chatbotLangEn" class="lang-btn active" data-lang="en">EN</button>
+        <button id="chatbotLangKn" class="lang-btn" data-lang="kn">ಕನ್ನಡ</button>
+      </div>
       <button id="chatbotCloseBtn" class="chatbot-close-btn">&times;</button>
     </div>
 
     <!-- Chat Messages -->
     <div id="chatbotMessages" class="chatbot-messages">
-      <div class="message bot-message">
-        Welcome to Smart Gram Panchayat Assistant. How can I help you today?
+      <div class="message bot-message" id="chatbotWelcomeMessage">
+        Welcome to Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System Assistant. How can I help you today?
       </div>
     </div>
 
     <!-- Quick Action Buttons -->
     <div class="chatbot-quick-actions">
-      <button class="quick-action-btn" data-query="Check Property Tax"><i class="fas fa-receipt"></i> Check Property Tax</button>
-      <button class="quick-action-btn" data-query="Register Complaint"><i class="fas fa-pen-alt"></i> Register Complaint</button>
-      <button class="quick-action-btn" data-query="Complaint Status"><i class="fas fa-info-circle"></i> Complaint Status</button>
-      <button class="quick-action-btn" data-query="Government Schemes"><i class="fas fa-hand-holding-usd"></i> Government Schemes</button>
-      <button class="quick-action-btn" data-query="Certificates"><i class="fas fa-file-contract"></i> Certificates</button>
-      <button class="quick-action-btn" data-query="Contact Panchayat Office"><i class="fas fa-phone"></i> Contact Panchayat Office</button>
+      <!-- Generated dynamically in JS based on active language -->
     </div>
 
     <!-- Chat Input -->
@@ -88,8 +88,8 @@
   position: absolute;
   bottom: 80px;
   right: 0;
-  width: 380px;
-  height: 500px;
+  width: 400px;
+  height: 550px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -158,6 +158,35 @@
   box-shadow: 0 0 8px #4CAF50;
 }
 
+/* Language Switcher */
+.chatbot-lang-switch {
+  display: flex;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 2px;
+  margin-right: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 15px;
+  transition: all 0.2s ease-in-out;
+}
+
+.lang-btn.active {
+  background: white;
+  color: #1B5E20;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 .chatbot-close-btn {
   background: none;
   border: none;
@@ -185,11 +214,11 @@
 }
 
 .message {
-  max-width: 80%;
+  max-width: 85%;
   padding: 10px 15px;
   border-radius: 14px;
   font-size: 0.9rem;
-  line-height: 1.4;
+  line-height: 1.45;
   word-wrap: break-word;
 }
 
@@ -216,7 +245,9 @@
   font-style: italic;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  border-radius: 14px;
+  padding: 10px 15px;
 }
 
 .typing-indicator span {
@@ -315,7 +346,7 @@
 @media (max-width: 480px) {
   .chatbot-window {
     width: 320px;
-    height: 450px;
+    height: 480px;
     bottom: 70px;
     right: -10px;
   }
@@ -330,7 +361,30 @@ document.addEventListener("DOMContentLoaded", function() {
   const chatForm = document.getElementById("chatbotForm");
   const chatInput = document.getElementById("chatbotInput");
   const chatMessages = document.getElementById("chatbotMessages");
-  const quickBtns = document.querySelectorAll(".quick-action-btn");
+  const langEnBtn = document.getElementById("chatbotLangEn");
+  const langKnBtn = document.getElementById("chatbotLangKn");
+
+  // Save selected language state
+  let currentLanguage = localStorage.getItem("chatbot_language") || "en";
+
+  const quickActionsData = {
+    en: [
+      { label: "Check Property Tax", query: "Check Property Tax", icon: "fa-receipt" },
+      { label: "Register Complaint", query: "Register Complaint", icon: "fa-pen-alt" },
+      { label: "Complaint Status", query: "Complaint Status", icon: "fa-info-circle" },
+      { label: "Government Schemes", query: "Government Schemes", icon: "fa-hand-holding-usd" },
+      { label: "Certificates", query: "Certificates", icon: "fa-file-contract" },
+      { label: "Contact Panchayat Office", query: "Contact Panchayat Office", icon: "fa-phone" }
+    ],
+    kn: [
+      { label: "ಆಸ್ತಿ ತೆರಿಗೆ ಪರಿಶೀಲಿಸಿ", query: "ಆಸ್ತಿ ತೆರಿಗೆ", icon: "fa-receipt" },
+      { label: "ದೂರು ನೋಂದಾಯಿಸಿ", query: "ದೂರು ನೋಂದಣಿ", icon: "fa-pen-alt" },
+      { label: "ದೂರು ಸ್ಥಿತಿ", query: "ದೂರು ಸ್ಥಿತಿ", icon: "fa-info-circle" },
+      { label: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", query: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", icon: "fa-hand-holding-usd" },
+      { label: "ಪ್ರಮಾಣಪತ್ರಗಳು", query: "ಪ್ರಮಾಣಪತ್ರಗಳು", icon: "fa-file-contract" },
+      { label: "ಪಂಚಾಯತ್ ಸಂಪರ್ಕಿಸಿ", query: "ಸಂಪರ್ಕ", icon: "fa-phone" }
+    ]
+  };
 
   // Toggle Chat window
   toggleBtn.addEventListener("click", () => {
@@ -345,13 +399,56 @@ document.addEventListener("DOMContentLoaded", function() {
     chatWindow.classList.add("hidden");
   });
 
-  // Handle Quick Action Clicks
-  quickBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const query = btn.getAttribute("data-query");
-      sendMessage(query);
-    });
+  // Language selectors
+  langEnBtn.addEventListener("click", () => {
+    setLanguage("en");
   });
+
+  langKnBtn.addEventListener("click", () => {
+    setLanguage("kn");
+  });
+
+  function setLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem("chatbot_language", lang);
+    updateChatbotUI();
+  }
+
+  function updateChatbotUI() {
+    const placeholder = currentLanguage === 'kn' ? 'ಯೋಜನೆಗಳು, ತೆರಿಗೆಗಳು, ಸಮಯಗಳ ಬಗ್ಗೆ ಕೇಳಿ...' : 'Ask about schemes, taxes, timings...';
+    chatInput.placeholder = placeholder;
+    
+    // Update active class on toggle button
+    if (currentLanguage === 'kn') {
+      langKnBtn.classList.add('active');
+      langEnBtn.classList.remove('active');
+    } else {
+      langEnBtn.classList.add('active');
+      langKnBtn.classList.remove('active');
+    }
+    
+    // Re-render quick actions
+    const actionsContainer = document.querySelector('.chatbot-quick-actions');
+    actionsContainer.innerHTML = '';
+    quickActionsData[currentLanguage].forEach(act => {
+      const btn = document.createElement('button');
+      btn.className = 'quick-action-btn';
+      btn.setAttribute('data-query', act.query);
+      btn.innerHTML = `<i class="fas ${act.icon}"></i> ${act.label}`;
+      btn.addEventListener("click", () => {
+        sendMessage(act.query);
+      });
+      actionsContainer.appendChild(btn);
+    });
+    
+    // Update initial welcome message if it is the only message present
+    const messages = chatMessages.querySelectorAll('.message');
+    if (messages.length === 1 && messages[0].classList.contains('bot-message')) {
+      messages[0].innerHTML = currentLanguage === 'kn' 
+        ? "ಸ್ಮಾರ್ಟ್ ಗ್ರಾಮ ಪಂಚಾಯತ್ ಸಹಾಯಕರಿಗೆ ಸುಸ್ವಾಗತ. ನಾನು ಇಂದು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?"
+        : "Welcome to Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System Assistant. How can I help you today?";
+    }
+  }
 
   // Form submit
   chatForm.addEventListener("submit", (e) => {
@@ -377,7 +474,7 @@ document.addEventListener("DOMContentLoaded", function() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ message: text })
+      body: JSON.stringify({ message: text, language: currentLanguage })
     })
     .then(res => res.json())
     .then(data => {
@@ -386,15 +483,30 @@ document.addEventListener("DOMContentLoaded", function() {
       
       if (data.success) {
         appendMessage(data.reply, 'bot-message');
+        
+        // Auto language detection fallback in case response differs
+        const containsKannada = /[\u0C80-\u0CFF]/.test(data.reply);
+        if (containsKannada && currentLanguage !== 'kn') {
+          setLanguage('kn');
+        } else if (!containsKannada && currentLanguage === 'kn' && data.reply.includes("Gram Panchayat")) {
+          // If response is English fallback, switch back
+          setLanguage('en');
+        }
       } else {
-        appendMessage("Sorry, I'm facing some connectivity issue. Please try again later.", 'bot-message');
+        const errReply = currentLanguage === 'kn'
+          ? "ಕ್ಷಮಿಸಿ, ಸಂಪರ್ಕ ಸಾಧಿಸಲು ತೊಂದರೆಯಾಗುತ್ತಿದೆ. ದಯವಿಟ್ಟು ನಂತರ ಪ್ರಯತ್ನಿಸಿ."
+          : "Sorry, I'm facing some connectivity issue. Please try again later.";
+        appendMessage(errReply, 'bot-message');
       }
       chatMessages.scrollTop = chatMessages.scrollHeight;
     })
     .catch(err => {
       console.error(err);
       removeTypingIndicator(typingId);
-      appendMessage("Failed to send message. Check network status.", 'bot-message');
+      const errReply = currentLanguage === 'kn'
+        ? "ಸಂದೇಶ ಕಳುಹಿಸಲು ವಿಫಲವಾಗಿದೆ. ನೆಟ್‌ವರ್ಕ್ ಪರಿಶೀಲಿಸಿ."
+        : "Failed to send message. Check network status.";
+      appendMessage(errReply, 'bot-message');
       chatMessages.scrollTop = chatMessages.scrollHeight;
     });
   }
@@ -407,8 +519,14 @@ document.addEventListener("DOMContentLoaded", function() {
     // Simple markdown link parser (e.g. [text](url) -> html link)
     let parsedText = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: inherit; text-decoration: underline; font-weight:600;">$1</a>');
     
+    // Format bold markdown (**text** -> <strong>text</strong>)
+    parsedText = parsedText.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    
     // Format newlines
     parsedText = parsedText.replace(/\n/g, '<br>');
+    
+    // Bullet formatting
+    parsedText = parsedText.replace(/•\s+([^<]+)/g, '• $1');
     
     msgDiv.innerHTML = parsedText;
     chatMessages.appendChild(msgDiv);
@@ -428,5 +546,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const el = document.getElementById(id);
     if (el) el.remove();
   }
+
+  // Initialize UI with preferred language
+  setLanguage(currentLanguage);
 });
 </script>
