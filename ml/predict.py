@@ -5,6 +5,7 @@ import pickle
 import pandas as pd
 import numpy as np
 import io
+import sqlite3
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -37,14 +38,15 @@ def predict_category(description):
     if not model or not vec:
         return {"category": "Others", "confidence": 1.0, "reasons": ["Baseline classification (models not initialized)"]}
         
-    vec_desc = vec.transform([description])
+    cleaned_desc = preprocess_text(description)
+    vec_desc = vec.transform([cleaned_desc])
     pred = model.predict(vec_desc)[0]
     probs = model.predict_proba(vec_desc)[0]
     confidence = float(np.max(probs))
     
     # XAI Reasons
     reasons = []
-    desc_lower = description.lower()
+    desc_lower = cleaned_desc
     
     if pred == "Water Supply" and any(k in desc_lower for k in WATER_KEYWORDS):
         reasons.append("Keywords related to water infrastructure detected (e.g. 'water', 'pipe', 'leak').")
@@ -67,59 +69,85 @@ def predict_category(description):
         "reasons": reasons
     }
 
-def predict_priority(description, category, ward, similar_count=0, is_duplicate=0):
-    model = load_pkl('complaint_priority_model.pkl')
-    vec = load_pkl('complaint_priority_vectorizer.pkl')
-    
-    if not model or not vec:
-        pred = "Medium"
-        confidence = 1.0
-        reasons = ["Default baseline priority"]
-    else:
-        vec_desc = vec.transform([description])
-        pred = model.predict(vec_desc)[0]
-        probs = model.predict_proba(vec_desc)[0]
-        confidence = float(np.max(probs))
-        
-        # XAI Reasons
-        reasons = []
-        desc_lower = description.lower()
-        
-        if pred == "High":
-            matched_k = [k for k in HIGH_PRIO_KEYWORDS if k in desc_lower]
-            if matched_k:
-                reasons.append(f"High-severity threat warning keywords detected: {', '.join(matched_k[:3])}.")
-            if category in ["Electricity", "Water Supply", "Drainage"]:
-                reasons.append(f"Critical public utility category ('{category}') increases urgency rating.")
-            if not reasons:
-                reasons.append("Semantic analysis indicates immediate resolution is required.")
-        elif pred == "Medium":
-            reasons.append("The issue requires prompt maintenance, but does not present an immediate safety hazard.")
-        else: # Low
-            reasons.append("Request is classified as general public inquiry, request for new installations, or routine sweeping.")
-            
-    # Business Rules (Emergency override & Location frequency / Duplicate escalation)
-    desc_lower = description.lower()
-    has_emergency_keyword = any(k in desc_lower for k in ["burst", "danger", "wire", "manhole", "overflow", "sparking", "fallen", "accident"])
-    if has_emergency_keyword and pred != "High" and pred != "Critical":
-        pred = "High"
-        confidence = 0.98
-        reasons = ["Automatically set to High Priority based on emergency keyword detection (e.g. wire, burst, overflow, manhole, etc.)."]
-        
-    total_similar = similar_count + 1
-    if total_similar >= 4:
-        pred = "Critical"
-        confidence = 1.0
-        reasons = [f"Upgraded to Critical priority because multiple citizens ({total_similar}) reported similar issues in {ward} recently."]
-    elif total_similar >= 2:
-        pred = "High"
-        confidence = 1.0
-        reasons = [f"Upgraded to High priority because multiple citizens ({total_similar}) reported similar issues in {ward} recently."]
-    elif is_duplicate == 1:
-        pred = "High"
-        confidence = 0.95
-        reasons = [f"Upgraded to High priority as this is a confirmed duplicate of an active issue in {ward}."]
+import re
 
+def preprocess_text(text):
+    if not isinstance(text, str):
+        return ""
+    text = text.lower().strip()
+    text = re.sub(r'[^\w\s]', ' ', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+# Load emergency keywords from config
+def load_emergency_keywords():
+    kw_path = os.path.join(MODELS_DIR, 'emergency_keywords.json')
+    if os.path.exists(kw_path):
+        try:
+            with open(kw_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return [
+        "tree fallen", "fallen tree", "electric wire", "live wire", "fire",
+        "accident", "flood", "landslide", "building collapse", "bridge collapse",
+        "gas leak", "water pipeline burst", "transformer blast", "road blocked",
+        "road collapse", "emergency", "urgent", "immediate"
+    ]
+
+def check_emergency(desc):
+    desc_clean = preprocess_text(desc)
+    keywords = load_emergency_keywords()
+    for kw in keywords:
+        kw_clean = preprocess_text(kw)
+        if kw_clean and kw_clean in desc_clean:
+            return 1
+    return 0
+
+def predict_priority(description, category, ward, similar_count=0, is_duplicate=0, historical_frequency=0):
+    model = load_pkl('complaint_priority_model.pkl')
+    
+    # 1. Run emergency keyword detection
+    emergency_val = check_emergency(description)
+    
+    # Format ward string
+    ward_str = str(ward)
+    if not ward_str.startswith("Ward "):
+        ward_str = f"Ward {ward_str}"
+        
+    input_df = pd.DataFrame([{
+        'Ward': ward_str,
+        'Complaint Category': category,
+        'Complaint Description': preprocess_text(description),
+        'Similar Complaints in Same Ward': similar_count,
+        'Emergency Keywords': emergency_val,
+        'Historical complaint frequency': historical_frequency
+    }])
+    
+    # 2. Run ML model prediction if loaded
+    ml_pred = "Medium"
+    confidence = 1.0
+    if model:
+        try:
+            ml_pred = model.predict(input_df)[0]
+            probs = model.predict_proba(input_df)[0]
+            confidence = float(np.max(probs))
+        except Exception as e:
+            ml_pred = "Medium"
+            confidence = 0.5
+            print(f"Prediction failed: {e}", file=sys.stderr)
+            
+    # 3. Combine emergency detection and ML prediction
+    # If emergency keywords are detected, automatically override to High Priority (3)
+    if emergency_val == 1:
+        pred = "High"
+        reasons = ["High Priority: Automatically set to High Priority due to emergency keyword detection override."]
+        confidence = 1.0
+    else:
+        # If no emergency keyword is detected, use the ML model prediction normally
+        pred = ml_pred
+        reasons = [f"ML Model Prediction: Determined as {pred} Priority based on text features."]
+            
     return {
         "priority": pred,
         "confidence": round(confidence, 2),
@@ -141,17 +169,23 @@ def recommend_schemes(age, gender, occupation, income, land_size, is_farmer, is_
     gender_enc = gender_map.get(gender, 2) # default to Other
     occ_enc = occ_map.get(occupation, 5) # default to Other
     
-    # Input vector: age, gender, occupation, income, land_size, is_farmer, is_student, disability
-    features = np.array([[age, gender_enc, occ_enc, income, land_size, is_farmer, is_student, disability]])
+    # Input vector: age, gender, occupation, income, land_size, is_farmer, is_student, disability, income_per_acre
+    income_per_acre = float(income) / (float(land_size) + 0.1)
+    features = np.array([[age, gender_enc, occ_enc, income, land_size, is_farmer, is_student, disability, income_per_acre]])
     
     probs = model.predict_proba(features)[0]
     classes = model.classes_
     
-    recs = []
+    valid_recs = []
     for cls, prob in zip(classes, probs):
-        if cls == "None" or prob < 0.05:
-            continue
+        if cls != "None":
+            valid_recs.append((cls, float(prob)))
             
+    valid_recs = sorted(valid_recs, key=lambda x: x[1], reverse=True)
+    
+    recs = []
+    if len(valid_recs) > 0 and valid_recs[0][1] >= 0.70:
+        cls, prob = valid_recs[0]
         # Determine XAI reason based on scheme
         reasons = []
         if cls == "PM Kisan":
@@ -169,54 +203,116 @@ def recommend_schemes(age, gender, occupation, income, land_size, is_farmer, is_
             
         recs.append({
             "scheme": cls,
-            "confidence": round(float(prob), 2),
+            "confidence": round(prob, 2),
             "reasons": reasons
         })
         
-    # Sort by confidence descending
-    recs = sorted(recs, key=lambda x: x['confidence'], reverse=True)
     return {"recommendations": recs}
+
+# ----------------- Recalculate All User Schemes -----------------
+def recalculate_all_user_schemes():
+    db_path = os.path.join(BASE_DIR, 'data', 'panchayat.db')
+    if not os.path.exists(db_path):
+        return {"status": "error", "message": f"Database not found at {db_path}"}
+        
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        cursor.execute("PRAGMA table_info(users)")
+        cols = [col[1] for col in cursor.fetchall()]
+        if "matching_scheme" not in cols or "matching_confidence" not in cols:
+            try:
+                cursor.execute("ALTER TABLE users ADD COLUMN matching_scheme TEXT DEFAULT 'No Matching Scheme'")
+                cursor.execute("ALTER TABLE users ADD COLUMN matching_confidence REAL DEFAULT 0.0")
+                conn.commit()
+            except Exception:
+                pass
+                
+        cursor.execute("SELECT id, age, gender, occupation, income, land_size, is_farmer, is_student, disability FROM users")
+        users = cursor.fetchall()
+        
+        updated_count = 0
+        for u in users:
+            uid, age, gender, occ, income, land, is_farmer, is_student, disability = u
+            
+            res = recommend_schemes(
+                age=int(age or 30),
+                gender=gender or "Male",
+                occupation=occ or "Agriculture",
+                income=float(income or 80000.0),
+                land_size=float(land or 1.5),
+                is_farmer=int(is_farmer or 0),
+                is_student=int(is_student or 0),
+                disability=int(disability or 0)
+            )
+            
+            recs = res.get("recommendations", [])
+            if len(recs) > 0:
+                scheme_name = recs[0]["scheme"]
+                confidence = float(recs[0]["confidence"])
+            else:
+                scheme_name = "No Matching Scheme"
+                confidence = 0.0
+                
+            cursor.execute(
+                "UPDATE users SET matching_scheme = ?, matching_confidence = ? WHERE id = ?",
+                (scheme_name, confidence, uid)
+            )
+            updated_count += 1
+            
+        conn.commit()
+        conn.close()
+        return {"status": "success", "updated_users": updated_count}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 # ----------------- Tax Defaulter Risk -----------------
 def predict_defaulter(property_type, tax_amount, year, history_paid_ratio, late_payments, status="Unpaid"):
-    if status.lower() == 'paid':
-        return {
-            "risk": "No Risk",
-            "probability": 0.0,
-            "reasons": ["Tax is fully paid; no default risk."]
-        }
-
     model = load_pkl('tax_defaulter_model.pkl')
+    scaler = load_pkl('tax_scaler.pkl')
     
-    if not model:
-        return {"risk": "Low Risk", "probability": 0.0, "reasons": ["Default baseline tax risk"]}
-        
-    p_type_enc = 1 if property_type.lower() == 'commercial' else 0
-    features = np.array([[p_type_enc, tax_amount, history_paid_ratio, late_payments]])
-    
-    probs = model.predict_proba(features)[0]
-    classes = model.classes_
-    defaulter_idx = np.where(classes == 1)[0][0]
-    prob_defaulter = float(probs[defaulter_idx])
-    
-    # Realistic logic adjustments
-    if status.lower() == 'paid':
-        risk = "No Risk"
-        prob_percent = 0.0
-    elif status.lower() == 'overdue':
+    prob_percent = 0.0
+    if model:
+        try:
+            p_type_enc = 1 if property_type.lower() == 'commercial' else 0
+            # Feature engineering
+            tax_per_late_payment = tax_amount * late_payments
+            payment_risk_index = (1.0 - history_paid_ratio) * late_payments
+            
+            raw_features = np.array([[p_type_enc, tax_amount, history_paid_ratio, late_payments, tax_per_late_payment, payment_risk_index]])
+            if scaler:
+                features = scaler.transform(raw_features)
+            else:
+                features = raw_features
+                
+            probs = model.predict_proba(features)[0]
+            classes = model.classes_
+            defaulter_idx = np.where(classes == 1)[0][0]
+            prob_defaulter = float(probs[defaulter_idx])
+            prob_percent = prob_defaulter * 100
+        except Exception as e:
+            print("Defaulter prediction error:", e, file=sys.stderr)
+            pass
+
+    # Status-based Risk Mapping
+    status_lower = status.lower()
+    if status_lower == 'paid':
+        risk = "Low Risk"
+        prob_percent = max(5.0, min(25.0, prob_percent))
+        reasons = ["Tax is fully paid; low default risk."]
+    elif status_lower == 'overdue':
         risk = "High Risk"
-        prob_percent = max(75.0, prob_defaulter * 100)
+        prob_percent = max(75.0, min(98.0, prob_percent))
+        reasons = ["Status is Overdue, indicating high likelihood of default."]
+    elif status_lower in ['pending', 'unpaid']:
+        risk = "Medium Risk"
+        prob_percent = max(45.0, min(70.0, prob_percent))
+        reasons = ["Status is Pending, representing moderate delinquency risk."]
     else:
         risk = "Medium Risk"
-        prob_percent = max(45.0, min(70.0, prob_defaulter * 100))
-
-    reasons = []
-    if status.lower() == 'overdue':
-        reasons.append("Status is Overdue, indicating high likelihood of default.")
-    elif status.lower() == 'unpaid':
-        reasons.append("Status is Unpaid, representing moderate delinquency risk.")
-    elif status.lower() == 'paid':
-        reasons.append("Tax is fully paid; no default risk.")
+        prob_percent = max(45.0, min(70.0, prob_percent))
+        reasons = ["Status is Pending, representing moderate delinquency risk."]
 
     if status.lower() != 'paid':
         if late_payments > 1:
@@ -271,11 +367,20 @@ def detect_duplicate(description, category, existing_complaints):
 
 # ----------------- Main CLI Handler -----------------
 def main():
-    if len(sys.argv) < 3:
-        print(json.dumps({"error": "Missing task and data arguments"}))
+    if len(sys.argv) < 2:
+        print(json.dumps({"error": "Missing task argument"}))
         return
         
     task = sys.argv[1]
+    if task == "--recalculate-all-user-schemes":
+        result = recalculate_all_user_schemes()
+        print(json.dumps(result))
+        return
+        
+    if len(sys.argv) < 3:
+        print(json.dumps({"error": "Missing data argument"}))
+        return
+        
     data_str = sys.argv[2]
     
     try:
@@ -295,7 +400,8 @@ def main():
         ward = data.get("ward", "Ward 1")
         similar = int(data.get("similar_count", 0))
         is_dup = int(data.get("is_duplicate", 0))
-        result = predict_priority(desc, cat, ward, similar, is_dup)
+        hist_freq = int(data.get("historical_frequency", 0))
+        result = predict_priority(desc, cat, ward, similar, is_dup, hist_freq)
 
     elif task == "--recommend-schemes":
         age = int(data.get("age", 30))

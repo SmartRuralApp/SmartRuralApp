@@ -2,7 +2,9 @@ const initSqlJs = require('sql.js');
 const fs = require('fs');
 const path = require('path');
 
-const dbPath = path.join(__dirname, 'data', 'panchayat.db');
+const dbPath = process.env.DATABASE_PATH 
+  ? path.resolve(process.env.DATABASE_PATH)
+  : path.join(__dirname, 'data', 'panchayat.db');
 
 // Ensure data directory exists
 const dataDir = path.dirname(dbPath);
@@ -117,6 +119,9 @@ async function initDatabase() {
       ward TEXT,
       aadhaar TEXT,
       username TEXT UNIQUE,
+      is_registered INTEGER DEFAULT 0,
+      matching_scheme TEXT DEFAULT 'No Matching Scheme',
+      matching_confidence REAL DEFAULT 0.0,
       FOREIGN KEY (property_id) REFERENCES properties(property_id)
     )
   `);
@@ -132,7 +137,11 @@ async function initDatabase() {
       sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       citizen_name TEXT,
       tax_status TEXT,
-      error_message TEXT
+      error_message TEXT,
+      tax_amount REAL,
+      due_date TEXT,
+      gateway_response_id TEXT,
+      provider TEXT
     )
   `);
   
@@ -142,6 +151,22 @@ async function initDatabase() {
       username TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Appointments table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS appointments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      property_id TEXT NOT NULL,
+      citizen_name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      appointment_date TEXT NOT NULL,
+      appointment_time TEXT NOT NULL,
+      tax_amount REAL NOT NULL,
+      payment_type TEXT DEFAULT 'Offline',
+      status TEXT DEFAULT 'Pending',
+      tax_record_id INTEGER
     )
   `);
 
@@ -195,8 +220,7 @@ async function initDatabase() {
       contact_details TEXT
     )
   `);
-  // Appointments table (DELETED)
-  db.run(`DROP TABLE IF EXISTS appointments`);
+  // Appointments table is active
   // Run migrations in case database already exists
   const taxCols = [
     { name: 'predicted_status', type: "TEXT DEFAULT 'Low Risk'" },
@@ -222,7 +246,10 @@ async function initDatabase() {
     { name: 'address', type: "TEXT" },
     { name: 'ward', type: "TEXT" },
     { name: 'aadhaar', type: "TEXT" },
-    { name: 'username', type: "TEXT" }
+    { name: 'username', type: "TEXT" },
+    { name: 'is_registered', type: "INTEGER DEFAULT 0" },
+    { name: 'matching_scheme', type: "TEXT DEFAULT 'No Matching Scheme'" },
+    { name: 'matching_confidence', type: "REAL DEFAULT 0.0" }
   ];
   userCols.forEach(col => {
     try {
@@ -244,6 +271,22 @@ async function initDatabase() {
 
   try {
     db.run("ALTER TABLE sms_logs ADD COLUMN error_message TEXT");
+  } catch(e) {}
+
+  try {
+    db.run("ALTER TABLE sms_logs ADD COLUMN tax_amount REAL");
+  } catch(e) {}
+
+  try {
+    db.run("ALTER TABLE sms_logs ADD COLUMN due_date TEXT");
+  } catch(e) {}
+
+  try {
+    db.run("ALTER TABLE sms_logs ADD COLUMN gateway_response_id TEXT");
+  } catch(e) {}
+
+  try {
+    db.run("ALTER TABLE sms_logs ADD COLUMN provider TEXT");
   } catch(e) {}
 
   try {
@@ -394,10 +437,14 @@ async function initDatabase() {
     console.error("Error migrating service details:", err.message);
   }
 
-  const adminCheck = db.exec('SELECT COUNT(*) as count FROM admin_users');
-  const adminCount = adminCheck.length > 0 ? adminCheck[0].values[0][0] : 0;
-  if (adminCount === 0) {
+  const adminCheck = db.exec("SELECT * FROM admin_users WHERE username = 'admin'");
+  if (adminCheck.length === 0 || adminCheck[0].values.length === 0) {
     db.run("INSERT INTO admin_users (username, password) VALUES ('admin', 'admin123')");
+  } else {
+    const currentPassword = adminCheck[0].values[0][2];
+    if (currentPassword === 'admin') {
+      db.run("UPDATE admin_users SET password = 'admin123' WHERE username = 'admin'");
+    }
   }
 
   // 2. Seed properties if missing
@@ -512,6 +559,15 @@ function saveDatabase() {
   }
 }
 
+async function reloadDatabase() {
+  const SQL = await initSqlJs();
+  if (fs.existsSync(dbPath)) {
+    const fileBuffer = fs.readFileSync(dbPath);
+    db = new SQL.Database(fileBuffer);
+    console.log("Database reloaded from disk successfully.");
+  }
+}
+
 // Helper functions to match better-sqlite3 API
 function prepare(sql) {
   return {
@@ -580,6 +636,7 @@ function prepare(sql) {
 // Export initialization and database access
 module.exports = {
   init: initDatabase,
+  reload: reloadDatabase,
   prepare: prepare,
   getDb: () => db,
   saveDatabase: saveDatabase

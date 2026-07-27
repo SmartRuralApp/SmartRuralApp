@@ -1,4 +1,4 @@
-// Smart Grama Panchayat Management System - Main JavaScript
+// Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System: AI-Powered Smart Rural Community Digital Governance System - Main JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize mobile menu
@@ -325,7 +325,7 @@ function initForms() {
         if (result.success) {
           showAlert(result.message, 'success');
           taxForm.reset();
-          setTimeout(() => window.location.reload(), 1500);
+          setTimeout(() => window.location.reload(), 150);
         } else {
           showAlert(result.message, 'error');
         }
@@ -772,7 +772,7 @@ window.updateTaxRecord = async function() {
     if (result.success) {
       showAlert(result.message, 'success');
       closeEditTaxModal();
-      setTimeout(() => window.location.reload(), 1500);
+      setTimeout(() => window.location.reload(), 150);
     } else {
       showAlert(result.message, 'error');
     }
