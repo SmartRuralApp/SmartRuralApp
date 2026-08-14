@@ -136,6 +136,19 @@ app.use((req, res, next) => {
   next();
 });
 
+// Middleware to ensure DB is initialized before serving requests (critical for serverless environments)
+app.use(async (req, res, next) => {
+  const rawDb = db.getDb();
+  if (!rawDb) {
+    try {
+      await db.init();
+    } catch (err) {
+      return next(new Error("Database failed to initialize: " + err.message));
+    }
+  }
+  next();
+});
+
 // Set view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -2334,17 +2347,22 @@ app.use((err, req, res, next) => {
   res.status(500).render('500', { session: req.session, error: isProduction ? null : err.message });
 });
 
-db.init().then(() => {
-  console.log('✓ Wasm SQLite database initialized successfully.');
-  updateOutdatedTaxStatuses();
-  verifySMSGatewayConnection();
-  
-  // Run startup checks
-  runStartupValidation();
-  
-  app.listen(PORT, () => {
-    console.log(`✓ Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System running at http://localhost:${PORT}`);
+if (require.main === module) {
+  db.init().then(() => {
+    console.log('✓ Wasm SQLite database initialized successfully.');
+    updateOutdatedTaxStatuses();
+    verifySMSGatewayConnection();
+    
+    // Run startup checks
+    runStartupValidation();
+    
+    app.listen(PORT, () => {
+      console.log(`✓ Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System running at http://localhost:${PORT}`);
+    });
+  }).catch(err => {
+    console.error('Failed to initialize SQLite database:', err);
   });
-}).catch(err => {
-  console.error('Failed to initialize SQLite database:', err);
-});
+} else {
+  // Ephemeral environment (e.g. Vercel Serverless Functions): database is loaded via routing middleware
+  module.exports = app;
+}

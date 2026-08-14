@@ -16,6 +16,7 @@ let db = null;
 
 // Initialize database
 async function initDatabase() {
+  if (db) return db;
   const SQL = await initSqlJs();
   
   // Load existing database or create new one
@@ -553,9 +554,13 @@ async function initDatabase() {
 // Save database to file
 function saveDatabase() {
   if (db) {
-    const data = db.export();
-    const buffer = Buffer.from(data);
-    fs.writeFileSync(dbPath, buffer);
+    try {
+      const data = db.export();
+      const buffer = Buffer.from(data);
+      fs.writeFileSync(dbPath, buffer);
+    } catch (e) {
+      console.warn("WARNING: Database save failed (expected in read-only serverless environments):", e.message);
+    }
   }
 }
 
