@@ -2,9 +2,13 @@ const initSqlJs = require('sql.js');
 const fs = require('fs');
 const path = require('path');
 
+const isVercel = !!process.env.VERCEL;
+
 const dbPath = process.env.DATABASE_PATH 
   ? path.resolve(process.env.DATABASE_PATH)
-  : path.join(__dirname, 'data', 'panchayat.db');
+  : (isVercel 
+      ? path.join('/tmp', 'panchayat.db') 
+      : path.join(__dirname, 'data', 'panchayat.db'));
 
 // Ensure data directory exists
 const dataDir = path.dirname(dbPath);
@@ -12,12 +16,30 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
+if (isVercel && !fs.existsSync(dbPath)) {
+  const seedPath = path.join(process.cwd(), 'data', 'panchayat.db');
+  if (fs.existsSync(seedPath)) {
+    try {
+      fs.copyFileSync(seedPath, dbPath);
+      console.log('✓ Seed database successfully copied to writeable /tmp partition.');
+    } catch (err) {
+      console.error('Failed to copy seed database to /tmp:', err.message);
+    }
+  } else {
+    console.warn('Warning: Seed database not found at', seedPath);
+  }
+}
+
 let db = null;
 
 // Initialize database
 async function initDatabase() {
   if (db) return db;
-  const SQL = await initSqlJs();
+  const SQL = await initSqlJs({
+    locateFile: file => isVercel 
+      ? path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', file)
+      : path.join(__dirname, 'node_modules', 'sql.js', 'dist', file)
+  });
   
   // Load existing database or create new one
   if (fs.existsSync(dbPath)) {

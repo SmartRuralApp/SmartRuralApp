@@ -2138,8 +2138,9 @@ app.post('/api/chat', async (req, res) => {
     if (req.session.chatHistory.length > 6) {
       req.session.chatHistory = req.session.chatHistory.slice(-6);
     }
-
-    const tempCtxPath = path.join(__dirname, 'models', `temp_chat_ctx_${req.session.id || 'sess'}_${Date.now()}.json`);
+    const isVercel = !!process.env.VERCEL;
+    const tempCtxDir = isVercel ? '/tmp' : path.join(__dirname, 'models');
+    const tempCtxPath = path.join(tempCtxDir, `temp_chat_ctx_${req.session.id || 'sess'}_${Date.now()}.json`);
     const payload = {
       query: message,
       context: context,
