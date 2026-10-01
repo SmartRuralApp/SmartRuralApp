@@ -1,0 +1,3018 @@
+[
+  {
+    "id": "tax_1",
+    "category": "Property Tax",
+    "keywords_en": [
+      "calculate",
+      "how tax calculated",
+      "property tax rate",
+      "tax calculation"
+    ],
+    "keywords_kn": [
+      "ಲೆಕ್ಕ",
+      "ತೆರಿಗೆ ಲೆಕ್ಕ",
+      "ದರ",
+      "ಆಸ್ತಿ ತೆರಿಗೆ ದರ"
+    ],
+    "question_en": "How is property tax calculated?",
+    "answer_en": "Property tax is calculated based on the built-up area of the property, its location, usage (residential or commercial), and the tax rate set by the Gram Panchayat for the current fiscal year.",
+    "question_kn": "ಆಸ್ತಿ ತೆರಿಗೆಯನ್ನು ಹೇಗೆ ಲೆಕ್ಕ ಹಾಕಲಾಗುತ್ತದೆ?",
+    "answer_kn": "ಆಸ್ತಿಯ ನಿರ್ಮಿತ ಪ್ರದೇಶ, ಅದರ ಸ್ಥಳ, ಬಳಕೆ (ವಸತಿ ಅಥವಾ ವಾಣಿಜ್ಯ) ಮತ್ತು ಪ್ರಸ್ತುತ ಹಣಕಾಸು ವರ್ಷಕ್ಕೆ ಗ್ರಾಮ ಪಂಚಾಯಿತಿ ನಿಗದಿಪಡಿಸಿದ ತೆರಿಗೆ ದರದ ಆಧಾರದ ಮೇಲೆ ಆಸ್ತಿ ತೆರಿಗೆಯನ್ನು ಲೆಕ್ಕಹಾಕಲಾಗುತ್ತದೆ."
+  },
+  {
+    "id": "tax_2",
+    "category": "Property Tax",
+    "keywords_en": [
+      "exempt",
+      "tax exemption",
+      "no tax",
+      "free tax",
+      "who is exempt"
+    ],
+    "keywords_kn": [
+      "ಮಿನಾಯಿತಿ",
+      "ತೆರಿಗೆ ವಿನಾಯಿತಿ",
+      "ತೆರಿಗೆ ಮುಕ್ತ",
+      "ಯಾರಿಗೆ ವಿನಾಯಿತಿ"
+    ],
+    "question_en": "Who is eligible for property tax exemption?",
+    "answer_en": "Tax exemptions are provided for government-owned buildings, public worship places, registered charitable institutions, and properties owned by disabled veterans or widows, subject to local Panchayat guidelines.",
+    "question_kn": "ಯಾರಿಗೆ ಆಸ್ತಿ ತೆರಿಗೆಯಿಂದ ವಿನಾಯಿತಿ ಇದೆ?",
+    "answer_kn": "ಸ್ಥಳೀಯ ಪಂಚಾಯತ್ ಮಾರ್ಗಸೂಚಿಗಳಿಗೆ ಒಳಪಟ್ಟು ಸರ್ಕಾರಿ ಸ್ವಾಮ್ಯದ ಕಟ್ಟಡಗಳು, ಸಾರ್ವಜನಿಕ ಪ್ರಾರ್ಥನಾ ಸ್ಥಳಗಳು, ನೋಂದಾಯಿತ ದತ್ತಿ ಸಂಸ್ಥೆಗಳು ಮತ್ತು ಅಂಗವಿಕಲ ಯೋಧರು ಅಥವಾ ವಿಧವೆಯರ ಒಡೆತನದ ಆಸ್ತಿಗಳಿಗೆ ತೆರಿಗೆ ವಿನಾಯಿತಿ ನೀಡಲಾಗುತ್ತದೆ."
+  },
+  {
+    "id": "tax_3",
+    "category": "Property Tax",
+    "keywords_en": [
+      "commercial",
+      "business tax",
+      "shop tax",
+      "commercial property rate"
+    ],
+    "keywords_kn": [
+      "ವಾಣಿಜ್ಯ",
+      "ಅಂಗಡಿ ತೆರಿಗೆ",
+      "ವಾಣಿಜ್ಯ ಆಸ್ತಿ ದರ"
+    ],
+    "question_en": "Is the tax rate different for commercial properties?",
+    "answer_en": "Yes, commercial properties (shops, lodges, small industries) are taxed at a higher rate compared to residential properties. The specific rates are published annually by the Gram Panchayat.",
+    "question_kn": "ವಾಣಿಜ್ಯ ಆಸ್ತಿಗಳಿಗೆ ತೆರಿಗೆ ದರ ಬೇರೆಯಾಗಿದೆಯೇ?",
+    "answer_kn": "ಹೌದು, ವಸತಿ ಆಸ್ತಿಗಳಿಗೆ hoolisidare ವಾಣಿಜ್ಯ ಆಸ್ತಿಗಳಿಗೆ (ಅಂಗಡಿಗಳು, ವಸತಿಗೃಹಗಳು, ಸಣ್ಣ ಕೈಗಾರಿಕೆಗಳು) ಹೆಚ್ಚಿನ ದರದಲ್ಲಿ ತೆರಿಗೆ ವಿಧಿಸಲಾಗುತ್ತದೆ. ನಿರ್ದಿಷ್ಟ ದರಗಳನ್ನು ಗ್ರಾಮ ಪಂಚಾಯಿತಿ ವಾರ್ಷಿಕವಾಗಿ ಪ್ರಕಟಿಸುತ್ತದೆ."
+  },
+  {
+    "id": "tax_4",
+    "category": "Property Tax",
+    "keywords_en": [
+      "assessment",
+      "tax assessment",
+      "evaluate property",
+      "new assessment"
+    ],
+    "keywords_kn": [
+      "ಮೌಲ್ಯಮಾಪನ",
+      "ತೆರಿಗೆ ಮೌಲ್ಯಮಾಪನ",
+      "ಹೊಸ ಮೌಲ್ಯಮಾಪನ"
+    ],
+    "question_en": "How do I get a new property tax assessment?",
+    "answer_en": "To assess a new property and get it added to the tax assessment list, submit an application (including architectural plan approvals, title deeds, land possession certificates, and occupancy certificates) at the Panchayat office.",
+    "question_kn": "ಹೊಸ ಆಸ್ತಿ ತೆರಿಗೆ ಮೌಲ್ಯಮಾಪನವನ್ನು ಹೇಗೆ ಪಡೆಯುವುದು?",
+    "answer_kn": "ಹೊಸ ಆಸ್ತಿಯನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಲು, ಕಟ್ಟಡದ ಯೋಜನಾ ಅನುಮೋದನೆಗಳು, ಹಕ್ಕು ಪತ್ರಗಳು, ಭೂ ಸ್ವಾಧೀನ ಪ್ರಮಾಣಪತ್ರಗಳು ಮತ್ತು ಸ್ವಾಧೀನ ಪ್ರಮಾಣಪತ್ರಗಳೊಂದಿಗೆ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ಅರ್ಜಿಯನ್ನು ಸಲ್ಲಿಸಿ."
+  },
+  {
+    "id": "tax_5",
+    "category": "Property Tax",
+    "keywords_en": [
+      "dispute",
+      "wrong tax",
+      "appeal",
+      "challenge assessment",
+      "tax correction"
+    ],
+    "keywords_kn": [
+      "ವಿವಾದ",
+      "ತಪ್ಪು ತೆರಿಗೆ",
+      "ಮೇಲ್ಮನವಿ",
+      "ತೆರಿಗೆ ತಿದ್ದುಪಡಿ"
+    ],
+    "question_en": "What should I do if my property tax amount is incorrect?",
+    "answer_en": "If you find a discrepancy in your tax assessment, you can file a written appeal to the Panchayat Development Officer (PDO) within 30 days of receiving the demand notice.",
+    "question_kn": "ನನ್ನ ಆಸ್ತಿ ತೆರಿಗೆ ಮೊತ್ತ ತಪ್ಪಾಗಿದ್ದರೆ ನಾನು ಏನು ಮಾಡಬೇಕು?",
+    "answer_kn": "ನಿಮ್ಮ ತೆರಿಗೆ ಮೌಲ್ಯಮಾಪನದಲ್ಲಿ ಯಾವುದೇ ವ್ಯತ್ಯಾಸ ಕಂಡುಬಂದಲ್ಲಿ, ಬೇಡಿಕೆ ನೋಟಿಸ್ ಸ್ವೀಕರಿಸಿದ 30 ದಿನಗಳ ಒಳಗೆ vanity ಕಚೇರಿಯಲ್ಲಿ ಮೇಲ್ಮನವಿ ಸಲ್ಲಿಸಬಹುದು."
+  },
+  {
+    "id": "tax_6",
+    "category": "Property Tax",
+    "keywords_en": [
+      "vacant land",
+      "empty plot",
+      "open site tax",
+      "site tax"
+    ],
+    "keywords_kn": [
+      "ಖಾಲಿ ನಿವೇಶನ",
+      "ಖಾಲಿ ಸೈಟ್",
+      "ಖಾಲಿ ಜಾಗದ ತೆರಿಗೆ"
+    ],
+    "question_en": "Is tax applicable on vacant land or plots?",
+    "answer_en": "Yes, Gram Panchayat levies a vacant site tax on non-agricultural open plots located within the Panchayat jurisdiction. Agricultural lands are subject to separate land revenue.",
+    "question_kn": "ಖಾಲಿ ಜಮೀನು ಅಥವಾ ನಿವೇಶನಗಳಿಗೆ ತೆರಿಗೆ ಅನ್ವಯಿಸುತ್ತದೆಯೇ?",
+    "answer_kn": "ಹೌದು, ಗ್ರಾಮ ಪಂಚಾಯತ್ ವ್ಯಾಪ್ತಿಯಲ್ಲಿರುವ ಕೃಷಿಯೇತರ ಖಾಲಿ ನಿವೇಶನಗಳಿಗೆ ಪಂಚಾಯಿತಿಯು ತೆರಿಗೆಯನ್ನು ವಿಧಿಸುತ್ತದೆ. ಕೃಷಿ ಭೂಮಿಗೆ ಪ್ರತ್ಯೇಕ ಭೂ ಕಂದಾಯ ಅನ್ವಯಿಸುತ್ತದೆ."
+  },
+  {
+    "id": "tax_7",
+    "category": "Property Tax",
+    "keywords_en": [
+      "increase",
+      "tax hike",
+      "why tax increased",
+      "revised tax"
+    ],
+    "keywords_kn": [
+      "ಹೆಚ್ಚಳ",
+      "ತೆರಿಗೆ ಹೆಚ್ಚಳ",
+      "ಯಾಕೆ ಹೆಚ್ಚಳ"
+    ],
+    "question_en": "Why has my property tax increased this year?",
+    "answer_en": "Property tax increases occur due to periodic revision of base rates (usually every 3-5 years), renovations or extensions made to your building, or changes in the property category.",
+    "question_kn": "ಈ ವರ್ಷ ನನ್ನ ಆಸ್ತಿ ತೆರಿಗೆ ಏಕೆ ಹೆಚ್ಚಾಗಿದೆ?",
+    "answer_kn": "ಮೂಲ ದರಗಳ ನಿಯತಕಾಲಿಕ ಪರಿಷ್ಕರಣೆ (ಸಾಮಾನ್ಯವಾಗಿ ಪ್ರತಿ 3-5 ವರ್ಷಗಳಿಗೊಮ್ಮೆ), ನಿಮ್ಮ ಕಟ್ಟಡಕ್ಕೆ ಮಾಡಲಾದ ನವೀಕರಣಗಳು ಅಥವಾ ವಿಸ್ತರಣೆಗಳು ಅಥವಾ ಆಸ್ತಿಯ ವರ್ಗದಲ್ಲಿನ ಬದಲಾವಣೆಗಳಿಂದಾಗಿ ಆಸ್ತಿ ತೆರಿಗೆ ಹೆಚ್ಚಳವಾಗುತ್ತದೆ."
+  },
+  {
+    "id": "tax_8",
+    "category": "Property Tax",
+    "keywords_en": [
+      "mutation",
+      "change owner name",
+      "transfer property",
+      "name change tax"
+    ],
+    "keywords_kn": [
+      "ನಾಮಕರಣ",
+      "ಖಾತಾ ವರ್ಗಾವಣೆ",
+      "ಮಾಲೀಕರ ಹೆಸರು ಬದಲಾವಣೆ"
+    ],
+    "question_en": "How does property tax registration change after ownership transfer?",
+    "answer_en": "Upon property sale or inheritance, you must apply for a Mutation Certificate (Khata Transfer) at the Panchayat. Provide the registered sale deed, encumbrance certificate, and latest tax paid receipt.",
+    "question_kn": "ಮಾಲೀಕತ್ವ ವರ್ಗಾವಣೆಯ ನಂತರ ಆಸ್ತಿ ತೆರಿಗೆ ನೋಂದಣಿ ಹೇಗೆ ಬದಲಾಗುತ್ತದೆ?",
+    "answer_kn": "ಆಸ್ತಿ ಮಾರಾಟ ಅಥವಾ ಉತ್ತರಾಧಿಕಾರದ ನಂತರ, ನೀವು ಪಂಚಾಯತ್‌ನಲ್ಲಿ ಖಾತಾ ವರ್ಗಾವಣೆಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಬೇಕು. ನೋಂದಾಯಿತ ಮಾರಾಟ ಪತ್ರ, ಋಣಭಾರ ಪ್ರಮಾಣಪತ್ರ (EC) ಮತ್ತು ಇತ್ತೀಚಿನ ತೆರಿಗೆ ಪಾವತಿಸಿದ ರಶೀದಿಯನ್ನು ಒದಗಿಸಿ."
+  },
+  {
+    "id": "tax_9",
+    "category": "Property Tax",
+    "keywords_en": [
+      "agricultural land",
+      "farmland tax",
+      "agriculture tax"
+    ],
+    "keywords_kn": [
+      "ಕೃಷಿ ಭೂಮಿ",
+      "ಕೃಷಿ ತೆರಿಗೆ"
+    ],
+    "question_en": "Is property tax applicable to agricultural farmlands?",
+    "answer_en": "No, standard property tax applies only to buildings and open non-agricultural plots. Agricultural farmlands pay Land Revenue (Kandaya) to the Revenue Department, not Gram Panchayat property tax.",
+    "question_kn": "ಕೃಷಿ ಭೂಮಿಗೆ ಆಸ್ತಿ ತೆರಿಗೆ ಅನ್ವಯಿಸುತ್ತದೆಯೇ?",
+    "answer_kn": "ಇಲ್ಲ, ಸಾಮಾನ್ಯ ಆಸ್ತಿ ತೆರಿಗೆಯು ಕಟ್ಟಡಗಳು ಮತ್ತು ಕೃಷಿಯೇತರ ಖಾಲಿ ನಿವೇಶನಗಳಿಗೆ ಮಾತ್ರ ಅನ್ವಯಿಸುತ್ತದೆ. ಕೃಷಿ ಭೂಮಿಗೆ ಕಂದಾಯ ಇಲಾಖೆಗೆ ಭೂ ಕಂದಾಯವನ್ನು ಪಾವತಿಸಲಾಗುತ್ತದೆ, ಗ್ರಾಮ ಪಂಚಾಯತ್ ತೆರಿಗೆಯನ್ನಲ್ಲ."
+  },
+  {
+    "id": "tax_10",
+    "category": "Property Tax",
+    "keywords_en": [
+      "khata",
+      "what is khata",
+      "e-khata",
+      "9/11 certificate"
+    ],
+    "keywords_kn": [
+      "ಖಾತಾ",
+      "ಖಾತೆ",
+      "ಇ-ಖಾತಾ",
+      "ಫಾರ್ಮ್ 9 11"
+    ],
+    "question_en": "What is Form 9 and Form 11 (e-Khata)?",
+    "answer_en": "Form 9 is the assessment list created by the Gram Panchayat for non-agricultural properties, and Form 11 is the register of taxes. Together, they represent the official e-Khata required for registration in Karnataka.",
+    "question_kn": "ಫಾರಂ 9 ಮತ್ತು ಫಾರಂ 11 (ಇ-ಖಾತಾ) ಎಂದರೇನು?",
+    "answer_kn": "ಫಾರಂ 9 ಎಂಬುದು ಕೃಷಿಯೇತರ ಆಸ್ತಿಗಳಿಗಾಗಿ ಗ್ರಾಮ ಪಂಚಾಯಿತಿಯು ಸಿದ್ಧಪಡಿಸಿದ ಆಸ್ತಿ ಮೌಲ್ಯಮಾಪನ ಪಟ್ಟಿಯಾಗಿದೆ ಮತ್ತು ಫಾರಂ 11 ತೆರಿಗೆಗಳ ನೋಂದಣಿಯಾಗಿದೆ. ಒಟ್ಟಾಗಿ ಇವುಗಳು ಕರ್ನಾಟಕದಲ್ಲಿ ನೋಂದಣಿಗೆ ಅಗತ್ಯವಿರುವ ಅಧಿಕೃತ ಇ-ಖಾತಾವನ್ನು ರೂಪಿಸುತ್ತವೆ."
+  },
+  {
+    "id": "pay_1",
+    "category": "Tax Payment",
+    "keywords_en": [
+      "how to pay",
+      "pay online",
+      "payment methods",
+      "where pay tax"
+    ],
+    "keywords_kn": [
+      "ಹೇಗೆ ಪಾವತಿಸಬೇಕು",
+      "ಆನ್‌ಲೈನ್ ಪಾವತಿ",
+      "ಪಾವತಿ ವಿಧಾನಗಳು"
+    ],
+    "question_en": "How can I pay my property tax?",
+    "answer_en": "You can pay property tax online via the Citizen Portal's 'Tax Search & Pay' module using UPI, Net Banking, or Credit/Debit Cards, or offline at the Gram Panchayat office counter.",
+    "question_kn": "ನಾನು ಆಸ್ತಿ ತೆರಿಗೆಯನ್ನು ಹೇಗೆ ಪಾವತಿಸಬಹುದು?",
+    "answer_kn": "UPI, ನೆಟ್ ಬ್ಯಾಂಕಿಂಗ್ ಅಥವಾ ಕಾರ್ಡ್ ಬಳಸಿ ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನ 'Tax Search' ವಿಭಾಗದಲ್ಲಿ ಆನ್‌ಲೈನ್ ಮೂಲಕ ಪಾವತಿಸಬಹುದು ಅಥವಾ ಗ್ರಾಮ ಪಂಚಾಯತ್ ಕಚೇರಿಯ ಕೌಂಟರ್‌ನಲ್ಲಿ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಪಾವತಿಸಬಹುದು."
+  },
+  {
+    "id": "pay_2",
+    "category": "Tax Payment",
+    "keywords_en": [
+      "installments",
+      "partial payment",
+      "split tax payment"
+    ],
+    "keywords_kn": [
+      "ಕಂತುಗಳು",
+      "ಭಾಗಶಃ ಪಾವತಿ",
+      "ಕಂತು ಪಾವತಿ"
+    ],
+    "question_en": "Can I pay property tax in installments?",
+    "answer_en": "No, property tax must be paid in full for the current assessment year. Partial or installment payments are not supported by the Gram Panchayat system.",
+    "question_kn": "ನಾನು ಆಸ್ತಿ ತೆರಿಗೆಯನ್ನು ಕಂತುಗಳಲ್ಲಿ ಪಾವತಿಸಬಹುದೇ?",
+    "answer_kn": "ಇಲ್ಲ, ಪ್ರಸ್ತುತ ವರ್ಷದ ಆಸ್ತಿ ತೆರಿಗೆಯನ್ನು ಪೂರ್ಣವಾಗಿ ಪಾವತಿಸಬೇಕು. ಗ್ರಾಮ ಪಂಚಾಯತ್ ವ್ಯವಸ್ಥೆಯಲ್ಲಿ ಭಾಗಶಃ ಅಥವಾ ಕಂತುಗಳ ಪಾವತಿಗೆ ಅವಕಾಶವಿಲ್ಲ."
+  },
+  {
+    "id": "pay_3",
+    "category": "Tax Payment",
+    "keywords_en": [
+      "failed transaction",
+      "payment deducted",
+      "double payment"
+    ],
+    "keywords_kn": [
+      "ಪಾವತಿ ವಿಫಲ",
+      "ಹಣ ಕಡಿತ",
+      "ವಿಫಲ ವಹಿವಾಟು"
+    ],
+    "question_en": "What if my payment failed but money was deducted?",
+    "answer_en": "If money is deducted for a failed transaction, it is usually auto-refunded by the bank in 5-7 working days. If your tax status remains unpaid after 24 hours, contact the Panchayat clerk with transaction details.",
+    "question_kn": "ಪಾವತಿ ವಿಫಲವಾಗಿ ಹಣ ಕಡಿತಗೊಂಡರೆ ಏನು ಮಾಡಬೇಕು?",
+    "answer_kn": "ವಹಿವಾಟು ವಿಫಲವಾಗಿ ಹಣ ಕಡಿತಗೊಂಡರೆ, ಬ್ಯಾಂಕ್ ಸಾಮಾನ್ಯವಾಗಿ 5-7 ದಿನಗಳಲ್ಲಿ ಮರುಪಾವತಿಸುತ್ತದೆ. 24 ಗಂಟೆಗಳ ನಂತರವೂ ತೆರಿಗೆ ಬಾಕಿ ತೋರಿಸುತ್ತಿದ್ದರೆ, ವಹಿವಾಟು ವಿವರಗಳೊಂದಿಗೆ ಪಂಚಾಯತ್ ಸಿಬ್ಬಂದಿಯನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "pay_4",
+    "category": "Tax Payment",
+    "keywords_en": [
+      "cash payment",
+      "pay with cash",
+      "offline counter"
+    ],
+    "keywords_kn": [
+      "ನಗದು ಪಾವತಿ",
+      "ನಗದು",
+      "ಆಫ್‌ಲೈನ್ ಕೌಂಟರ್"
+    ],
+    "question_en": "Can I pay my property tax in cash at the office?",
+    "answer_en": "Yes, the Gram Panchayat office counter accepts cash, demand drafts, and cheques for tax payments during working hours.",
+    "question_kn": "ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಗದು ರೂಪದಲ್ಲಿ ತೆರಿಗೆ ಪಾವತಿಸಬಹುದೇ?",
+    "answer_kn": "ಹೌದು, ಗ್ರಾಮ ಪಂಚಾಯತ್ ಕಚೇರಿಯ ಕೌಂಟರ್‌ನಲ್ಲಿ ಕಚೇರಿ ವೇಳೆಯಲ್ಲಿ ನಗದು, ಡಿಮಾಂಡ್ ಡ್ರಾಫ್ಟ್ (DD) ಮತ್ತು ಚೆಕ್ ಮೂಲಕ ತೆರಿಗೆ ಪಾವತಿಗಳನ್ನು ಸ್ವೀಕರಿಸಲಾಗುತ್ತದೆ."
+  },
+  {
+    "id": "pay_5",
+    "category": "Tax Payment",
+    "keywords_en": [
+      "bapu ji seva kendra",
+      "csc",
+      "common service center"
+    ],
+    "keywords_kn": [
+      "ಬಾಪೂಜಿ ಸೇವಾ ಕೇಂದ್ರ",
+      "ಸಿಎಸ್ ಸಿ",
+      "ಸೇವಾ ಕೇಂದ್ರ"
+    ],
+    "question_en": "Can I pay tax at Bapuji Seva Kendra or CSC?",
+    "answer_en": "Yes, property tax payments and other utility payments can be completed at the local Bapuji Seva Kendra (BSK) or any authorized Common Service Center (CSC) in your village.",
+    "question_kn": "ಬಾಪೂಜಿ ಸೇವಾ ಕೇಂದ್ರ ಅಥವಾ ಸಿಎಸ್‌ಸಿಯಲ್ಲಿ ತೆರಿಗೆ ಪಾವತಿಸಬಹುದೇ?",
+    "answer_kn": "ಹೌದು, ನಿಮ್ಮ ಗ್ರಾಮದ ಬಾಪೂಜಿ ಸೇವಾ ಕೇಂದ್ರ (BSK) ಅಥವಾ ಯಾವುದೇ ಅಧಿಕೃತ ಸಾಮಾನ್ಯ ಸೇವಾ ಕೇಂದ್ರದಲ್ಲಿ (CSC) ಆಸ್ತಿ ತೆರಿಗೆಯನ್ನು ಪಾವತಿಸಬಹುದು."
+  },
+  {
+    "id": "due_1",
+    "category": "Tax Due Date",
+    "keywords_en": [
+      "due date",
+      "deadline",
+      "last date",
+      "when due",
+      "tax deadline"
+    ],
+    "keywords_kn": [
+      "ಕೊನೆಯ ದಿನಾಂಕ",
+      "ಗಡುವು",
+      "ಪಾವತಿ ಗಡುವು"
+    ],
+    "question_en": "What is the due date for property tax payment?",
+    "answer_en": "The standard due date for property tax payment is March 31st of the assessment year. Fines or interest will accumulate starting April 1st.",
+    "question_kn": "ಆಸ್ತಿ ತೆರಿಗೆ ಪಾವತಿಸಲು ಕೊನೆಯ ದಿನಾಂಕ ಯಾವುದು?",
+    "answer_kn": "ಆಸ್ತಿ ತೆರಿಗೆ ಪಾವತಿಗೆ ಕೊನೆಯ ದಿನಾಂಕ ಮಾರ್ಚ್ 31 ಆಗಿರುತ್ತದೆ. ಏಪ್ರಿಲ್ 1 ರಿಂದ ಬಾಕಿ ಮೊತ್ತಕ್ಕೆ ದಂಡ ಅಥವಾ ಬಡ್ಡಿ ಅನ್ವಯಿಸುತ್ತದೆ."
+  },
+  {
+    "id": "due_2",
+    "category": "Tax Due Date",
+    "keywords_en": [
+      "penalty",
+      "fine",
+      "late fee",
+      "interest rate",
+      "delay payment"
+    ],
+    "keywords_kn": [
+      "ದಂಡ",
+      "ವಿಳಂಬ ಶುಲ್ಕ",
+      "ಬಡ್ಡಿ ದರ"
+    ],
+    "question_en": "What is the penalty for late property tax payment?",
+    "answer_en": "A late fee penalty of 1% to 2% interest per month is levied on the outstanding tax balance if paid after the March 31st deadline.",
+    "question_kn": "ವಿಳಂಬವಾಗಿ ಆಸ್ತಿ ತೆರಿಗೆ ಪಾವತಿಸಿದರೆ ದಂಡ ಎಷ್ಟು?",
+    "answer_kn": "ಮಾರ್ಚ್ 31 ರ ಗಡುವಿನ ನಂತರ ಪಾವತಿಸಿದರೆ, ಬಾಕಿ ಇರುವ ತೆರಿಗೆ ಮೊತ್ತಕ್ಕೆ ಪ್ರತಿ ತಿಂಗಳಿಗೆ ಶೇಕಡಾ 1 ರಿಂದ 2 ರವರೆಗೆ ಬಡ್ಡಿ ಅಥವಾ ವಿಳಂಬ ಶುಲ್ಕವನ್ನು ವಿಧಿಸಲಾಗುತ್ತದೆ."
+  },
+  {
+    "id": "due_3",
+    "category": "Tax Due Date",
+    "keywords_en": [
+      "rebate",
+      "early bird discount",
+      "discount on tax"
+    ],
+    "keywords_kn": [
+      "ರಿಯಾಯಿತಿ",
+      "ಡಿಸ್ಕೌಂಟ್",
+      "ಆರಂಭಿಕ ರಿಯಾಯಿತಿ"
+    ],
+    "question_en": "Is there a discount for early property tax payment?",
+    "answer_en": "Yes, a 5% rebate (early bird discount) is offered if the property tax is paid within the first month of the financial year (usually April 30th).",
+    "question_kn": "ತೆರಿಗೆಯನ್ನು ಮುಂಚಿತವಾಗಿ ಪಾವತಿಸಿದರೆ ಏನಾದರೂ ರಿಯಾಯಿತಿ ಇದೆಯೇ?",
+    "answer_kn": "ಹೌದು, ಹಣಕಾಸು ವರ್ಷದ ಮೊದಲ ತಿಂಗಳೊಳಗೆ (ಸಾಮಾನ್ಯವಾಗಿ ಏಪ್ರಿಲ್ 30 ರೊಳಗೆ) ಆಸ್ತಿ ತೆರಿಗೆಯನ್ನು ಪೂರ್ಣವಾಗಿ ಪಾವತಿಸಿದರೆ ಶೇಕಡಾ 5 ರಷ್ಟು ರಿಯಾಯಿತಿ ನೀಡಲಾಗುತ್ತದೆ."
+  },
+  {
+    "id": "receipt_1",
+    "category": "Tax Receipt",
+    "keywords_en": [
+      "receipt",
+      "tax receipt",
+      "download receipt",
+      "get receipt",
+      "invoice"
+    ],
+    "keywords_kn": [
+      "ರಶೀದಿ",
+      "ತೆರಿಗೆ ರಶೀದಿ",
+      "ರಶೀದಿ ಡೌನ್‌ಲೋಡ್"
+    ],
+    "question_en": "How can I download my property tax payment receipt?",
+    "answer_en": "Go to 'Tax Search' on the Citizen Portal, search your property, and view transaction history. Click the 'Download Receipt' button for the desired year.",
+    "question_kn": "ನನ್ನ ಆಸ್ತಿ ತೆರಿಗೆ ಪಾವತಿ ರಶೀದಿಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡುವುದು ಹೇಗೆ?",
+    "answer_kn": "ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ 'Tax Search' ಗೆ ಹೋಗಿ, ಆಸ್ತಿಯನ್ನು ಹುಡುಕಿ ಮತ್ತು ವಹಿವಾಟು ಇತಿಹಾಸವನ್ನು ವೀಕ್ಷಿಸಿ. ಬೇಕಾದ ವರ್ಷದ ಪಕ್ಕದಲ್ಲಿರುವ 'Download Receipt' ಕ್ಲಿಕ್ ಮಾಡಿ."
+  },
+  {
+    "id": "receipt_2",
+    "category": "Tax Receipt",
+    "keywords_en": [
+      "old receipt",
+      "past receipt",
+      "history receipt",
+      "previous years receipt"
+    ],
+    "keywords_kn": [
+      "ಹಳೆಯ ರಶೀದಿ",
+      "ಹಿಂದಿನ ರಶೀದಿ"
+    ],
+    "question_en": "Can I get tax receipts for previous years online?",
+    "answer_en": "Yes, the portal stores digital records of all online payments. You can download historical receipts for the last 5 years from your dashboard's tax section.",
+    "question_kn": "ಹಿಂದಿನ ವರ್ಷಗಳ ತೆರಿಗೆ ರಶೀದಿಗಳನ್ನು ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಪಡೆಯಬಹುದೇ?",
+    "answer_kn": "ಹೌದು, ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ಎಲ್ಲಾ ಆನ್‌ಲೈನ್ ಪಾವತಿಗಳ ರಶೀದಿಗಳನ್ನು ಸಂಗ್ರಹಿಸಲಾಗಿರುತ್ತದೆ. ನಿಮ್ಮ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನಲ್ಲಿ ಕಳೆದ 5 ವರ್ಷಗಳ ಹಳೆಯ ರಶೀದಿಗಳನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಬಹುದು."
+  },
+  {
+    "id": "receipt_3",
+    "category": "Tax Receipt",
+    "keywords_en": [
+      "receipt verification",
+      "validate receipt",
+      "verify receipt signature"
+    ],
+    "keywords_kn": [
+      "ರಶೀದಿ ಪರಿಶೀಲನೆ",
+      "ರಶೀದಿ ದೃಢೀಕರಣ"
+    ],
+    "question_en": "How do I verify the authenticity of a tax receipt?",
+    "answer_en": "Every official digital receipt contains a unique Transaction ID and a QR Code. Scan the QR code to verify the details directly against the Gram Panchayat database registry.",
+    "question_kn": "ತೆರಿಗೆ ರಶೀದಿಯ ದೃಢೀಕರಣವನ್ನು ನಾನು ಹೇಗೆ ಪರಿಶೀಲಿಸುವುದು?",
+    "answer_kn": "ಪ್ರತಿಯೊಂದು ಅಧಿಕೃತ ರಶೀದಿಯು ವಹಿವಾಟು ID ಮತ್ತು QR ಕೋಡ್ ಅನ್ನು ಹೊಂದಿರುತ್ತದೆ. QR ಕೋಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡುವ ಮೂಲಕ ಪಂಚಾಯತ್ ಡೇಟಾಬೇಸ್‌ನೊಂದಿಗೆ ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಬಹುದು."
+  },
+  {
+    "id": "complaint_reg_1",
+    "category": "Complaint Registration",
+    "keywords_en": [
+      "register complaint",
+      "file complaint",
+      "lodge complaint",
+      "report issue",
+      "submit complaint"
+    ],
+    "keywords_kn": [
+      "ದೂರು ಸಲ್ಲಿಸಲು",
+      "ಹೊಸ ದೂರು",
+      "ದೂರು ದಾಖಲಿಸು"
+    ],
+    "question_en": "How do I register a complaint on the portal?",
+    "answer_en": "To register a complaint, log into the Citizen Portal, navigate to 'Register Complaint', select the category, describe the issue, specify the ward, and submit.",
+    "question_kn": "ನಾನು ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ದೂರನ್ನು ಹೇಗೆ ದಾಖಲಿಸುವುದು?",
+    "answer_kn": "ದೂರು ಸಲ್ಲಿಸಲು, ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ, 'Register Complaint' ವಿಭಾಗಕ್ಕೆ ಹೋಗಿ, ವರ್ಗವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ, ಸಮಸ್ಯೆಯನ್ನು ವಿವರಿಸಿ, ವಾರ್ಡ್ ಅನ್ನು ನಮೂದಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ."
+  },
+  {
+    "id": "complaint_reg_2",
+    "category": "Complaint Registration",
+    "keywords_en": [
+      "photo",
+      "upload image",
+      "attach proof",
+      "complaint picture",
+      "complaint document",
+      "document for complaint"
+    ],
+    "keywords_kn": [
+      "ಫೋಟೋ",
+      "ಚಿತ್ರ ಅಪ್‌ಲೋಡ್",
+      "ಪುರಾವೆ"
+    ],
+    "question_en": "Can I upload photos with my complaint?",
+    "answer_en": "Yes, the complaint registration form allows you to upload photos (up to 5MB, JPG/PNG format) to provide visual proof of the issue (e.g., broken street lights, potholes). You do not need any other official complaint document.",
+    "question_kn": "ದೂರಿನೊಂದಿಗೆ ನಾನು ಫೋಟೋಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಬಹುದೇ?",
+    "answer_kn": "ಹೌದು, ದೂರು ನೋಂದಣಿ ಫಾರಂನಲ್ಲಿ ಸಮಸ್ಯೆಯ ಫೋಟೋಗಳನ್ನು (ಉದಾಹರಣೆಗೆ ಒಡೆದ ಬೀದಿ ದೀಪಗಳು, ರಸ್ತೆ ಗುಂಡಿ) ಗರಿಷ್ಠ 5MB ವರೆಗೆ ಅಪ್‌ಲೋಡ್ ಮಾಡಲು ಅವಕಾಶವಿದೆ."
+  },
+  {
+    "id": "complaint_stat_1",
+    "category": "Complaint Status",
+    "keywords_en": [
+      "track complaint",
+      "complaint status",
+      "check status",
+      "my complaint status"
+    ],
+    "keywords_kn": [
+      "ದೂರು ಸ್ಥಿತಿ",
+      "ದೂರು ಟ್ರ್ಯಾಕ್",
+      "ನನ್ನ ದೂರುಗಳು"
+    ],
+    "question_en": "How do I track the status of my complaint?",
+    "answer_en": "You can track your complaints under the 'Complaint Status' tab on your dashboard. It displays the status as Pending, In Progress, or Resolved, along with admin remarks.",
+    "question_kn": "ನನ್ನ ದೂರಿನ ಸ್ಥಿತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡುವುದು ಹೇಗೆ?",
+    "answer_kn": "ನಾಗರಿಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನಲ್ಲಿರುವ 'Complaint Status' ಟ್ಯಾಬ್‌ನಲ್ಲಿ ನಿಮ್ಮ ದೂರುಗಳ ಪ್ರಗತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಬಹುದು. ಇದು ಪೆಂಡಿಂಗ್, ಪ್ರಗತಿಯಲ್ಲಿದೆ ಅಥವಾ ಪರಿಹರಿಸಲಾಗಿದೆ ಎಂಬ ಸ್ಥಿತಿಯನ್ನು ತೋರಿಸುತ್ತದೆ."
+  },
+  {
+    "id": "complaint_stat_2",
+    "category": "Complaint Status",
+    "keywords_en": [
+      "delay",
+      "complaint taking time",
+      "not resolved",
+      "reopen complaint",
+      "how long to resolve",
+      "resolution time",
+      "complaint time",
+      "resolve complaint"
+    ],
+    "keywords_kn": [
+      "ವಿಳಂಬ",
+      "ದೂರು ತಡವಾಗಿದೆ",
+      "ದೂರು ಮರುತೆರೆಯಿರಿ"
+    ],
+    "question_en": "What should I do if my complaint is not resolved within the expected time?",
+    "answer_en": "If a complaint is delayed beyond the standard resolution time, you can use the 'Escalate' button on your dashboard to notify the Panchayat Development Officer, or check the admin remarks.",
+    "question_kn": "ನನ್ನ ದೂರು ನಿಗದಿತ ಸಮಯದಲ್ಲಿ ಪರಿಹರಿಸಲ್ಪಡದಿದ್ದರೆ ನಾನು ಏನು ಮಾಡಬೇಕು?",
+    "answer_kn": "ದೂರು ವಿಳಂಬವಾದರೆ, ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನಲ್ಲಿರುವ 'Escalate' ಬಟನ್ ಬಳಸಿ ಪಿಡಿಒಗೆ ತಿಳಿಸಬಹುದು ಅಥವಾ ದೂರಿನ ಸಂಖ್ಯೆಯೊಂದಿಗೆ ಪಂಚಾಯತ್ ಕಚೇರಿಗೆ ಭೇಟಿ ನೀಡಬಹುದು."
+  },
+  {
+    "id": "complaint_prio_1",
+    "category": "Complaint Priority",
+    "keywords_en": [
+      "priority",
+      "how priority decided",
+      "emergency complaint",
+      "high priority"
+    ],
+    "keywords_kn": [
+      "ಆದ್ಯತೆ",
+      "ಆದ್ಯತೆ ಹೇಗೆ",
+      "ತುರ್ತು ದೂರು"
+    ],
+    "question_en": "How is the priority of a complaint determined?",
+    "answer_en": "The system automatically classifies priority (High, Medium, Low) based on safety hazards, emergency keywords (e.g., 'live wire', 'pipeline burst'), and ward complaint frequency.",
+    "question_kn": "ದೂರಿನ ಆದ್ಯತೆಯನ್ನು ಹೇಗೆ ನಿರ್ಧರಿಸಲಾಗುತ್ತದೆ?",
+    "answer_kn": "ಸುರಕ್ಷತಾ ಅಪಾಯಗಳು, ತುರ್ತು ಕೀವರ್ಡ್ಗಳು (ಉದಾ: 'ಲೈವ್ ವೈರ್', 'ಪೈಪ್ಲೈನ್ ಒಡೆದಿದೆ') ಮತ್ತು ವಾರ್ಡ್‌ನಲ್ಲಿನ ದೂರುಗಳ ಸಂಖ್ಯೆಯ ಆಧಾರದ ಮೇಲೆ ಸಿಸ್ಟಮ್ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಆದ್ಯತೆಯನ್ನು (ಹೆಚ್ಚು, ಮಧ್ಯಮ, ಕಡಿಮೆ) ನಿರ್ಧರಿಸುತ್ತದೆ."
+  },
+  {
+    "id": "schemes_1",
+    "category": "Government Welfare Schemes",
+    "keywords_en": [
+      "pm kisan eligibility",
+      "kisan documents",
+      "farmers scheme",
+      "farmer welfare benefits",
+      "farmer benefits",
+      "farmers welfare"
+    ],
+    "keywords_kn": [
+      "ಪಿಎಂ ಕಿಸಾನ್ ಅರ್ಹತೆ",
+      "ರೈತ ಯೋಜನೆ"
+    ],
+    "question_en": "What are the eligibility criteria and documents required for PM Kisan?",
+    "answer_en": "Eligibility for PM Kisan: Small & marginal landholding farmers. Documents required: Aadhaar Card, Land ownership documents (Pattadar Passbook), bank details. Benefits: ₹6,000 per year in 3 installments.",
+    "question_kn": "ಪಿಎಂ ಕಿಸಾನ್ ಯೋಜನೆಗೆ ಅರ್ಹತೆ ಮತ್ತು ಅಗತ್ಯವಿರುವ ದಾಖಲೆಗಳು ಯಾವುವು?",
+    "answer_kn": "ಅರ್ಹತೆ: ಸಣ್ಣ ಮತ್ತು ಅತಿ ಸಣ್ಣ ಹಿಡುವಳಿದಾರ ರೈತರು. ಅಗತ್ಯ ದಾಖಲೆಗಳು: ಆಧಾರ್ ಕಾರ್ಡ್, ಜಮೀನು ಪಹಣಿ (RTC), ಬ್ಯಾಂಕ್ ಖಾತೆ ವಿವರ. ಪ್ರಯೋಜನಗಳು: ವಾರ್ಷಿಕ ₹6,000 ಉಚಿತ ನೆರವು."
+  },
+  {
+    "id": "schemes_2",
+    "category": "Government Welfare Schemes",
+    "keywords_en": [
+      "pm awas eligibility",
+      "awas yojana home",
+      "house scheme criteria",
+      "women schemes",
+      "schemes for women",
+      "housing",
+      "poor people housing",
+      "housing scheme"
+    ],
+    "keywords_kn": [
+      "ಪಿಎಂ ಆವಾಸ್ ಅರ್ಹತೆ",
+      "ಮನೆ ಯೋಜನೆ",
+      "ವಸತಿ"
+    ],
+    "question_en": "Who is eligible for PM Awas Yojana (PMAY-G)?",
+    "answer_en": "PM Awas Yojana (PMAY-G) is a welfare program for rural households living in kutcha/dilapidated houses, with an annual income below ₹1.5 Lakhs. Documents required: Aadhaar, Job Card, Bank Passbook. Benefits: Financial aid of ₹1.2 Lakhs for house construction.",
+    "question_kn": "ಪಿಎಂ ಆವಾಸ್ ಯೋಜನೆಗೆ (PMAY-G) ಯಾರು ಅರ್ಹರು?",
+    "answer_kn": "PM Awas Yojana (ಪಿಎಂ ಆವಾಸ್ ಯೋಜನೆ) ಕಚ್ಚಾ ಅಥವಾ ಹಾನಿಗೊಳಗಾದ ಮನೆಗಳಲ್ಲಿ ವಾಸಿಸುವ ಮತ್ತು ವಾರ್ಷಿಕ ಆದಾಯ ₹1.5 ಲಕ್ಷಕ್ಕಿಂತ ಕಡಿಮೆ ಇರುವ ಗ್ರಾಮೀಣ ಕುಟುಂಬಗಳಿಗೆ ಅನ್ವಯಿಸುತ್ತದೆ. ಸಹಾಯಧನ: ಮನೆ ನಿರ್ಮಾಣಕ್ಕೆ ₹1.2 ಲಕ್ಷ ಹಣಕಾಸು ನೆರವು."
+  },
+  {
+    "id": "schemes_3",
+    "category": "Government Welfare Schemes",
+    "keywords_en": [
+      "mgnrega jobs",
+      "100 days job card",
+      "guaranteed employment"
+    ],
+    "keywords_kn": [
+      "ಉದ್ಯೋಗ ಖಾತರಿ",
+      "ಜಾಬ್ ಕಾರ್ಡ್",
+      "ನರೇಗಾ ಕೆಲಸ"
+    ],
+    "question_en": "How do I get a Job Card under MGNREGA?",
+    "answer_en": "All adult rural household members willing to do unskilled manual labor can apply for a Job Card at the Panchayat office. MGNREGA provides 100 days of guaranteed employment (unskilled manual wage employment) per financial year to rural household adults.",
+    "question_kn": "ಉದ್ಯೋಗ ಖಾತರಿ (MGNREGA) ಅಡಿಯಲ್ಲಿ ಜಾಬ್ ಕಾರ್ಡ್ ಪಡೆಯುವುದು ಹೇಗೆ?",
+    "answer_kn": "ಅಕುಶಲ ದೈಹಿಕ ಕೆಲಸ ಮಾಡಲು ಆಸಕ್ತಿ ಇರುವ ವಯಸ್ಕ ಗ್ರಾಮೀಣ ಸದಸ್ಯರು ಆಧಾರ್ ಕಾರ್ಡ್ ಮತ್ತು ಫೋಟೋದೊಂದಿಗೆ ಪಂಚಾಯತ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಬಹುದು. 15 ದಿನಗಳಲ್ಲಿ ಜಾಬ್ ಕಾರ್ಡ್ ನೀಡಲಾಗುತ್ತದೆ."
+  },
+  {
+    "id": "schemes_4",
+    "category": "Government Welfare Schemes",
+    "keywords_en": [
+      "scholarship eligibility",
+      "student scheme ssp",
+      "post matric scholarship"
+    ],
+    "keywords_kn": [
+      "ವಿದ್ಯಾರ್ಥಿವೇತನ ಅರ್ಹತೆ",
+      "ಸ್ಕಾಲರ್‌ಶಿಪ್ ದಾಖಲೆ"
+    ],
+    "question_en": "What is the eligibility for the Post-Matric Scholarship?",
+    "answer_en": "Post-Matric Scholarship is for rural students pursuing post-matric courses with family income below ₹2.5 Lakhs (varies by category). Documents: Income/Caste certificate, SSP Student ID, previous year marks card.",
+    "question_kn": "ಮೆಟ್ರಿಕ್ ನಂತರದ ವಿದ್ಯಾರ್ಥಿವೇತನಕ್ಕೆ ಅರ್ಹತೆ ಏನು?",
+    "answer_kn": "ಮೆಟ್ರಿಕ್ ನಂತರದ ವಿದ್ಯಾರ್ಥಿವೇತನ (Post-Matric Scholarship) ಕುಟುಂಬದ ವಾರ್ಷಿಕ ಆದಾಯ ₹2.5 ಲಕ್ಷಕ್ಕಿಂತ ಕಡಿಮೆ ಇರುವ ಗ್ರಾಮೀಣ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಿಗುತ್ತದೆ."
+  },
+  {
+    "id": "schemes_5",
+    "category": "Government Welfare Schemes",
+    "keywords_en": [
+      "disability pension",
+      "divyangjan pension",
+      "disabled scheme"
+    ],
+    "keywords_kn": [
+      "ವಿಕಲಚೇತನರ ಪಿಂಚಣಿ",
+      "ಅಂಗವಿಕಲರ ಯೋಜನೆ"
+    ],
+    "question_en": "What is the Divyangjan Pension Scheme?",
+    "answer_en": "Citizens with 40% or more disability, residing in rural areas with annual income below ₹1.2 Lakhs are eligible for Divyangjan Pension. Benefits: Monthly pension of ₹1,000 directly to the bank account.",
+    "question_kn": "ವಿಕಲಚೇತನರ (ದಿವ್ಯಾಂಗಜನ್) ಪಿಂಚಣಿ ಯೋಜನೆ ಏನು?",
+    "answer_kn": "%40 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಗವೈಕಲ್ಯ ಹೊಂದಿರುವ ಮತ್ತು ವಾರ್ಷಿಕ ಆದಾಯ ₹1.2 ಲಕ್ಷಕ್ಕಿಂತ ಕಡಿಮೆ ಇರುವ ಗ್ರಾಮೀಣ ನಿವಾಸಿಗಳಿಗೆ ತಿಂಗಳಿಗೆ ₹1,000 ಪಿಂಚಣಿ ನೀಡುವ ಯೋಜನೆ."
+  },
+  {
+    "id": "schemes_list",
+    "category": "Government Welfare Schemes",
+    "keywords_en": [
+      "schemes list",
+      "all schemes",
+      "welfare schemes",
+      "what schemes do you have",
+      "list of schemes",
+      "schems list"
+    ],
+    "keywords_kn": [
+      "ಯೋಜನೆಗಳು",
+      "ಯೋಜನೆಗಳ ಪಟ್ಟಿ",
+      "ಕಲ್ಯಾಣ ಯೋಜನೆಗಳು",
+      "ಎಲ್ಲಾ ಯೋಜನೆಗಳು"
+    ],
+    "question_en": "What welfare schemes are available under the Gram Panchayat?",
+    "answer_en": "The welfare schemes available under Gram Panchayat include: 1. PM Kisan (financial support for farmers), 2. PM Awas Yojana (housing aid for rural poor), 3. MGNREGA (100 days of guaranteed wage employment), 4. Post-Matric Scholarship (student financial aid), and 5. Divyangjan Pension (pension for disabled citizens).",
+    "question_kn": "ಗ್ರಾಮ ಪಂಚಾಯತ್ ವ್ಯಾಪ್ತಿಯಲ್ಲಿ ಯಾವ ಕಲ್ಯಾಣ ಯೋಜನೆಗಳು ಲಭ್ಯವಿವೆ?",
+    "answer_kn": "ಗ್ರಾಮ ಪಂಚಾಯತ್ ಅಡಿಯಲ್ಲಿ ಲಭ್ಯವಿರುವ ಕಲ್ಯಾಣ ಯೋಜನೆಗಳು: 1. ಪಿಎಂ ಕಿಸಾನ್ (PM Kisan), 2. ಪಿಎಂ ಆವಾಸ್ ಯೋಜನೆ (PM Awas Yojana), 3. ನರೇಗಾ (MGNREGA), 4. ಮೆಟ್ರಿಕ್ ನಂತರದ ವಿದ್ಯಾರ್ಥಿವೇತನ ಮತ್ತು 5. ಅಂಗವಿಕಲರ ಪಿಂಚಣಿ ಯೋಜನೆ."
+  },
+  {
+    "id": "birth_1",
+    "category": "Birth Certificate",
+    "keywords_en": [
+      "birth certificate",
+      "birth cert documents",
+      "newborn registration",
+      "birth fee"
+    ],
+    "keywords_kn": [
+      "ಜನನ ಪ್ರಮಾಣಪತ್ರ",
+      "ಜನನ ದಾಖಲೆ",
+      "ಮಗುವಿನ ಜನನ ನೋಂದಣಿ"
+    ],
+    "question_en": "How do I apply for a Birth Certificate?",
+    "answer_en": "Apply online for a Birth Certificate under the 'Services' tab or at the Panchayat office. Documents needed: Hospital discharge slip, parent's Aadhaar cards. Free if registered within 21 days.",
+    "question_kn": "ಜನನ ಪ್ರಮಾಣಪತ್ರಕ್ಕಾಗಿ ಅರ್ಜಿ ಸಲ್ಲಿಸುವುದು ಹೇಗೆ?",
+    "answer_kn": "ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನ 'Services' ಟ್ಯಾಬ್ ಅಡಿಯಲ್ಲಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ಜನನ ಪ್ರಮಾಣಪತ್ರಕ್ಕೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ. ಅಗತ್ಯ ದಾಖಲೆಗಳು: ಆಸ್ಪತ್ರೆಯ ಜನನ ಮಾಹಿತಿ ಪತ್ರ, ಪೋಷಕರ ಆಧಾರ್ ಕಾರ್ಡ್."
+  },
+  {
+    "id": "birth_2",
+    "category": "Birth Certificate",
+    "keywords_en": [
+      "late birth registration",
+      "birth certificate delay",
+      "after 1 year birth"
+    ],
+    "keywords_kn": [
+      "ವಿಳಂಬ ಜನನ ನೋಂದಣಿ",
+      "ವರ್ಷದ ನಂತರ ಜನನ ಪ್ರಮಾಣಪತ್ರ"
+    ],
+    "question_en": "How to register a birth after the 21-day limit?",
+    "answer_en": "Late registration for Birth Certificate requires a police verification report, an affidavit from a notary public, and permission from the local Magistrate or designated officer along with a late fee.",
+    "question_kn": "21 ದಿನಗಳ ಮಿತಿಯ ನಂತರ ಜನನವನ್ನು ನೋಂದಾಯಿಸುವುದು ಹೇಗೆ?",
+    "answer_kn": "ವಿಳಂಬ ನೋಂದಣಿಗಾಗಿ ಪೊಲೀಸ್ ಪರಿಶೀಲನಾ ವರದಿ, ನೋಟರಿ ಅಫಿಡವಿಟ್ ಮತ್ತು ಮ್ಯಾಜಿಸ್ಟ್ರೇಟ್ ಅನುಮತಿಯೊಂದಿಗೆ ವಿಳಂಬ ಶುಲ್ಕ ಪಾವತಿಸಬೇಕಾಗುತ್ತದೆ."
+  },
+  {
+    "id": "death_1",
+    "category": "Death Certificate",
+    "keywords_en": [
+      "death certificate",
+      "death cert documents",
+      "register death",
+      "death registry"
+    ],
+    "keywords_kn": [
+      "ಮರಣ ಪ್ರಮಾಣಪತ್ರ",
+      "ಮರಣ ದಾಖಲೆ",
+      "ಮರಣ ನೋಂದಣಿ"
+    ],
+    "question_en": "How do I register a death and get a certificate?",
+    "answer_en": "Apply within 21 days at the Panchayat office or online to get a Death Certificate. Documents: Hospital death report or cremation summary, deceased's Aadhaar card, applicant's identity proof.",
+    "question_kn": "ಮರಣವನ್ನು ನೋಂದಾಯಿಸಿ ಪ್ರಮಾಣಪತ್ರ ಪಡೆಯುವುದು ಹೇಗೆ?",
+    "answer_kn": "ಮರಣ ನೋಂದಣಿ ಅಥವಾ ಮರಣ ಪ್ರಮಾಣಪತ್ರಕ್ಕಾಗಿ ಸಾವಿನ 21 ದಿನಗಳೊಳಗೆ ಆಸ್ಪತ್ರೆ ವರದಿ ಅಥವಾ ಸ್ಮಶಾನದ ದೃಢೀಕರಣ ಪತ್ರ, ಮೃತರ ಆಧಾರ್ ಕಾರ್ಡ್ ಮತ್ತು ಅರ್ಜಿದಾರರ ಐಡಿಯೊಂದಿಗೆ ಪಂಚಾಯತ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ."
+  },
+  {
+    "id": "income_1",
+    "category": "Income Certificate",
+    "keywords_en": [
+      "income certificate",
+      "salary proof cert",
+      "income cert validity",
+      "apply income cert"
+    ],
+    "keywords_kn": [
+      "ಆದಾಯ ಪ್ರಮಾಣಪತ್ರ",
+      "ಆದಾಯ ದಾಖಲೆ",
+      "ಆದಾಯ ಪ್ರಮಾಣಪತ್ರ ಅವಧಿ",
+      "ಅವಧಿ"
+    ],
+    "question_en": "What is the procedure to obtain an Income Certificate?",
+    "answer_en": "Apply online for Income Certificate under the 'Services' tab. Documents required: Salary slips / self-declaration of agricultural income, land records (RTC), Aadhaar card. Validity is 5 years in Karnataka.",
+    "question_kn": "ಆದಾಯ ಪ್ರಮಾಣಪತ್ರವನ್ನು ಪಡೆಯುವ ವಿಧಾನವೇನು?",
+    "answer_kn": "ನಾಗರಿಕ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ 'Services' ಮೂಲಕ ಆದಾಯ ಪ್ರಮಾಣಪತ್ರಕ್ಕೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ. ಅಗತ್ಯ ದಾಖಲೆಗಳು: ಆದಾಯ ಸ್ವಯಂ ಘೋಷಣೆ ಪತ್ರ, ಜಮೀನು ಪಹಣಿ (RTC), ಆಧಾರ್ ಕಾರ್ಡ್. ಇದರ ಸಿಂಧುತ್ವ 5 ವರ್ಷಗಳು."
+  },
+  {
+    "id": "caste_1",
+    "category": "Caste Certificate",
+    "keywords_en": [
+      "caste certificate",
+      "sc st obc cert",
+      "caste proof documents",
+      "caste certificats"
+    ],
+    "keywords_kn": [
+      "ಜಾತಿ ಪ್ರಮಾಣಪತ್ರ",
+      "ಜಾತಿ ದಾಖಲೆ"
+    ],
+    "question_en": "How do I apply for a Caste Certificate?",
+    "answer_en": "Apply online for Caste Certificate via the citizen services tab. Required documents: Father's caste certificate/school records, income certificate, Aadhaar card. Caste certificates generally do not expire.",
+    "question_kn": "ಜಾತಿ ಪ್ರಮಾಣಪತ್ರಕ್ಕಾಗಿ ಅರ್ಜಿ ಸಲ್ಲಿಸುವುದು ಹೇಗೆ?",
+    "answer_kn": "ಪೋರ್ಟಲ್‌ನ ಸೇವೆಗಳ ವಿಭಾಗದಲ್ಲಿ ಜಾತಿ ಪ್ರಮಾಣಪತ್ರಕ್ಕೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ. ಅಗತ್ಯ ದಾಖಲೆಗಳು: ತಂದೆಯ ಜಾತಿ ಪುರಾವೆ / ಶಾಲೆಯ ವರ್ಗಾವಣೆ ಪತ್ರ (TC), ಆದಾಯ ಪ್ರಮಾಣಪತ್ರ, ಆಧಾರ್ ಕಾರ್ಡ್."
+  },
+  {
+    "id": "residence_1",
+    "category": "Residence Certificate",
+    "keywords_en": [
+      "residence certificate",
+      "domicile certificate",
+      "address cert proof",
+      "residence certficate"
+    ],
+    "keywords_kn": [
+      "ವಾಸಸ್ಥಳ ಪ್ರಮಾಣಪತ್ರ",
+      "ನಿವಾಸಿ ಪ್ರಮಾಣಪತ್ರ"
+    ],
+    "question_en": "How can I obtain a Residence (Domicile) Certificate?",
+    "answer_en": "Apply online or at the Panchayat office to obtain a Residence (Domicile) Certificate. Documents needed: Address proof (Voter ID, Ration Card, or Aadhaar), local village accountant verification report, passport photo.",
+    "question_kn": "ನಿವಾಸಿ ಅಥವಾ ವಾಸಸ್ಥಳ ಪ್ರಮಾಣಪತ್ರವನ್ನು ಪಡೆಯುವುದು ಹೇಗೆ?",
+    "answer_kn": "ವಿಭಾಗದ ಅಡಿಯಲ್ಲಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಅಥವಾ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ವಾಸಸ್ಥಳ ಪ್ರಮಾಣಪತ್ರಕ್ಕೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ. ಅಗತ್ಯ ದಾಖಲೆಗಳು: ವಿಳಾಸದ ಪುರಾವೆ (ಮತದಾರರ ಚೀಟಿ/ರೇಷನ್ ಕಾರ್ಡ್/ಆಧಾರ್), ಗ್ರಾಮ ಲೆಕ್ಕಾಧಿಕಾರಿ ವರದಿ ಮತ್ತು ಫೋಟೋ."
+  },
+  {
+    "id": "certificates_list",
+    "category": "Citizen Services",
+    "keywords_en": [
+      "certificates",
+      "all certificates",
+      "what certificates"
+    ],
+    "keywords_kn": [
+      "ಪ್ರಮಾಣಪತ್ರ",
+      "ಪ್ರಮಾಣಪತ್ರಗಳು",
+      "ಎಲ್ಲಾ ಪ್ರಮಾಣಪತ್ರಗಳು"
+    ],
+    "question_en": "What certificates can I apply for online?",
+    "answer_en": "You can apply for various certificates online on the portal, including Birth Certificate, Death Certificate, Income Certificate, Caste Certificate, and Residence Certificate.",
+    "question_kn": "ಯಾವ ಪ್ರಮಾಣಪತ್ರಗಳಿಗಾಗಿ ನಾನು ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಬಹುದು?",
+    "answer_kn": "ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ನೀವು ಜನನ ಪ್ರಮಾಣಪತ್ರ, ಮರಣ ಪ್ರಮಾಣಪತ್ರ, ಆದಾಯ ಪ್ರಮಾಣಪತ್ರ, ಜಾತಿ ಪ್ರಮಾಣಪತ್ರ ಮತ್ತು ನಿವಾಸಿ ಪ್ರಮಾಣಪತ್ರಗಳಿಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಬಹುದು."
+  },
+  {
+    "id": "building_1",
+    "category": "Building Permission",
+    "keywords_en": [
+      "building permission",
+      "construct house approval",
+      "building plan layout"
+    ],
+    "keywords_kn": [
+      "ಕಟ್ಟಡ ಅನುಮತಿ",
+      "ಮನೆ ಕಟ್ಟಲು ಪರವಾನಗಿ"
+    ],
+    "question_en": "How do I get permission for house construction?",
+    "answer_en": "Submit your architectural plan for Building Permission, land title deeds, conversion certificate (if applicable), and latest tax paid receipt. Approval takes 15-30 days after site inspection.",
+    "question_kn": "ಮನೆ ನಿರ್ಮಾಣಕ್ಕಾಗಿ ಅನುಮತಿ ಪಡೆಯುವುದು ಹೇಗೆ?",
+    "answer_kn": "ಮನೆ ನಿರ್ಮಾಣಕ್ಕಾಗಿ ಕಟ್ಟಡ ಅನುಮತಿ ಪಡೆಯಲು ಕಟ್ಟಡದ ನೀಲನಕ್ಷೆ (Plan), ಭೂಮಿಯ ಹಕ್ಕು ಪತ್ರಗಳು, ಇತ್ತೀಚಿನ ತೆರಿಗೆ ರಶೀದಿಯೊಂದಿಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ. ಸ್ಥಳ ಪರಿಶೀಲನೆಯ ನಂತರ 15-30 ದಿನಗಳಲ್ಲಿ ಪರವಾನಗಿ ನೀಡಲಾಗುತ್ತದೆ."
+  },
+  {
+    "id": "trade_1",
+    "category": "Trade License",
+    "keywords_en": [
+      "trade license",
+      "business permit shop",
+      "commercial permit"
+    ],
+    "keywords_kn": [
+      "ವ್ಯಾಪಾರ ಪರವಾನಗಿ",
+      "ಲೈಸೆನ್ಸ್",
+      "ಅಂಗಡಿ ಲೈಸೆನ್ಸ್"
+    ],
+    "question_en": "How to apply for a Gram Panchayat Trade License?",
+    "answer_en": "Businesses, shops, or small mills must apply under services for a Trade License. Submit site details, identity proofs, NOC from neighbors (if commercial noise/hazard), and pay the annual fee.",
+    "question_kn": "ಗ್ರಾಮ ಪಂಚಾಯತ್ ವ್ಯಾಪಾರ ಪರವಾನಗಿಗಾಗಿ ಹೇಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಬೇಕು?",
+    "answer_kn": "ವ್ಯಾಪಾರ ಪರವಾನಗಿ ಪಡೆಯಲು ವ್ಯಾಪಾರ ಮಾಲೀಕರು ಸ್ಥಳದ ವಿವರ, ಗುರುತಿನ ಚೀಟಿ, ನೆರೆಹೊರೆಯವರಿಂದ ಆಕ್ಷೇಪಣಾ ರಹಿತ ಪತ್ರ (NOC) ಸಲ್ಲಿಸಿ ಮತ್ತು ವಾರ್ಷಿಕ ಶುಲ್ಕ ಪಾವತಿಸಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಬೇಕು."
+  },
+  {
+    "id": "water_1",
+    "category": "Water Supply",
+    "keywords_en": [
+      "water supply connection",
+      "new water connection tap",
+      "water charges billing"
+    ],
+    "keywords_kn": [
+      "ನೀರಿನ ಸಂಪರ್ಕ",
+      "ನಳ್ಳಿ ಸಂಪರ್ಕ",
+      "ನೀರಿನ ಬಿಲ್"
+    ],
+    "question_en": "How do I apply for a new water connection?",
+    "answer_en": "Apply under services using your Property Tax receipt, identity proof, and site plan. A nominal connection fee applies, and water charges are added to your yearly taxes.",
+    "question_kn": "ಹೊಸ ನೀರಿನ ಸಂಪರ್ಕಕ್ಕಾಗಿ ನಾನು ಹೇಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಬೇಕು?",
+    "answer_kn": "ಆಸ್ತಿ ತೆರಿಗೆ ರಶೀದಿಯೊಂದಿಗೆ ನಲ್ಲಿ (ನಳ್ಳಿ) ಸಂಪರ್ಕಕ್ಕಾಗಿ ಆಸ್ತಿ ತೆರಿಗೆ ರಶೀದಿ, ಗುರುತಿನ ಚೀಟಿ ಮತ್ತು ಸೈಟ್ ಪ್ಲಾನ್‌ನೊಂದಿಗೆ 'Services' ಅಡಿಯಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ. ಇದಕ್ಕಾಗಿ ನಿಗದಿತ ಶುಲ್ಕವಿರುತ್ತದೆ."
+  },
+  {
+    "id": "water_2",
+    "category": "Water Supply",
+    "keywords_en": [
+      "leakage water pipe",
+      "water dirty contamination",
+      "no water supply"
+    ],
+    "keywords_kn": [
+      "ನೀರು ಸೋರಿಕೆ",
+      "ಕಲುಷಿತ ನೀರು",
+      "ನೀರು ಬರುತ್ತಿಲ್ಲ"
+    ],
+    "question_en": "How do I report water pipeline leakage or supply issues?",
+    "answer_en": "File a complaint immediately under the 'Water Supply' category in the 'Register Complaint' module. Enter description (e.g. 'pipe leakage on Main Road') and location.",
+    "question_kn": "ನೀರಿನ ಪೈಪ್ ಸೋರಿಕೆ ಅಥವಾ ನೀರಿನ ಸರಬರಾಜು ಸಮಸ್ಯೆಯನ್ನು ವರದಿ ಮಾಡುವುದು ಹೇಗೆ?",
+    "answer_kn": "'Register Complaint' ವಿಭಾಗದಲ್ಲಿ 'Water Supply' ವರ್ಗದ ಅಡಿಯಲ್ಲಿ ದೂರು ದಾಖಲಿಸಿ. ಸಮಸ್ಯೆ ಇರುವ ಸ್ಥಳ ಮತ್ತು ವಿವರವನ್ನು ನಮೂದಿಸಿ."
+  },
+  {
+    "id": "light_1",
+    "category": "Street Lights",
+    "keywords_en": [
+      "street light broken bulb",
+      "lamp post dark street",
+      "street light not working",
+      "stret light broken"
+    ],
+    "keywords_kn": [
+      "ಬೀದಿ ದೀಪ ದುರಸ್ತಿ",
+      "ಬೀದಿ ದೀಪ ಉರಿಯುತ್ತಿಲ್ಲ"
+    ],
+    "question_en": "How do I complain about broken or non-functioning street lights?",
+    "answer_en": "File a complaint about broken bulbs or street lights in the 'Street Light' category on the dashboard. Specify the pole number or nearby landmark. Maintenance staff usually resolve complaints in 48 hours.",
+    "question_kn": "ಕೆಲಸ ಮಾಡದ ಬೀದಿ ದೀಪಗಳ ಬಗ್ಗೆ ದೂರು ನೀಡುವುದು ಹೇಗೆ?",
+    "answer_kn": "ನಾಗರಿಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನಲ್ಲಿ 'Street Light' ವರ್ಗದ ಅಡಿಯಲ್ಲಿ ದೂರು ನೀಡಿ. ಕಂಬದ ಸಂಖ್ಯೆ ಅಥವಾ ಹತ್ತಿರದ ಗುರುತನ್ನು ನಮೂದಿಸಿ. 48 ಗಂಟೆಗಳಲ್ಲಿ ದುರಸ್ತಿ ಮಾಡಲಾಗುತ್ತದೆ."
+  },
+  {
+    "id": "road_1",
+    "category": "Roads",
+    "keywords_en": [
+      "road repair potholes",
+      "damaged road tar path",
+      "road blocked mud"
+    ],
+    "keywords_kn": [
+      "ರಸ್ತೆ ಗುಂಡಿ",
+      "ರಸ್ತೆ ದುರಸ್ತಿ",
+      "ರಸ್ತೆ ಹಾನಿ"
+    ],
+    "question_en": "How to report road damage or potholes in the village?",
+    "answer_en": "Lodge a complaint in the 'Road Damage' category for repairing potholes on damaged roads. Details like location and photos help the engineering section prioritize and schedule repair work.",
+    "question_kn": "ಗ್ರಾಮದ ರಸ್ತೆ ಹಾನಿ ಅಥವಾ ಗುಂಡಿಗಳ ಬಗ್ಗೆ ವರದಿ ಮಾಡುವುದು ಹೇಗೆ?",
+    "answer_kn": "'Register Complaint' ವಿಭಾಗದಲ್ಲಿ 'Road Damage' (ರಸ್ತೆ ಗುಂಡಿ ದುರಸ್ತಿ) ವಿಭಾಗದಲ್ಲಿ ದೂರು ದಾಖಲಿಸಿ. ಸ್ಥಳದ ವಿವರ ಮತ್ತು ಫೋಟೋಗಳನ್ನು ಒದಗಿಸಿ."
+  },
+  {
+    "id": "drain_1",
+    "category": "Drainage",
+    "keywords_en": [
+      "drainage overflow sewage",
+      "clogged public gutter block",
+      "sewer smell"
+    ],
+    "keywords_kn": [
+      "ಒಳಚರಂಡಿ ಬ್ಲಾಕ್",
+      "ಚರಂಡಿ ಉಕ್ಕಿ ಹರಿಯುವುದು"
+    ],
+    "question_en": "Who should I contact to clean blocked public drainage?",
+    "answer_en": "Report blocked gutters or sewage overflows by filing a complaint under the 'Drainage' category. The Panchayat sanitary workers will clear the blockage.",
+    "question_kn": "ಸಾರ್ವಜನಿಕ ಒಳಚರಂಡಿ ಬ್ಲಾಕ್ ಸ್ವಚ್ಛಗೊಳಿಸಲು ಯಾರನ್ನು ಸಂಪರ್ಕಿಸಬೇಕು?",
+    "answer_kn": "'Drainage' ವರ್ಗದಲ್ಲಿ ದೂರು ಸಲ್ಲಿಸುವ ಮೂಲಕ ಚರಂಡಿ ಬ್ಲಾಕ್ ಅಥವಾ ಕಸ ಸಂಗ್ರಹಣೆ ಸಮಸ್ಯೆಯನ್ನು ವರದಿ ಮಾಡಿ. ಪಂಚಾಯತ್ ನೈರ್ಮಲ್ಯ ಸಿಬ್ಬಂಡಿ ಅದನ್ನು ಸ್ವಚ್ಛಗೊಳಿಸುತ್ತಾರೆ."
+  },
+  {
+    "id": "waste_1",
+    "category": "Waste Collection",
+    "keywords_en": [
+      "garbage collection vehicle",
+      "waste disposal garbage",
+      "clean public area waste"
+    ],
+    "keywords_kn": [
+      "ಕಸದ ಗಾಡಿ",
+      "ಕಸ ವಿಲೇವಾರಿ",
+      "ಕಸ ಸಂಗ್ರಹಣೆ"
+    ],
+    "question_en": "What are the rules and timings for garbage collection?",
+    "answer_en": "Waste collection vehicles visit every ward in the morning. Citizens are requested to segregate wet and dry waste before disposal. Report missing garbage trucks under complaints.",
+    "question_kn": "ಕಸ ಸಂಗ್ರಹಣೆಯ ನಿಯಮಗಳು ಮತ್ತು ಸಮಯಗಳು ಯಾವುವು?",
+    "answer_kn": "ಕಸ ಸಂಗ್ರಹಣೆ ವಾಹನಗಳು ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ ವಾರ್ಡ್‌ಗಳಿಗೆ ಭೇಟಿ ನೀಡುತ್ತವೆ. ಹಸಿ ಮತ್ತು ಒಣ ಕಸವನ್ನು ಬೇರ್ಪಡಿಸಿ ನೀಡಲು ಕೋರಲಾಗಿದೆ."
+  },
+  {
+    "id": "sanitation_1",
+    "category": "Sanitation",
+    "keywords_en": [
+      "toilet",
+      "toilet cleaning",
+      "public toilet",
+      "sanitation",
+      "clean toilet",
+      "dirty toilet",
+      "waste"
+    ],
+    "keywords_kn": [
+      "ಶೌಚಾಲಯ",
+      "ಸ್ವಚ್ಛತೆ",
+      "ಸಾರ್ವಜನಿಕ ಶೌಚಾಲಯ"
+    ],
+    "question_en": "How do I complain about dirty public toilets or village sanitation?",
+    "answer_en": "You can lodge a complaint in the Sanitation category on the portal. Our waste management and cleaning staff sweep public areas daily and clean toilets. We resolve issues within 24 hours.",
+    "question_kn": "ಸಾರ್ವಜನಿಕ ಶೌಚಾಲಯಗಳು ಅಥವಾ ಗ್ರಾಮದ ನೈರ್ಮಲ್ಯದ ಬಗ್ಗೆ ದೂರು ನೀಡುವುದು ಹೇಗೆ?",
+    "answer_kn": "ಪೋರ್ಟಲ್‌ನ ನೈರ್ಮಲ್ಯ (Sanitation) ವಿಭಾಗದ ಅಡಿಯಲ್ಲಿ ದೂರು ಸಲ್ಲಿಸಿ. ನೈರ್ಮಲ್ಯ ಸಿಬ್ಬಂಡಿ ದಿನನಿತ್ಯ ಸ್ವಚ್ಛಗೊಳಿಸುತ್ತಾರೆ."
+  },
+  {
+    "id": "info_1",
+    "category": "Panchayat Office Timings",
+    "keywords_en": [
+      "office hours",
+      "timings working days",
+      "office schedule open time",
+      "lunch break"
+    ],
+    "keywords_kn": [
+      "ಕಚೇರಿ ಸಮಯ",
+      "ಕೆಲಸದ ದಿನಗಳು",
+      "ಯಾವಾಗ ಆರಂಭ"
+    ],
+    "question_en": "What are the working hours of the Gram Panchayat office?",
+    "answer_en": "The Gram Panchayat office is open Monday to Friday, from 9:00 AM to 5:00 PM. It is closed on weekends and public holidays.",
+    "question_kn": "ಗ್ರಾಮ ಪಂಚಾಯತ್ ಕಚೇರಿಯ ಕೆಲಸದ ಸಮಯ ಎಷ್ಟು?",
+    "answer_kn": "ಗ್ರಾಮ ಪಂಚಾಯತ್ ಕಚೇರಿಯು ಸೋಮವಾರದಿಂದ ಶುಕ್ರವಾರದವರೆಗೆ ಬೆಳಿಗ್ಗೆ 9:00 ರಿಂದ ಸಂಜೆ 5:00 ರವರೆಗೆ ತೆರೆದಿರುತ್ತದೆ. ವಾರಾಂತ್ಯ ಮತ್ತು ಸಾರ್ವಜನಿಕ ರಜಾದಿನಗಳಲ್ಲಿ ಮುಚ್ಚಿರುತ್ತದೆ."
+  },
+  {
+    "id": "info_2",
+    "category": "Contact Information",
+    "keywords_en": [
+      "phone number email",
+      "contact address details",
+      "helpline customercare"
+    ],
+    "keywords_kn": [
+      "ಫೋನ್ ಸಂಖ್ಯೆ",
+      "ಇಮೇಲ್ ವಿಳಾಸ",
+      "ಸಂಪರ್ಕ ಸಂಖ್ಯೆ"
+    ],
+    "question_en": "How can I contact the Panchayat office administrators?",
+    "answer_en": "Email: contact@smartpanchayat.gov.in | Phone: +91 80 2843 1234 | Location: Panchayat Office, Main Road.",
+    "question_kn": "ಪಂಚಾಯತ್ ಕಚೇರಿ ಆಡಳಿತಗಾರರನ್ನು ನಾನು ಹೇಗೆ ಸಂಪರ್ಕಿಸಬಹುದು?",
+    "answer_kn": "ಇಮೇಲ್: contact@smartpanchayat.gov.in | ಫೋನ್: +91 80 2843 1234 | ಸ್ಥಳ: ಪಂಚಾಯತ್ ಕಚೇರಿ, ಮುಖ್ಯ ರಸ್ತೆ."
+  },
+  {
+    "id": "info_3",
+    "category": "Citizen Services",
+    "keywords_en": [
+      "all portal services list",
+      "what is online services",
+      "citizen features"
+    ],
+    "keywords_kn": [
+      "ಎಲ್ಲಾ ಸೇವೆಗಳು",
+      "ಆನ್‌ಲೈನ್ ಸೇವೆಗಳು"
+    ],
+    "question_en": "What online services are provided on the GramMithra portal?",
+    "answer_en": "Online services include property tax payment, birth/death/marriage certificate applications, water connection requests, building permission submissions, and complaint registration.",
+    "question_kn": "ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ಯಾವ ಆನ್‌ಲೈನ್ ಸೇವೆಗಳನ್ನು ಒದಗಿಸಲಾಗಿದೆ?",
+    "answer_kn": "ಆಸ್ತಿ ತೆರಿಗೆ ಪಾವತಿ, ಜನನ/ಮರಣ/ಮದುವೆ ಪ್ರಮಾಣಪತ್ರ, ಹೊಸ ನೀರಿನ ಸಂಪರ್ಕ, ಕಟ್ಟಿಡ ಪರವಾನಗಿ ಮತ್ತು ದೂರು ಸಲ್ಲಿಸುವಿಕೆ ಸೇರಿವೆ."
+  },
+  {
+    "id": "gen_tax_1",
+    "category": "Property Tax",
+    "keywords_en": [
+      "outstanding",
+      "property tax",
+      "help"
+    ],
+    "keywords_kn": [
+      "outstanding",
+      "Property Tax",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Property Tax detail number 1: How do I handle general queries related to outstanding?",
+    "answer_en": "For any queries regarding outstanding under Property Tax, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Property Tax ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: outstanding ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Property Tax ಅಡಿಯಲ್ಲಿ outstanding ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_pay_1",
+    "category": "Tax Payment",
+    "keywords_en": [
+      "payment receipt",
+      "tax payment",
+      "help"
+    ],
+    "keywords_kn": [
+      "payment receipt",
+      "Tax Payment",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Payment detail number 1: How do I handle general queries related to payment receipt?",
+    "answer_en": "For any queries regarding payment receipt under Tax Payment, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Payment ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: payment receipt ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Payment ಅಡಿಯಲ್ಲಿ payment receipt ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_due_1",
+    "category": "Tax Due Date",
+    "keywords_en": [
+      "last day",
+      "tax due date",
+      "help"
+    ],
+    "keywords_kn": [
+      "last day",
+      "Tax Due Date",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Due Date detail number 1: How do I handle general queries related to last day?",
+    "answer_en": "For any queries regarding last day under Tax Due Date, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Due Date ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: last day ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Due Date ಅಡಿಯಲ್ಲಿ last day ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_receipt_1",
+    "category": "Tax Receipt",
+    "keywords_en": [
+      "transaction proof",
+      "tax receipt",
+      "help"
+    ],
+    "keywords_kn": [
+      "transaction proof",
+      "Tax Receipt",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Receipt detail number 1: How do I handle general queries related to transaction proof?",
+    "answer_en": "For any queries regarding transaction proof under Tax Receipt, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Receipt ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: transaction proof ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Receipt ಅಡಿಯಲ್ಲಿ transaction proof ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_reg_1",
+    "category": "Complaint Registration",
+    "keywords_en": [
+      "report damage",
+      "complaint registration",
+      "help"
+    ],
+    "keywords_kn": [
+      "report damage",
+      "Complaint Registration",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Registration detail number 1: How do I handle general queries related to report damage?",
+    "answer_en": "For any queries regarding report damage under Complaint Registration, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Registration ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: report damage ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Registration ಅಡಿಯಲ್ಲಿ report damage ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_stat_1",
+    "category": "Complaint Status",
+    "keywords_en": [
+      "resolved issue",
+      "complaint status",
+      "help"
+    ],
+    "keywords_kn": [
+      "resolved issue",
+      "Complaint Status",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Status detail number 1: How do I handle general queries related to resolved issue?",
+    "answer_en": "For any queries regarding resolved issue under Complaint Status, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Status ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: resolved issue ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Status ಅಡಿಯಲ್ಲಿ resolved issue ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_prio_1",
+    "category": "Complaint Priority",
+    "keywords_en": [
+      "emergency keyword",
+      "complaint priority",
+      "help"
+    ],
+    "keywords_kn": [
+      "emergency keyword",
+      "Complaint Priority",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Priority detail number 1: How do I handle general queries related to emergency keyword?",
+    "answer_en": "For any queries regarding emergency keyword under Complaint Priority, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Priority ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: emergency keyword ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Priority ಅಡಿಯಲ್ಲಿ emergency keyword ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_schemes_1",
+    "category": "Government Welfare Schemes",
+    "keywords_en": [
+      "welfare program",
+      "government welfare schemes",
+      "help"
+    ],
+    "keywords_kn": [
+      "welfare program",
+      "Government Welfare Schemes",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Government Welfare Schemes detail number 1: How do I handle general queries related to welfare program?",
+    "answer_en": "For any queries regarding welfare program under Government Welfare Schemes, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Government Welfare Schemes ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: welfare program ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Government Welfare Schemes ಅಡಿಯಲ್ಲಿ welfare program ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_birth_1",
+    "category": "Birth Certificate",
+    "keywords_en": [
+      "birth document",
+      "birth certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "birth document",
+      "Birth Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Birth Certificate detail number 1: How do I handle general queries related to birth document?",
+    "answer_en": "For any queries regarding birth document under Birth Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Birth Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: birth document ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Birth Certificate ಅಡಿಯಲ್ಲಿ birth document ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_death_1",
+    "category": "Death Certificate",
+    "keywords_en": [
+      "decease register",
+      "death certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "decease register",
+      "Death Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Death Certificate detail number 1: How do I handle general queries related to decease register?",
+    "answer_en": "For any queries regarding decease register under Death Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Death Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: decease register ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Death Certificate ಅಡಿಯಲ್ಲಿ decease register ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_income_1",
+    "category": "Income Certificate",
+    "keywords_en": [
+      "salary certificate",
+      "income certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "salary certificate",
+      "Income Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Income Certificate detail number 1: How do I handle general queries related to salary certificate?",
+    "answer_en": "For any queries regarding salary certificate under Income Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Income Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: salary certificate ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Income Certificate ಅಡಿಯಲ್ಲಿ salary certificate ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_caste_1",
+    "category": "Caste Certificate",
+    "keywords_en": [
+      "category reservation",
+      "caste certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "category reservation",
+      "Caste Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Caste Certificate detail number 1: How do I handle general queries related to category reservation?",
+    "answer_en": "For any queries regarding category reservation under Caste Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Caste Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: category reservation ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Caste Certificate ಅಡಿಯಲ್ಲಿ category reservation ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_residence_1",
+    "category": "Residence Certificate",
+    "keywords_en": [
+      "resident duration",
+      "residence certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "resident duration",
+      "Residence Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Residence Certificate detail number 1: How do I handle general queries related to resident duration?",
+    "answer_en": "For any queries regarding resident duration under Residence Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Residence Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: resident duration ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Residence Certificate ಅಡಿಯಲ್ಲಿ resident duration ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_building_1",
+    "category": "Building Permission",
+    "keywords_en": [
+      "construction site inspection",
+      "building permission",
+      "help"
+    ],
+    "keywords_kn": [
+      "construction site inspection",
+      "Building Permission",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Building Permission detail number 1: How do I handle general queries related to construction site inspection?",
+    "answer_en": "For any queries regarding construction site inspection under Building Permission, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Building Permission ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: construction site inspection ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Building Permission ಅಡಿಯಲ್ಲಿ construction site inspection ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_trade_1",
+    "category": "Trade License",
+    "keywords_en": [
+      "business fee",
+      "trade license",
+      "help"
+    ],
+    "keywords_kn": [
+      "business fee",
+      "Trade License",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Trade License detail number 1: How do I handle general queries related to business fee?",
+    "answer_en": "For any queries regarding business fee under Trade License, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Trade License ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: business fee ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Trade License ಅಡಿಯಲ್ಲಿ business fee ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_water_1",
+    "category": "Water Supply",
+    "keywords_en": [
+      "leak pipe",
+      "water supply",
+      "help"
+    ],
+    "keywords_kn": [
+      "leak pipe",
+      "Water Supply",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Water Supply detail number 1: How do I handle general queries related to leak pipe?",
+    "answer_en": "For any queries regarding leak pipe under Water Supply, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Water Supply ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: leak pipe ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Water Supply ಅಡಿಯಲ್ಲಿ leak pipe ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_light_1",
+    "category": "Street Lights",
+    "keywords_en": [
+      "pole breakdown",
+      "street lights",
+      "help"
+    ],
+    "keywords_kn": [
+      "pole breakdown",
+      "Street Lights",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Street Lights detail number 1: How do I handle general queries related to pole breakdown?",
+    "answer_en": "For any queries regarding pole breakdown under Street Lights, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Street Lights ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: pole breakdown ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Street Lights ಅಡಿಯಲ್ಲಿ pole breakdown ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_road_1",
+    "category": "Roads",
+    "keywords_en": [
+      "blockage debris",
+      "roads",
+      "help"
+    ],
+    "keywords_kn": [
+      "blockage debris",
+      "Roads",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Roads detail number 1: How do I handle general queries related to blockage debris?",
+    "answer_en": "For any queries regarding blockage debris under Roads, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Roads ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: blockage debris ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Roads ಅಡಿಯಲ್ಲಿ blockage debris ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_drain_1",
+    "category": "Drainage",
+    "keywords_en": [
+      "gutter cleanup",
+      "drainage",
+      "help"
+    ],
+    "keywords_kn": [
+      "gutter cleanup",
+      "Drainage",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Drainage detail number 1: How do I handle general queries related to gutter cleanup?",
+    "answer_en": "For any queries regarding gutter cleanup under Drainage, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Drainage ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: gutter cleanup ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Drainage ಅಡಿಯಲ್ಲಿ gutter cleanup ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_waste_1",
+    "category": "Waste Collection",
+    "keywords_en": [
+      "dry wet waste bin",
+      "waste collection",
+      "help"
+    ],
+    "keywords_kn": [
+      "dry wet waste bin",
+      "Waste Collection",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Waste Collection detail number 1: How do I handle general queries related to dry wet waste bin?",
+    "answer_en": "For any queries regarding dry wet waste bin under Waste Collection, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Waste Collection ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: dry wet waste bin ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Waste Collection ಅಡಿಯಲ್ಲಿ dry wet waste bin ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_sanitation_1",
+    "category": "Sanitation",
+    "keywords_en": [
+      "disinfection sweep",
+      "sanitation",
+      "help"
+    ],
+    "keywords_kn": [
+      "disinfection sweep",
+      "Sanitation",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Sanitation detail number 1: How do I handle general queries related to disinfection sweep?",
+    "answer_en": "For any queries regarding disinfection sweep under Sanitation, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Sanitation ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: disinfection sweep ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Sanitation ಅಡಿಯಲ್ಲಿ disinfection sweep ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_time_1",
+    "category": "Panchayat Office Timings",
+    "keywords_en": [
+      "lunch hours",
+      "panchayat office timings",
+      "help"
+    ],
+    "keywords_kn": [
+      "lunch hours",
+      "Panchayat Office Timings",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Panchayat Office Timings detail number 1: How do I handle general queries related to lunch hours?",
+    "answer_en": "For any queries regarding lunch hours under Panchayat Office Timings, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Panchayat Office Timings ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: lunch hours ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Panchayat Office Timings ಅಡಿಯಲ್ಲಿ lunch hours ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_contact_1",
+    "category": "Contact Information",
+    "keywords_en": [
+      "helpline number",
+      "contact information",
+      "help"
+    ],
+    "keywords_kn": [
+      "helpline number",
+      "Contact Information",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Contact Information detail number 1: How do I handle general queries related to helpline number?",
+    "answer_en": "For any queries regarding helpline number under Contact Information, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Contact Information ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: helpline number ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Contact Information ಅಡಿಯಲ್ಲಿ helpline number ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_services_1",
+    "category": "Citizen Services",
+    "keywords_en": [
+      "bapu ji seva center",
+      "citizen services",
+      "help"
+    ],
+    "keywords_kn": [
+      "bapu ji seva center",
+      "Citizen Services",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Citizen Services detail number 1: How do I handle general queries related to bapu ji seva center?",
+    "answer_en": "For any queries regarding bapu ji seva center under Citizen Services, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Citizen Services ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: bapu ji seva center ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Citizen Services ಅಡಿಯಲ್ಲಿ bapu ji seva center ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_faq_1",
+    "category": "Frequently Asked Questions",
+    "keywords_en": [
+      "offline chatbot guide",
+      "frequently asked questions",
+      "help"
+    ],
+    "keywords_kn": [
+      "offline chatbot guide",
+      "Frequently Asked Questions",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Frequently Asked Questions detail number 1: How do I handle general queries related to offline chatbot guide?",
+    "answer_en": "For any queries regarding offline chatbot guide under Frequently Asked Questions, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Frequently Asked Questions ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 1: offline chatbot guide ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Frequently Asked Questions ಅಡಿಯಲ್ಲಿ offline chatbot guide ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_tax_2",
+    "category": "Property Tax",
+    "keywords_en": [
+      "valuation",
+      "property tax",
+      "help"
+    ],
+    "keywords_kn": [
+      "valuation",
+      "Property Tax",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Property Tax detail number 2: How do I handle general queries related to valuation?",
+    "answer_en": "For any queries regarding valuation under Property Tax, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Property Tax ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: valuation ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Property Tax ಅಡಿಯಲ್ಲಿ valuation ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_pay_2",
+    "category": "Tax Payment",
+    "keywords_en": [
+      "mode of payment",
+      "tax payment",
+      "help"
+    ],
+    "keywords_kn": [
+      "mode of payment",
+      "Tax Payment",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Payment detail number 2: How do I handle general queries related to mode of payment?",
+    "answer_en": "For any queries regarding mode of payment under Tax Payment, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Payment ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: mode of payment ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Payment ಅಡಿಯಲ್ಲಿ mode of payment ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_due_2",
+    "category": "Tax Due Date",
+    "keywords_en": [
+      "fine",
+      "tax due date",
+      "help"
+    ],
+    "keywords_kn": [
+      "fine",
+      "Tax Due Date",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Due Date detail number 2: How do I handle general queries related to fine?",
+    "answer_en": "For any queries regarding fine under Tax Due Date, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Due Date ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: fine ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Due Date ಅಡಿಯಲ್ಲಿ fine ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_receipt_2",
+    "category": "Tax Receipt",
+    "keywords_en": [
+      "duplicate receipt",
+      "tax receipt",
+      "help"
+    ],
+    "keywords_kn": [
+      "duplicate receipt",
+      "Tax Receipt",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Receipt detail number 2: How do I handle general queries related to duplicate receipt?",
+    "answer_en": "For any queries regarding duplicate receipt under Tax Receipt, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Receipt ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: duplicate receipt ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Receipt ಅಡಿಯಲ್ಲಿ duplicate receipt ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_reg_2",
+    "category": "Complaint Registration",
+    "keywords_en": [
+      "lodge issue",
+      "complaint registration",
+      "help"
+    ],
+    "keywords_kn": [
+      "lodge issue",
+      "Complaint Registration",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Registration detail number 2: How do I handle general queries related to lodge issue?",
+    "answer_en": "For any queries regarding lodge issue under Complaint Registration, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Registration ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: lodge issue ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Registration ಅಡಿಯಲ್ಲಿ lodge issue ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_stat_2",
+    "category": "Complaint Status",
+    "keywords_en": [
+      "escalation",
+      "complaint status",
+      "help"
+    ],
+    "keywords_kn": [
+      "escalation",
+      "Complaint Status",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Status detail number 2: How do I handle general queries related to escalation?",
+    "answer_en": "For any queries regarding escalation under Complaint Status, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Status ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: escalation ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Status ಅಡಿಯಲ್ಲಿ escalation ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_prio_2",
+    "category": "Complaint Priority",
+    "keywords_en": [
+      "high response",
+      "complaint priority",
+      "help"
+    ],
+    "keywords_kn": [
+      "high response",
+      "Complaint Priority",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Priority detail number 2: How do I handle general queries related to high response?",
+    "answer_en": "For any queries regarding high response under Complaint Priority, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Priority ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: high response ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Priority ಅಡಿಯಲ್ಲಿ high response ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_schemes_2",
+    "category": "Government Welfare Schemes",
+    "keywords_en": [
+      "apply pension",
+      "government welfare schemes",
+      "help"
+    ],
+    "keywords_kn": [
+      "apply pension",
+      "Government Welfare Schemes",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Government Welfare Schemes detail number 2: How do I handle general queries related to apply pension?",
+    "answer_en": "For any queries regarding apply pension under Government Welfare Schemes, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Government Welfare Schemes ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: apply pension ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Government Welfare Schemes ಅಡಿಯಲ್ಲಿ apply pension ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_birth_2",
+    "category": "Birth Certificate",
+    "keywords_en": [
+      "birth window",
+      "birth certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "birth window",
+      "Birth Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Birth Certificate detail number 2: How do I handle general queries related to birth window?",
+    "answer_en": "For any queries regarding birth window under Birth Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Birth Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: birth window ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Birth Certificate ಅಡಿಯಲ್ಲಿ birth window ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_death_2",
+    "category": "Death Certificate",
+    "keywords_en": [
+      "death timeline",
+      "death certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "death timeline",
+      "Death Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Death Certificate detail number 2: How do I handle general queries related to death timeline?",
+    "answer_en": "For any queries regarding death timeline under Death Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Death Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: death timeline ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Death Certificate ಅಡಿಯಲ್ಲಿ death timeline ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_income_2",
+    "category": "Income Certificate",
+    "keywords_en": [
+      "land size rtc",
+      "income certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "land size rtc",
+      "Income Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Income Certificate detail number 2: How do I handle general queries related to land size rtc?",
+    "answer_en": "For any queries regarding land size rtc under Income Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Income Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: land size rtc ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Income Certificate ಅಡಿಯಲ್ಲಿ land size rtc ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_caste_2",
+    "category": "Caste Certificate",
+    "keywords_en": [
+      "obc sc st",
+      "caste certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "obc sc st",
+      "Caste Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Caste Certificate detail number 2: How do I handle general queries related to obc sc st?",
+    "answer_en": "For any queries regarding obc sc st under Caste Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Caste Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: obc sc st ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Caste Certificate ಅಡಿಯಲ್ಲಿ obc sc st ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_residence_2",
+    "category": "Residence Certificate",
+    "keywords_en": [
+      "local verification",
+      "residence certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "local verification",
+      "Residence Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Residence Certificate detail number 2: How do I handle general queries related to local verification?",
+    "answer_en": "For any queries regarding local verification under Residence Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Residence Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: local verification ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Residence Certificate ಅಡಿಯಲ್ಲಿ local verification ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_building_2",
+    "category": "Building Permission",
+    "keywords_en": [
+      "conversion certificate",
+      "building permission",
+      "help"
+    ],
+    "keywords_kn": [
+      "conversion certificate",
+      "Building Permission",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Building Permission detail number 2: How do I handle general queries related to conversion certificate?",
+    "answer_en": "For any queries regarding conversion certificate under Building Permission, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Building Permission ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: conversion certificate ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Building Permission ಅಡಿಯಲ್ಲಿ conversion certificate ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_trade_2",
+    "category": "Trade License",
+    "keywords_en": [
+      "neighbor noc",
+      "trade license",
+      "help"
+    ],
+    "keywords_kn": [
+      "neighbor noc",
+      "Trade License",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Trade License detail number 2: How do I handle general queries related to neighbor noc?",
+    "answer_en": "For any queries regarding neighbor noc under Trade License, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Trade License ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: neighbor noc ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Trade License ಅಡಿಯಲ್ಲಿ neighbor noc ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_water_2",
+    "category": "Water Supply",
+    "keywords_en": [
+      "contaminated water supply",
+      "water supply",
+      "help"
+    ],
+    "keywords_kn": [
+      "contaminated water supply",
+      "Water Supply",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Water Supply detail number 2: How do I handle general queries related to contaminated water supply?",
+    "answer_en": "For any queries regarding contaminated water supply under Water Supply, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Water Supply ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: contaminated water supply ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Water Supply ಅಡಿಯಲ್ಲಿ contaminated water supply ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_light_2",
+    "category": "Street Lights",
+    "keywords_en": [
+      "dark roadway safety",
+      "street lights",
+      "help"
+    ],
+    "keywords_kn": [
+      "dark roadway safety",
+      "Street Lights",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Street Lights detail number 2: How do I handle general queries related to dark roadway safety?",
+    "answer_en": "For any queries regarding dark roadway safety under Street Lights, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Street Lights ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: dark roadway safety ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Street Lights ಅಡಿಯಲ್ಲಿ dark roadway safety ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_road_2",
+    "category": "Roads",
+    "keywords_en": [
+      "drain cleaning road side",
+      "roads",
+      "help"
+    ],
+    "keywords_kn": [
+      "drain cleaning road side",
+      "Roads",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Roads detail number 2: How do I handle general queries related to drain cleaning road side?",
+    "answer_en": "For any queries regarding drain cleaning road side under Roads, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Roads ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: drain cleaning road side ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Roads ಅಡಿಯಲ್ಲಿ drain cleaning road side ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_drain_2",
+    "category": "Drainage",
+    "keywords_en": [
+      "overflow drain",
+      "drainage",
+      "help"
+    ],
+    "keywords_kn": [
+      "overflow drain",
+      "Drainage",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Drainage detail number 2: How do I handle general queries related to overflow drain?",
+    "answer_en": "For any queries regarding overflow drain under Drainage, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Drainage ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: overflow drain ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Drainage ಅಡಿಯಲ್ಲಿ overflow drain ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_waste_2",
+    "category": "Waste Collection",
+    "keywords_en": [
+      "dumping yard location",
+      "waste collection",
+      "help"
+    ],
+    "keywords_kn": [
+      "dumping yard location",
+      "Waste Collection",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Waste Collection detail number 2: How do I handle general queries related to dumping yard location?",
+    "answer_en": "For any queries regarding dumping yard location under Waste Collection, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Waste Collection ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: dumping yard location ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Waste Collection ಅಡಿಯಲ್ಲಿ dumping yard location ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_sanitation_2",
+    "category": "Sanitation",
+    "keywords_en": [
+      "stray animal garbage",
+      "sanitation",
+      "help"
+    ],
+    "keywords_kn": [
+      "stray animal garbage",
+      "Sanitation",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Sanitation detail number 2: How do I handle general queries related to stray animal garbage?",
+    "answer_en": "For any queries regarding stray animal garbage under Sanitation, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Sanitation ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: stray animal garbage ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Sanitation ಅಡಿಯಲ್ಲಿ stray animal garbage ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_time_2",
+    "category": "Panchayat Office Timings",
+    "keywords_en": [
+      "public holidays",
+      "panchayat office timings",
+      "help"
+    ],
+    "keywords_kn": [
+      "public holidays",
+      "Panchayat Office Timings",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Panchayat Office Timings detail number 2: How do I handle general queries related to public holidays?",
+    "answer_en": "For any queries regarding public holidays under Panchayat Office Timings, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Panchayat Office Timings ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: public holidays ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Panchayat Office Timings ಅಡಿಯಲ್ಲಿ public holidays ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_contact_2",
+    "category": "Contact Information",
+    "keywords_en": [
+      "office address map",
+      "contact information",
+      "help"
+    ],
+    "keywords_kn": [
+      "office address map",
+      "Contact Information",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Contact Information detail number 2: How do I handle general queries related to office address map?",
+    "answer_en": "For any queries regarding office address map under Contact Information, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Contact Information ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: office address map ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Contact Information ಅಡಿಯಲ್ಲಿ office address map ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_services_2",
+    "category": "Citizen Services",
+    "keywords_en": [
+      "csc kiosk",
+      "citizen services",
+      "help"
+    ],
+    "keywords_kn": [
+      "csc kiosk",
+      "Citizen Services",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Citizen Services detail number 2: How do I handle general queries related to csc kiosk?",
+    "answer_en": "For any queries regarding csc kiosk under Citizen Services, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Citizen Services ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: csc kiosk ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Citizen Services ಅಡಿಯಲ್ಲಿ csc kiosk ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_faq_2",
+    "category": "Frequently Asked Questions",
+    "keywords_en": [
+      "portal navigation help",
+      "frequently asked questions",
+      "help"
+    ],
+    "keywords_kn": [
+      "portal navigation help",
+      "Frequently Asked Questions",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Frequently Asked Questions detail number 2: How do I handle general queries related to portal navigation help?",
+    "answer_en": "For any queries regarding portal navigation help under Frequently Asked Questions, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Frequently Asked Questions ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 2: portal navigation help ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Frequently Asked Questions ಅಡಿಯಲ್ಲಿ portal navigation help ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_tax_3",
+    "category": "Property Tax",
+    "keywords_en": [
+      "payment delay",
+      "property tax",
+      "help"
+    ],
+    "keywords_kn": [
+      "payment delay",
+      "Property Tax",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Property Tax detail number 3: How do I handle general queries related to payment delay?",
+    "answer_en": "For any queries regarding payment delay under Property Tax, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Property Tax ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: payment delay ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Property Tax ಅಡಿಯಲ್ಲಿ payment delay ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_pay_3",
+    "category": "Tax Payment",
+    "keywords_en": [
+      "transaction failure",
+      "tax payment",
+      "help"
+    ],
+    "keywords_kn": [
+      "transaction failure",
+      "Tax Payment",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Payment detail number 3: How do I handle general queries related to transaction failure?",
+    "answer_en": "For any queries regarding transaction failure under Tax Payment, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Payment ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: transaction failure ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Payment ಅಡಿಯಲ್ಲಿ transaction failure ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_due_3",
+    "category": "Tax Due Date",
+    "keywords_en": [
+      "rebate",
+      "tax due date",
+      "help"
+    ],
+    "keywords_kn": [
+      "rebate",
+      "Tax Due Date",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Due Date detail number 3: How do I handle general queries related to rebate?",
+    "answer_en": "For any queries regarding rebate under Tax Due Date, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Due Date ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: rebate ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Due Date ಅಡಿಯಲ್ಲಿ rebate ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_receipt_3",
+    "category": "Tax Receipt",
+    "keywords_en": [
+      "digital receipt",
+      "tax receipt",
+      "help"
+    ],
+    "keywords_kn": [
+      "digital receipt",
+      "Tax Receipt",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Receipt detail number 3: How do I handle general queries related to digital receipt?",
+    "answer_en": "For any queries regarding digital receipt under Tax Receipt, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Receipt ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: digital receipt ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Receipt ಅಡಿಯಲ್ಲಿ digital receipt ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_reg_3",
+    "category": "Complaint Registration",
+    "keywords_en": [
+      "ward detail",
+      "complaint registration",
+      "help"
+    ],
+    "keywords_kn": [
+      "ward detail",
+      "Complaint Registration",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Registration detail number 3: How do I handle general queries related to ward detail?",
+    "answer_en": "For any queries regarding ward detail under Complaint Registration, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Registration ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: ward detail ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Registration ಅಡಿಯಲ್ಲಿ ward detail ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_stat_3",
+    "category": "Complaint Status",
+    "keywords_en": [
+      "admin remarks",
+      "complaint status",
+      "help"
+    ],
+    "keywords_kn": [
+      "admin remarks",
+      "Complaint Status",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Status detail number 3: How do I handle general queries related to admin remarks?",
+    "answer_en": "For any queries regarding admin remarks under Complaint Status, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Status ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: admin remarks ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Status ಅಡಿಯಲ್ಲಿ admin remarks ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_prio_3",
+    "category": "Complaint Priority",
+    "keywords_en": [
+      "speedy action",
+      "complaint priority",
+      "help"
+    ],
+    "keywords_kn": [
+      "speedy action",
+      "Complaint Priority",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Priority detail number 3: How do I handle general queries related to speedy action?",
+    "answer_en": "For any queries regarding speedy action under Complaint Priority, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Priority ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: speedy action ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Priority ಅಡಿಯಲ್ಲಿ speedy action ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_schemes_3",
+    "category": "Government Welfare Schemes",
+    "keywords_en": [
+      "subsidy criteria",
+      "government welfare schemes",
+      "help"
+    ],
+    "keywords_kn": [
+      "subsidy criteria",
+      "Government Welfare Schemes",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Government Welfare Schemes detail number 3: How do I handle general queries related to subsidy criteria?",
+    "answer_en": "For any queries regarding subsidy criteria under Government Welfare Schemes, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Government Welfare Schemes ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: subsidy criteria ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Government Welfare Schemes ಅಡಿಯಲ್ಲಿ subsidy criteria ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_birth_3",
+    "category": "Birth Certificate",
+    "keywords_en": [
+      "magistrate permission",
+      "birth certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "magistrate permission",
+      "Birth Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Birth Certificate detail number 3: How do I handle general queries related to magistrate permission?",
+    "answer_en": "For any queries regarding magistrate permission under Birth Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Birth Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: magistrate permission ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Birth Certificate ಅಡಿಯಲ್ಲಿ magistrate permission ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_death_3",
+    "category": "Death Certificate",
+    "keywords_en": [
+      "nomination certificate",
+      "death certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "nomination certificate",
+      "Death Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Death Certificate detail number 3: How do I handle general queries related to nomination certificate?",
+    "answer_en": "For any queries regarding nomination certificate under Death Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Death Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: nomination certificate ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Death Certificate ಅಡಿಯಲ್ಲಿ nomination certificate ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_income_3",
+    "category": "Income Certificate",
+    "keywords_en": [
+      "income validation",
+      "income certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "income validation",
+      "Income Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Income Certificate detail number 3: How do I handle general queries related to income validation?",
+    "answer_en": "For any queries regarding income validation under Income Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Income Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: income validation ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Income Certificate ಅಡಿಯಲ್ಲಿ income validation ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_caste_3",
+    "category": "Caste Certificate",
+    "keywords_en": [
+      "caste expiry",
+      "caste certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "caste expiry",
+      "Caste Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Caste Certificate detail number 3: How do I handle general queries related to caste expiry?",
+    "answer_en": "For any queries regarding caste expiry under Caste Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Caste Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: caste expiry ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Caste Certificate ಅಡಿಯಲ್ಲಿ caste expiry ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_residence_3",
+    "category": "Residence Certificate",
+    "keywords_en": [
+      "address documentation",
+      "residence certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "address documentation",
+      "Residence Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Residence Certificate detail number 3: How do I handle general queries related to address documentation?",
+    "answer_en": "For any queries regarding address documentation under Residence Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Residence Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: address documentation ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Residence Certificate ಅಡಿಯಲ್ಲಿ address documentation ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_building_3",
+    "category": "Building Permission",
+    "keywords_en": [
+      "noc",
+      "building permission",
+      "help"
+    ],
+    "keywords_kn": [
+      "noc",
+      "Building Permission",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Building Permission detail number 3: How do I handle general queries related to noc?",
+    "answer_en": "For any queries regarding noc under Building Permission, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Building Permission ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: noc ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Building Permission ಅಡಿಯಲ್ಲಿ noc ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_trade_3",
+    "category": "Trade License",
+    "keywords_en": [
+      "annual renewal",
+      "trade license",
+      "help"
+    ],
+    "keywords_kn": [
+      "annual renewal",
+      "Trade License",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Trade License detail number 3: How do I handle general queries related to annual renewal?",
+    "answer_en": "For any queries regarding annual renewal under Trade License, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Trade License ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: annual renewal ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Trade License ಅಡಿಯಲ್ಲಿ annual renewal ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_water_3",
+    "category": "Water Supply",
+    "keywords_en": [
+      "water billing",
+      "water supply",
+      "help"
+    ],
+    "keywords_kn": [
+      "water billing",
+      "Water Supply",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Water Supply detail number 3: How do I handle general queries related to water billing?",
+    "answer_en": "For any queries regarding water billing under Water Supply, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Water Supply ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: water billing ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Water Supply ಅಡಿಯಲ್ಲಿ water billing ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_light_3",
+    "category": "Street Lights",
+    "keywords_en": [
+      "lamp issue",
+      "street lights",
+      "help"
+    ],
+    "keywords_kn": [
+      "lamp issue",
+      "Street Lights",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Street Lights detail number 3: How do I handle general queries related to lamp issue?",
+    "answer_en": "For any queries regarding lamp issue under Street Lights, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Street Lights ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: lamp issue ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Street Lights ಅಡಿಯಲ್ಲಿ lamp issue ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_road_3",
+    "category": "Roads",
+    "keywords_en": [
+      "highway lane",
+      "roads",
+      "help"
+    ],
+    "keywords_kn": [
+      "highway lane",
+      "Roads",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Roads detail number 3: How do I handle general queries related to highway lane?",
+    "answer_en": "For any queries regarding highway lane under Roads, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Roads ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: highway lane ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Roads ಅಡಿಯಲ್ಲಿ highway lane ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_drain_3",
+    "category": "Drainage",
+    "keywords_en": [
+      "foul smell block",
+      "drainage",
+      "help"
+    ],
+    "keywords_kn": [
+      "foul smell block",
+      "Drainage",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Drainage detail number 3: How do I handle general queries related to foul smell block?",
+    "answer_en": "For any queries regarding foul smell block under Drainage, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Drainage ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: foul smell block ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Drainage ಅಡಿಯಲ್ಲಿ foul smell block ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_waste_3",
+    "category": "Waste Collection",
+    "keywords_en": [
+      "garbage collection schedule",
+      "waste collection",
+      "help"
+    ],
+    "keywords_kn": [
+      "garbage collection schedule",
+      "Waste Collection",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Waste Collection detail number 3: How do I handle general queries related to garbage collection schedule?",
+    "answer_en": "For any queries regarding garbage collection schedule under Waste Collection, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Waste Collection ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: garbage collection schedule ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Waste Collection ಅಡಿಯಲ್ಲಿ garbage collection schedule ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_sanitation_3",
+    "category": "Sanitation",
+    "keywords_en": [
+      "open defecation noc",
+      "sanitation",
+      "help"
+    ],
+    "keywords_kn": [
+      "open defecation noc",
+      "Sanitation",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Sanitation detail number 3: How do I handle general queries related to open defecation noc?",
+    "answer_en": "For any queries regarding open defecation noc under Sanitation, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Sanitation ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: open defecation noc ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Sanitation ಅಡಿಯಲ್ಲಿ open defecation noc ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_time_3",
+    "category": "Panchayat Office Timings",
+    "keywords_en": [
+      "weekend close",
+      "panchayat office timings",
+      "help"
+    ],
+    "keywords_kn": [
+      "weekend close",
+      "Panchayat Office Timings",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Panchayat Office Timings detail number 3: How do I handle general queries related to weekend close?",
+    "answer_en": "For any queries regarding weekend close under Panchayat Office Timings, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Panchayat Office Timings ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: weekend close ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Panchayat Office Timings ಅಡಿಯಲ್ಲಿ weekend close ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_contact_3",
+    "category": "Contact Information",
+    "keywords_en": [
+      "escalation contacts",
+      "contact information",
+      "help"
+    ],
+    "keywords_kn": [
+      "escalation contacts",
+      "Contact Information",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Contact Information detail number 3: How do I handle general queries related to escalation contacts?",
+    "answer_en": "For any queries regarding escalation contacts under Contact Information, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Contact Information ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: escalation contacts ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Contact Information ಅಡಿಯಲ್ಲಿ escalation contacts ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_services_3",
+    "category": "Citizen Services",
+    "keywords_en": [
+      "e-services fee",
+      "citizen services",
+      "help"
+    ],
+    "keywords_kn": [
+      "e-services fee",
+      "Citizen Services",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Citizen Services detail number 3: How do I handle general queries related to e-services fee?",
+    "answer_en": "For any queries regarding e-services fee under Citizen Services, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Citizen Services ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: e-services fee ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Citizen Services ಅಡಿಯಲ್ಲಿ e-services fee ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_faq_3",
+    "category": "Frequently Asked Questions",
+    "keywords_en": [
+      "common questions list",
+      "frequently asked questions",
+      "help"
+    ],
+    "keywords_kn": [
+      "common questions list",
+      "Frequently Asked Questions",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Frequently Asked Questions detail number 3: How do I handle general queries related to common questions list?",
+    "answer_en": "For any queries regarding common questions list under Frequently Asked Questions, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Frequently Asked Questions ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 3: common questions list ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Frequently Asked Questions ಅಡಿಯಲ್ಲಿ common questions list ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_tax_4",
+    "category": "Property Tax",
+    "keywords_en": [
+      "property record",
+      "property tax",
+      "help"
+    ],
+    "keywords_kn": [
+      "property record",
+      "Property Tax",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Property Tax detail number 4: How do I handle general queries related to property record?",
+    "answer_en": "For any queries regarding property record under Property Tax, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Property Tax ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: property record ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Property Tax ಅಡಿಯಲ್ಲಿ property record ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_pay_4",
+    "category": "Tax Payment",
+    "keywords_en": [
+      "bank account",
+      "tax payment",
+      "help"
+    ],
+    "keywords_kn": [
+      "bank account",
+      "Tax Payment",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Payment detail number 4: How do I handle general queries related to bank account?",
+    "answer_en": "For any queries regarding bank account under Tax Payment, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Payment ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: bank account ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Payment ಅಡಿಯಲ್ಲಿ bank account ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_due_4",
+    "category": "Tax Due Date",
+    "keywords_en": [
+      "reminder",
+      "tax due date",
+      "help"
+    ],
+    "keywords_kn": [
+      "reminder",
+      "Tax Due Date",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Due Date detail number 4: How do I handle general queries related to reminder?",
+    "answer_en": "For any queries regarding reminder under Tax Due Date, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Due Date ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: reminder ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Due Date ಅಡಿಯಲ್ಲಿ reminder ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_receipt_4",
+    "category": "Tax Receipt",
+    "keywords_en": [
+      "download statement",
+      "tax receipt",
+      "help"
+    ],
+    "keywords_kn": [
+      "download statement",
+      "Tax Receipt",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Receipt detail number 4: How do I handle general queries related to download statement?",
+    "answer_en": "For any queries regarding download statement under Tax Receipt, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Receipt ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: download statement ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Receipt ಅಡಿಯಲ್ಲಿ download statement ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_reg_4",
+    "category": "Complaint Registration",
+    "keywords_en": [
+      "priority level",
+      "complaint registration",
+      "help"
+    ],
+    "keywords_kn": [
+      "priority level",
+      "Complaint Registration",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Registration detail number 4: How do I handle general queries related to priority level?",
+    "answer_en": "For any queries regarding priority level under Complaint Registration, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Registration ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: priority level ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Registration ಅಡಿಯಲ್ಲಿ priority level ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_stat_4",
+    "category": "Complaint Status",
+    "keywords_en": [
+      "pending",
+      "complaint status",
+      "help"
+    ],
+    "keywords_kn": [
+      "pending",
+      "Complaint Status",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Status detail number 4: How do I handle general queries related to pending?",
+    "answer_en": "For any queries regarding pending under Complaint Status, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Status ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: pending ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Status ಅಡಿಯಲ್ಲಿ pending ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_prio_4",
+    "category": "Complaint Priority",
+    "keywords_en": [
+      "urgency level",
+      "complaint priority",
+      "help"
+    ],
+    "keywords_kn": [
+      "urgency level",
+      "Complaint Priority",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Priority detail number 4: How do I handle general queries related to urgency level?",
+    "answer_en": "For any queries regarding urgency level under Complaint Priority, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Priority ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: urgency level ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Priority ಅಡಿಯಲ್ಲಿ urgency level ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_schemes_4",
+    "category": "Government Welfare Schemes",
+    "keywords_en": [
+      "pm kisan awas",
+      "government welfare schemes",
+      "help"
+    ],
+    "keywords_kn": [
+      "pm kisan awas",
+      "Government Welfare Schemes",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Government Welfare Schemes detail number 4: How do I handle general queries related to pm kisan awas?",
+    "answer_en": "For any queries regarding pm kisan awas under Government Welfare Schemes, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Government Welfare Schemes ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: pm kisan awas ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Government Welfare Schemes ಅಡಿಯಲ್ಲಿ pm kisan awas ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_birth_4",
+    "category": "Birth Certificate",
+    "keywords_en": [
+      "newborn register",
+      "birth certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "newborn register",
+      "Birth Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Birth Certificate detail number 4: How do I handle general queries related to newborn register?",
+    "answer_en": "For any queries regarding newborn register under Birth Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Birth Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: newborn register ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Birth Certificate ಅಡಿಯಲ್ಲಿ newborn register ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_death_4",
+    "category": "Death Certificate",
+    "keywords_en": [
+      "cremation proof",
+      "death certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "cremation proof",
+      "Death Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Death Certificate detail number 4: How do I handle general queries related to cremation proof?",
+    "answer_en": "For any queries regarding cremation proof under Death Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Death Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: cremation proof ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Death Certificate ಅಡಿಯಲ್ಲಿ cremation proof ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_income_4",
+    "category": "Income Certificate",
+    "keywords_en": [
+      "annual income",
+      "income certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "annual income",
+      "Income Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Income Certificate detail number 4: How do I handle general queries related to annual income?",
+    "answer_en": "For any queries regarding annual income under Income Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Income Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: annual income ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Income Certificate ಅಡಿಯಲ್ಲಿ annual income ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_caste_4",
+    "category": "Caste Certificate",
+    "keywords_en": [
+      "caste validation",
+      "caste certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "caste validation",
+      "Caste Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Caste Certificate detail number 4: How do I handle general queries related to caste validation?",
+    "answer_en": "For any queries regarding caste validation under Caste Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Caste Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: caste validation ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Caste Certificate ಅಡಿಯಲ್ಲಿ caste validation ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_residence_4",
+    "category": "Residence Certificate",
+    "keywords_en": [
+      "domicile proof",
+      "residence certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "domicile proof",
+      "Residence Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Residence Certificate detail number 4: How do I handle general queries related to domicile proof?",
+    "answer_en": "For any queries regarding domicile proof under Residence Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Residence Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: domicile proof ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Residence Certificate ಅಡಿಯಲ್ಲಿ domicile proof ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_building_4",
+    "category": "Building Permission",
+    "keywords_en": [
+      "plan approval",
+      "building permission",
+      "help"
+    ],
+    "keywords_kn": [
+      "plan approval",
+      "Building Permission",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Building Permission detail number 4: How do I handle general queries related to plan approval?",
+    "answer_en": "For any queries regarding plan approval under Building Permission, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Building Permission ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: plan approval ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Building Permission ಅಡಿಯಲ್ಲಿ plan approval ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_trade_4",
+    "category": "Trade License",
+    "keywords_en": [
+      "commercial shop permit",
+      "trade license",
+      "help"
+    ],
+    "keywords_kn": [
+      "commercial shop permit",
+      "Trade License",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Trade License detail number 4: How do I handle general queries related to commercial shop permit?",
+    "answer_en": "For any queries regarding commercial shop permit under Trade License, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Trade License ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: commercial shop permit ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Trade License ಅಡಿಯಲ್ಲಿ commercial shop permit ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_water_4",
+    "category": "Water Supply",
+    "keywords_en": [
+      "tap connection",
+      "water supply",
+      "help"
+    ],
+    "keywords_kn": [
+      "tap connection",
+      "Water Supply",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Water Supply detail number 4: How do I handle general queries related to tap connection?",
+    "answer_en": "For any queries regarding tap connection under Water Supply, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Water Supply ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: tap connection ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Water Supply ಅಡಿಯಲ್ಲಿ tap connection ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_light_4",
+    "category": "Street Lights",
+    "keywords_en": [
+      "light bulb replace",
+      "street lights",
+      "help"
+    ],
+    "keywords_kn": [
+      "light bulb replace",
+      "Street Lights",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Street Lights detail number 4: How do I handle general queries related to light bulb replace?",
+    "answer_en": "For any queries regarding light bulb replace under Street Lights, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Street Lights ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: light bulb replace ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Street Lights ಅಡಿಯಲ್ಲಿ light bulb replace ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_road_4",
+    "category": "Roads",
+    "keywords_en": [
+      "pothole repair",
+      "roads",
+      "help"
+    ],
+    "keywords_kn": [
+      "pothole repair",
+      "Roads",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Roads detail number 4: How do I handle general queries related to pothole repair?",
+    "answer_en": "For any queries regarding pothole repair under Roads, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Roads ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: pothole repair ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Roads ಅಡಿಯಲ್ಲಿ pothole repair ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_drain_4",
+    "category": "Drainage",
+    "keywords_en": [
+      "clogged sewer pipe",
+      "drainage",
+      "help"
+    ],
+    "keywords_kn": [
+      "clogged sewer pipe",
+      "Drainage",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Drainage detail number 4: How do I handle general queries related to clogged sewer pipe?",
+    "answer_en": "For any queries regarding clogged sewer pipe under Drainage, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Drainage ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: clogged sewer pipe ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Drainage ಅಡಿಯಲ್ಲಿ clogged sewer pipe ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_waste_4",
+    "category": "Waste Collection",
+    "keywords_en": [
+      "dry wet waste bin",
+      "waste collection",
+      "help"
+    ],
+    "keywords_kn": [
+      "dry wet waste bin",
+      "Waste Collection",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Waste Collection detail number 4: How do I handle general queries related to dry wet waste bin?",
+    "answer_en": "For any queries regarding dry wet waste bin under Waste Collection, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Waste Collection ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: dry wet waste bin ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Waste Collection ಅಡಿಯಲ್ಲಿ dry wet waste bin ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_sanitation_4",
+    "category": "Sanitation",
+    "keywords_en": [
+      "public toilet cleaning",
+      "sanitation",
+      "help"
+    ],
+    "keywords_kn": [
+      "public toilet cleaning",
+      "Sanitation",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Sanitation detail number 4: How do I handle general queries related to public toilet cleaning?",
+    "answer_en": "For any queries regarding public toilet cleaning under Sanitation, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Sanitation ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: public toilet cleaning ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Sanitation ಅಡಿಯಲ್ಲಿ public toilet cleaning ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_time_4",
+    "category": "Panchayat Office Timings",
+    "keywords_en": [
+      "working days schedule",
+      "panchayat office timings",
+      "help"
+    ],
+    "keywords_kn": [
+      "working days schedule",
+      "Panchayat Office Timings",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Panchayat Office Timings detail number 4: How do I handle general queries related to working days schedule?",
+    "answer_en": "For any queries regarding working days schedule under Panchayat Office Timings, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Panchayat Office Timings ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: working days schedule ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Panchayat Office Timings ಅಡಿಯಲ್ಲಿ working days schedule ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_contact_4",
+    "category": "Contact Information",
+    "keywords_en": [
+      "email support desk",
+      "contact information",
+      "help"
+    ],
+    "keywords_kn": [
+      "email support desk",
+      "Contact Information",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Contact Information detail number 4: How do I handle general queries related to email support desk?",
+    "answer_en": "For any queries regarding email support desk under Contact Information, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Contact Information ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: email support desk ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Contact Information ಅಡಿಯಲ್ಲಿ email support desk ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_services_4",
+    "category": "Citizen Services",
+    "keywords_en": [
+      "online feature list",
+      "citizen services",
+      "help"
+    ],
+    "keywords_kn": [
+      "online feature list",
+      "Citizen Services",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Citizen Services detail number 4: How do I handle general queries related to online feature list?",
+    "answer_en": "For any queries regarding online feature list under Citizen Services, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Citizen Services ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: online feature list ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Citizen Services ಅಡಿಯಲ್ಲಿ online feature list ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_info_faq_4",
+    "category": "Frequently Asked Questions",
+    "keywords_en": [
+      "offline chatbot guide",
+      "frequently asked questions",
+      "help"
+    ],
+    "keywords_kn": [
+      "offline chatbot guide",
+      "Frequently Asked Questions",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Frequently Asked Questions detail number 4: How do I handle general queries related to offline chatbot guide?",
+    "answer_en": "For any queries regarding offline chatbot guide under Frequently Asked Questions, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Frequently Asked Questions ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 4: offline chatbot guide ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Frequently Asked Questions ಅಡಿಯಲ್ಲಿ offline chatbot guide ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_tax_5",
+    "category": "Property Tax",
+    "keywords_en": [
+      "tax",
+      "property tax",
+      "help"
+    ],
+    "keywords_kn": [
+      "tax",
+      "Property Tax",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Property Tax detail number 5: How do I handle general queries related to tax?",
+    "answer_en": "For any queries regarding tax under Property Tax, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Property Tax ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: tax ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Property Tax ಅಡಿಯಲ್ಲಿ tax ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_pay_5",
+    "category": "Tax Payment",
+    "keywords_en": [
+      "pay online",
+      "tax payment",
+      "help"
+    ],
+    "keywords_kn": [
+      "pay online",
+      "Tax Payment",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Payment detail number 5: How do I handle general queries related to pay online?",
+    "answer_en": "For any queries regarding pay online under Tax Payment, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Payment ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: pay online ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Payment ಅಡಿಯಲ್ಲಿ pay online ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_due_5",
+    "category": "Tax Due Date",
+    "keywords_en": [
+      "tax deadline",
+      "tax due date",
+      "help"
+    ],
+    "keywords_kn": [
+      "tax deadline",
+      "Tax Due Date",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Due Date detail number 5: How do I handle general queries related to tax deadline?",
+    "answer_en": "For any queries regarding tax deadline under Tax Due Date, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Due Date ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: tax deadline ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Due Date ಅಡಿಯಲ್ಲಿ tax deadline ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_receipt_5",
+    "category": "Tax Receipt",
+    "keywords_en": [
+      "transaction proof",
+      "tax receipt",
+      "help"
+    ],
+    "keywords_kn": [
+      "transaction proof",
+      "Tax Receipt",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Tax Receipt detail number 5: How do I handle general queries related to transaction proof?",
+    "answer_en": "For any queries regarding transaction proof under Tax Receipt, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Tax Receipt ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: transaction proof ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Tax Receipt ಅಡಿಯಲ್ಲಿ transaction proof ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_reg_5",
+    "category": "Complaint Registration",
+    "keywords_en": [
+      "file grievance",
+      "complaint registration",
+      "help"
+    ],
+    "keywords_kn": [
+      "file grievance",
+      "Complaint Registration",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Registration detail number 5: How do I handle general queries related to file grievance?",
+    "answer_en": "For any queries regarding file grievance under Complaint Registration, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Registration ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: file grievance ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Registration ಅಡಿಯಲ್ಲಿ file grievance ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_stat_5",
+    "category": "Complaint Status",
+    "keywords_en": [
+      "track progress",
+      "complaint status",
+      "help"
+    ],
+    "keywords_kn": [
+      "track progress",
+      "Complaint Status",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Status detail number 5: How do I handle general queries related to track progress?",
+    "answer_en": "For any queries regarding track progress under Complaint Status, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Status ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: track progress ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Status ಅಡಿಯಲ್ಲಿ track progress ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_complaint_prio_5",
+    "category": "Complaint Priority",
+    "keywords_en": [
+      "emergency keyword",
+      "complaint priority",
+      "help"
+    ],
+    "keywords_kn": [
+      "emergency keyword",
+      "Complaint Priority",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Complaint Priority detail number 5: How do I handle general queries related to emergency keyword?",
+    "answer_en": "For any queries regarding emergency keyword under Complaint Priority, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Complaint Priority ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: emergency keyword ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Complaint Priority ಅಡಿಯಲ್ಲಿ emergency keyword ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_schemes_5",
+    "category": "Government Welfare Schemes",
+    "keywords_en": [
+      "eligible scheme",
+      "government welfare schemes",
+      "help"
+    ],
+    "keywords_kn": [
+      "eligible scheme",
+      "Government Welfare Schemes",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Government Welfare Schemes detail number 5: How do I handle general queries related to eligible scheme?",
+    "answer_en": "For any queries regarding eligible scheme under Government Welfare Schemes, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Government Welfare Schemes ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: eligible scheme ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Government Welfare Schemes ಅಡಿಯಲ್ಲಿ eligible scheme ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_birth_5",
+    "category": "Birth Certificate",
+    "keywords_en": [
+      "birth document",
+      "birth certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "birth document",
+      "Birth Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Birth Certificate detail number 5: How do I handle general queries related to birth document?",
+    "answer_en": "For any queries regarding birth document under Birth Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Birth Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: birth document ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Birth Certificate ಅಡಿಯಲ್ಲಿ birth document ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_death_5",
+    "category": "Death Certificate",
+    "keywords_en": [
+      "decease register",
+      "death certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "decease register",
+      "Death Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Death Certificate detail number 5: How do I handle general queries related to decease register?",
+    "answer_en": "For any queries regarding decease register under Death Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Death Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: decease register ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Death Certificate ಅಡಿಯಲ್ಲಿ decease register ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_income_5",
+    "category": "Income Certificate",
+    "keywords_en": [
+      "salary certificate",
+      "income certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "salary certificate",
+      "Income Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Income Certificate detail number 5: How do I handle general queries related to salary certificate?",
+    "answer_en": "For any queries regarding salary certificate under Income Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Income Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: salary certificate ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Income Certificate ಅಡಿಯಲ್ಲಿ salary certificate ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_caste_5",
+    "category": "Caste Certificate",
+    "keywords_en": [
+      "category reservation",
+      "caste certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "category reservation",
+      "Caste Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Caste Certificate detail number 5: How do I handle general queries related to category reservation?",
+    "answer_en": "For any queries regarding category reservation under Caste Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Caste Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: category reservation ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Caste Certificate ಅಡಿಯಲ್ಲಿ category reservation ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_residence_5",
+    "category": "Residence Certificate",
+    "keywords_en": [
+      "resident duration",
+      "residence certificate",
+      "help"
+    ],
+    "keywords_kn": [
+      "resident duration",
+      "Residence Certificate",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Residence Certificate detail number 5: How do I handle general queries related to resident duration?",
+    "answer_en": "For any queries regarding resident duration under Residence Certificate, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Residence Certificate ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: resident duration ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Residence Certificate ಅಡಿಯಲ್ಲಿ resident duration ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  },
+  {
+    "id": "gen_building_5",
+    "category": "Building Permission",
+    "keywords_en": [
+      "construction site inspection",
+      "building permission",
+      "help"
+    ],
+    "keywords_kn": [
+      "construction site inspection",
+      "Building Permission",
+      "ಸಹಾಯ"
+    ],
+    "question_en": "FAQ about Building Permission detail number 5: How do I handle general queries related to construction site inspection?",
+    "answer_en": "For any queries regarding construction site inspection under Building Permission, please log into the GramMithra portal or visit the designated desk at the Panchayat office. Our staff will assist you with standard forms and documents.",
+    "question_kn": "Building Permission ವಿಷಯದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ 5: construction site inspection ಗೆ ಸಂಬಂಧಿಸಿದ ಸಾಮಾನ್ಯ ವಿವರಗಳನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುವುದು?",
+    "answer_kn": "Building Permission ಅಡಿಯಲ್ಲಿ construction site inspection ಕುರಿತು ಯಾವುದೇ ಮಾಹಿತಿಗಾಗಿ, ದಯವಿಟ್ಟು ಗ್ರಾಮಿತ್ರ ಪೋರ್ಟಲ್‌ಗೆ ಲಾಗಿನ್ ಮಾಡಿ ಅಥವಾ ಪಂಚಾಯತ್ ಕಚೇರಿಯಲ್ಲಿ ನಿಯೋಜಿತ ಸಹಾಯ ಕೇಂದ್ರವನ್ನು ಸಂಪರ್ಕಿಸಿ."
+  }
+]

@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+
+# Environment variables and secrets
+.env
+.env*.local
+
+# Vercel build output
+.vercel/
+
+# Runtime logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Root level local databases (preserve seed database at data/panchayat.db)
+/panchayat.db
+database.sqlite
+
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.ipynb_checkpoints/
+
+# Temporary scratch and test files
+scratch/
+test_dir/
+thrishashetty/
+test.xlsx
+test-save.js
+simple-*.html
+server.js.backup
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Offline conference documentation and large binary drafts
+*.docx
+*.pdf
+IEEE
+IEEE/
+IEEE paper/
+ieee_paper.*
+conference paper/
+base ppr/

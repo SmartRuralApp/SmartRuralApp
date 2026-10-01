@@ -12,7 +12,8 @@
           "public/**",
           "models/**",
           "datasets/**",
-          "ml/**"
+          "ml/**",
+          "ml-engine.js"
         ]
       }
     }

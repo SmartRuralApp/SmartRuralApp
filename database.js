@@ -12,34 +12,55 @@ const dbPath = process.env.DATABASE_PATH
 
 // Ensure data directory exists
 const dataDir = path.dirname(dbPath);
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+try {
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+} catch (e) {
+  // Gracefully handled for read-only environments
 }
 
 if (isVercel && !fs.existsSync(dbPath)) {
-  const seedPath = path.join(process.cwd(), 'data', 'panchayat.db');
-  if (fs.existsSync(seedPath)) {
-    try {
-      fs.copyFileSync(seedPath, dbPath);
-      console.log('✓ Seed database successfully copied to writeable /tmp partition.');
-    } catch (err) {
-      console.error('Failed to copy seed database to /tmp:', err.message);
+  const seedCandidates = [
+    path.join(process.cwd(), 'data', 'panchayat.db'),
+    path.join(__dirname, 'data', 'panchayat.db'),
+    path.join(process.cwd(), 'panchayat.db'),
+    path.join(__dirname, 'panchayat.db')
+  ];
+  for (const seedPath of seedCandidates) {
+    if (fs.existsSync(seedPath)) {
+      try {
+        fs.copyFileSync(seedPath, dbPath);
+        console.log('✓ Seed database successfully copied to writeable /tmp partition from', seedPath);
+        break;
+      } catch (err) {
+        console.error('Failed to copy seed database to /tmp:', err.message);
+      }
     }
-  } else {
-    console.warn('Warning: Seed database not found at', seedPath);
   }
 }
 
 let db = null;
+let initPromise = null;
 
 // Initialize database
 async function initDatabase() {
   if (db) return db;
-  const SQL = await initSqlJs({
-    locateFile: file => isVercel 
-      ? path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', file)
-      : path.join(__dirname, 'node_modules', 'sql.js', 'dist', file)
-  });
+  if (initPromise) return initPromise;
+
+  initPromise = (async () => {
+    const SQL = await initSqlJs({
+      locateFile: file => {
+        const candidates = [
+          path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', file),
+          path.join(__dirname, 'node_modules', 'sql.js', 'dist', file)
+        ];
+        for (const c of candidates) {
+          if (fs.existsSync(c)) return c;
+        }
+        return file;
+      }
+    });
   
   // Load existing database or create new one
   if (fs.existsSync(dbPath)) {
@@ -569,8 +590,11 @@ async function initDatabase() {
     db.run("UPDATE users SET username = 'kamala', address = 'School Road, Block A', ward = 'Ward 1', aadhaar = '423456789012' WHERE property_id = 'PROP004' AND (username IS NULL OR username = '')");
   } catch(e) {}
 
-  saveDatabase();
-  return db;
+    saveDatabase();
+    return db;
+  })();
+
+  return initPromise;
 }
 
 // Save database to file
