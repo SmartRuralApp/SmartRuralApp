@@ -6,7 +6,9 @@
       "use": "@vercel/node",
       "config": {
         "includeFiles": [
+          "sql-wasm.wasm",
           "node_modules/sql.js/dist/sql-wasm.wasm",
+          "panchayat.db",
           "data/panchayat.db",
           "views/**",
           "public/**",

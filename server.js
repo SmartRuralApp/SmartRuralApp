@@ -91,14 +91,15 @@ app.use(helmet({
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(express.static(path.join(process.cwd(), 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Configure production-ready session cookie
 const sessionSecret = process.env.SESSION_SECRET || 'panchayat-secret-key-2026';
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
 
 if (isProduction) {
-  app.set('trust proxy', 1); // Trust first proxy (Render, Railway, Azure App Service)
+  app.set('trust proxy', 1); // Trust first proxy (Vercel, Render, Railway, Azure App Service)
 }
 
 app.use(session({
@@ -136,7 +137,10 @@ app.use(async (req, res, next) => {
 
 // Set view engine
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', [
+  path.join(process.cwd(), 'views'),
+  path.join(__dirname, 'views')
+]);
 
 // ==================== HELPERS ====================
 
@@ -2319,13 +2323,22 @@ function runStartupValidation() {
 
 // 404 Page Routing
 app.use((req, res, next) => {
-  res.status(404).render('404', { session: req.session });
+  try {
+    res.status(404).render('404', { session: req.session });
+  } catch (err) {
+    res.status(404).send('<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1><p>The requested page could not be found.</p><a href="/">Go Home</a></body></html>');
+  }
 });
 
 // 500 Page Routing
 app.use((err, req, res, next) => {
-  console.error("Unhandled Server Error:", err.stack);
-  res.status(500).render('500', { session: req.session, error: isProduction ? null : err.message });
+  console.error("Unhandled Server Error:", err.stack || err.message || err);
+  try {
+    res.status(500).render('500', { session: req.session, error: isProduction ? null : err.message });
+  } catch (renderErr) {
+    console.error("Failed to render 500 view:", renderErr.message);
+    res.status(500).send(`<!DOCTYPE html><html><head><title>500 Server Error</title></head><body><h1>500 Internal Server Error</h1><p>${isProduction ? 'A server error occurred. Please try again later.' : (err.message || 'Error')}</p><a href="/">Go Home</a></body></html>`);
+  }
 });
 
 if (require.main === module) {

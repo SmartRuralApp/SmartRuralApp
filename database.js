@@ -20,25 +20,31 @@ try {
   // Gracefully handled for read-only environments
 }
 
-if (isVercel && !fs.existsSync(dbPath)) {
-  const seedCandidates = [
-    path.join(process.cwd(), 'data', 'panchayat.db'),
-    path.join(__dirname, 'data', 'panchayat.db'),
-    path.join(process.cwd(), 'panchayat.db'),
-    path.join(__dirname, 'panchayat.db')
-  ];
-  for (const seedPath of seedCandidates) {
-    if (fs.existsSync(seedPath)) {
-      try {
-        fs.copyFileSync(seedPath, dbPath);
-        console.log('✓ Seed database successfully copied to writeable /tmp partition from', seedPath);
-        break;
-      } catch (err) {
-        console.error('Failed to copy seed database to /tmp:', err.message);
+function ensureSeedDb() {
+  if (isVercel && !fs.existsSync(dbPath)) {
+    const seedCandidates = [
+      path.join(process.cwd(), 'panchayat.db'),
+      path.join(process.cwd(), 'data', 'panchayat.db'),
+      path.join(__dirname, 'panchayat.db'),
+      path.join(__dirname, 'data', 'panchayat.db'),
+      path.resolve('panchayat.db'),
+      path.resolve('data/panchayat.db')
+    ];
+    for (const seedPath of seedCandidates) {
+      if (fs.existsSync(seedPath)) {
+        try {
+          fs.copyFileSync(seedPath, dbPath);
+          console.log('✓ Seed database successfully copied to writeable /tmp partition from', seedPath);
+          break;
+        } catch (err) {
+          console.error('Failed to copy seed database to /tmp:', err.message);
+        }
       }
     }
   }
 }
+
+ensureSeedDb();
 
 let db = null;
 let initPromise = null;
@@ -49,26 +55,71 @@ async function initDatabase() {
   if (initPromise) return initPromise;
 
   initPromise = (async () => {
-    const SQL = await initSqlJs({
-      locateFile: file => {
-        const candidates = [
-          path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', file),
-          path.join(__dirname, 'node_modules', 'sql.js', 'dist', file)
-        ];
-        for (const c of candidates) {
-          if (fs.existsSync(c)) return c;
+    try {
+      ensureSeedDb();
+
+      // Look for wasm file across potential serverless / local directories
+      let wasmBinary = null;
+      const wasmCandidates = [
+        path.join(process.cwd(), 'sql-wasm.wasm'),
+        path.join(__dirname, 'sql-wasm.wasm'),
+        path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm'),
+        path.join(__dirname, 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm'),
+        path.resolve('sql-wasm.wasm')
+      ];
+      for (const cand of wasmCandidates) {
+        if (fs.existsSync(cand)) {
+          try {
+            wasmBinary = fs.readFileSync(cand);
+            console.log('✓ Loaded sql-wasm.wasm binary from:', cand);
+            break;
+          } catch (e) {
+            console.warn('Could not read wasm candidate:', cand, e.message);
+          }
+        }
+      }
+
+      const sqlConfig = {};
+      if (wasmBinary) {
+        sqlConfig.wasmBinary = wasmBinary;
+      }
+      sqlConfig.locateFile = file => {
+        for (const c of wasmCandidates) {
+          if (c.endsWith(file) && fs.existsSync(c)) return c;
         }
         return file;
+      };
+
+      const SQL = await initSqlJs(sqlConfig);
+    
+      // Load existing database or create new one
+      if (fs.existsSync(dbPath)) {
+        const fileBuffer = fs.readFileSync(dbPath);
+        db = new SQL.Database(fileBuffer);
+      } else {
+        let loadedFromSeed = false;
+        const seedCandidates = [
+          path.join(process.cwd(), 'panchayat.db'),
+          path.join(process.cwd(), 'data', 'panchayat.db'),
+          path.join(__dirname, 'panchayat.db'),
+          path.join(__dirname, 'data', 'panchayat.db')
+        ];
+        for (const sp of seedCandidates) {
+          if (fs.existsSync(sp)) {
+            try {
+              const buf = fs.readFileSync(sp);
+              db = new SQL.Database(buf);
+              loadedFromSeed = true;
+              console.log('✓ Initialized in-memory SQLite DB directly from seed:', sp);
+              try { fs.writeFileSync(dbPath, buf); } catch (_) {}
+              break;
+            } catch (e) {}
+          }
+        }
+        if (!loadedFromSeed) {
+          db = new SQL.Database();
+        }
       }
-    });
-  
-  // Load existing database or create new one
-  if (fs.existsSync(dbPath)) {
-    const fileBuffer = fs.readFileSync(dbPath);
-    db = new SQL.Database(fileBuffer);
-  } else {
-    db = new SQL.Database();
-  }
   
   // Create tables
   db.run(`
@@ -592,6 +643,11 @@ async function initDatabase() {
 
     saveDatabase();
     return db;
+  } catch (err) {
+    console.error("Database initialization failed:", err.message);
+    initPromise = null;
+    throw err;
+  }
   })();
 
   return initPromise;
