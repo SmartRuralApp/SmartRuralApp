@@ -2341,7 +2341,11 @@ app.use((err, req, res, next) => {
   }
 });
 
-if (require.main === module) {
+// Always export the Express application for Vercel serverless runtime
+module.exports = app;
+
+// Only start local HTTP listener if running directly and NOT on Vercel
+if (!process.env.VERCEL && require.main === module) {
   db.init().then(() => {
     console.log('✓ Wasm SQLite database initialized successfully.');
     updateOutdatedTaxStatuses();
@@ -2356,7 +2360,4 @@ if (require.main === module) {
   }).catch(err => {
     console.error('Failed to initialize SQLite database:', err);
   });
-} else {
-  // Ephemeral environment (e.g. Vercel Serverless Functions): database is loaded via routing middleware
-  module.exports = app;
 }
