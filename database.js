@@ -1,6 +1,8 @@
 const initSqlJs = require('sql.js');
 const fs = require('fs');
 const path = require('path');
+const wasmBinary = require('./wasm-binary');
+const seedDbBinary = require('./seed-db-binary');
 
 const isVercel = !!process.env.VERCEL;
 
@@ -22,24 +24,11 @@ try {
 
 function ensureSeedDb() {
   if (isVercel && !fs.existsSync(dbPath)) {
-    const seedCandidates = [
-      path.join(process.cwd(), 'panchayat.db'),
-      path.join(process.cwd(), 'data', 'panchayat.db'),
-      path.join(__dirname, 'panchayat.db'),
-      path.join(__dirname, 'data', 'panchayat.db'),
-      path.resolve('panchayat.db'),
-      path.resolve('data/panchayat.db')
-    ];
-    for (const seedPath of seedCandidates) {
-      if (fs.existsSync(seedPath)) {
-        try {
-          fs.copyFileSync(seedPath, dbPath);
-          console.log('✓ Seed database successfully copied to writeable /tmp partition from', seedPath);
-          break;
-        } catch (err) {
-          console.error('Failed to copy seed database to /tmp:', err.message);
-        }
-      }
+    try {
+      fs.writeFileSync(dbPath, seedDbBinary);
+      console.log('✓ Seed database written directly to /tmp from embedded seed binary');
+    } catch (err) {
+      console.warn('Could not write seed DB to /tmp, will run in-memory:', err.message);
     }
   }
 }
@@ -58,67 +47,22 @@ async function initDatabase() {
     try {
       ensureSeedDb();
 
-      // Look for wasm file across potential serverless / local directories
-      let wasmBinary = null;
-      const wasmCandidates = [
-        path.join(process.cwd(), 'sql-wasm.wasm'),
-        path.join(__dirname, 'sql-wasm.wasm'),
-        path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm'),
-        path.join(__dirname, 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm'),
-        path.resolve('sql-wasm.wasm')
-      ];
-      for (const cand of wasmCandidates) {
-        if (fs.existsSync(cand)) {
-          try {
-            wasmBinary = fs.readFileSync(cand);
-            console.log('✓ Loaded sql-wasm.wasm binary from:', cand);
-            break;
-          } catch (e) {
-            console.warn('Could not read wasm candidate:', cand, e.message);
-          }
-        }
-      }
-
-      const sqlConfig = {};
-      if (wasmBinary) {
-        sqlConfig.wasmBinary = wasmBinary;
-      }
-      sqlConfig.locateFile = file => {
-        for (const c of wasmCandidates) {
-          if (c.endsWith(file) && fs.existsSync(c)) return c;
-        }
-        return file;
-      };
-
-      const SQL = await initSqlJs(sqlConfig);
+      const SQL = await initSqlJs({
+        wasmBinary: wasmBinary
+      });
     
       // Load existing database or create new one
       if (fs.existsSync(dbPath)) {
-        const fileBuffer = fs.readFileSync(dbPath);
-        db = new SQL.Database(fileBuffer);
+        try {
+          const fileBuffer = fs.readFileSync(dbPath);
+          db = new SQL.Database(fileBuffer);
+        } catch (readErr) {
+          console.warn('Could not read from dbPath, falling back to embedded binary:', readErr.message);
+          db = new SQL.Database(seedDbBinary);
+        }
       } else {
-        let loadedFromSeed = false;
-        const seedCandidates = [
-          path.join(process.cwd(), 'panchayat.db'),
-          path.join(process.cwd(), 'data', 'panchayat.db'),
-          path.join(__dirname, 'panchayat.db'),
-          path.join(__dirname, 'data', 'panchayat.db')
-        ];
-        for (const sp of seedCandidates) {
-          if (fs.existsSync(sp)) {
-            try {
-              const buf = fs.readFileSync(sp);
-              db = new SQL.Database(buf);
-              loadedFromSeed = true;
-              console.log('✓ Initialized in-memory SQLite DB directly from seed:', sp);
-              try { fs.writeFileSync(dbPath, buf); } catch (_) {}
-              break;
-            } catch (e) {}
-          }
-        }
-        if (!loadedFromSeed) {
-          db = new SQL.Database();
-        }
+        db = new SQL.Database(seedDbBinary);
+        console.log('✓ Initialized in-memory SQLite DB directly from embedded seed binary');
       }
   
   // Create tables
