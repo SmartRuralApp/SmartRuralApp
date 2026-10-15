@@ -8,7 +8,7 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "{views,public,models,datasets,data,ml}/**/*"
+      "includeFiles": "views/**"
     }
   }
 }
