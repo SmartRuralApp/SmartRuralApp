@@ -8,19 +8,7 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": [
-        "sql-wasm.wasm",
-        "wasm-binary.js",
-        "seed-db-binary.js",
-        "panchayat.db",
-        "data/panchayat.db",
-        "views/**",
-        "public/**",
-        "models/**",
-        "datasets/**",
-        "ml/**",
-        "ml-engine.js"
-      ]
+      "includeFiles": "{views,public,models,datasets,data,ml}/**/*"
     }
   }
 }
