@@ -1,29 +1,24 @@
 {
   "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "server.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "sql-wasm.wasm",
-          "node_modules/sql.js/dist/sql-wasm.wasm",
-          "panchayat.db",
-          "data/panchayat.db",
-          "views/**",
-          "public/**",
-          "models/**",
-          "datasets/**",
-          "ml/**",
-          "ml-engine.js"
-        ]
-      }
+      "source": "/(.*)",
+      "destination": "/api/index.js"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "server.js"
+  "functions": {
+    "api/index.js": {
+      "includeFiles": [
+        "sql-wasm.wasm",
+        "panchayat.db",
+        "data/panchayat.db",
+        "views/**",
+        "public/**",
+        "models/**",
+        "datasets/**",
+        "ml/**",
+        "ml-engine.js"
+      ]
     }
-  ]
+  }
 }

@@ -122,6 +122,38 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health check endpoint (bypasses DB for container liveness)
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Diagnostic endpoint to report Vercel serverless environment state and DB loading status
+app.get('/api/debug-env', async (req, res) => {
+  const info = {
+    status: 'diagnostics',
+    cwd: process.cwd(),
+    dirname: __dirname,
+    cwdFiles: [],
+    dirnameFiles: [],
+    dbLoaded: !!db.getDb(),
+    dbInitError: null
+  };
+  try {
+    info.cwdFiles = fs.readdirSync(process.cwd());
+  } catch (e) { info.cwdFiles = e.message; }
+  try {
+    info.dirnameFiles = fs.readdirSync(__dirname);
+  } catch (e) { info.dirnameFiles = e.message; }
+  try {
+    await db.init();
+    info.dbLoaded = !!db.getDb();
+    info.tablesCount = db.prepare('SELECT COUNT(*) as count FROM properties').get();
+  } catch (e) {
+    info.dbInitError = { message: e.message, stack: e.stack };
+  }
+  res.json(info);
+});
+
 // Middleware to ensure DB is initialized before serving requests (critical for serverless environments)
 app.use(async (req, res, next) => {
   const rawDb = db.getDb();
@@ -2343,6 +2375,7 @@ app.use((err, req, res, next) => {
 
 // Always export the Express application for Vercel serverless runtime
 module.exports = app;
+module.exports.default = app;
 
 // Only start local HTTP listener if running directly and NOT on Vercel
 if (!process.env.VERCEL && require.main === module) {
