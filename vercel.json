@@ -2,16 +2,12 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/api/test",
-      "destination": "/api/test"
-    },
-    {
-      "source": "/((?!api/test).*)",
-      "destination": "/api/index.js"
+      "source": "/(.*)",
+      "destination": "/api"
     }
   ],
   "functions": {
-    "api/*.js": {
+    "api/index.js": {
       "includeFiles": [
         "sql-wasm.wasm",
         "panchayat.db",
