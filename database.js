@@ -611,11 +611,19 @@ function saveDatabase() {
 }
 
 async function reloadDatabase() {
-  const SQL = await initSqlJs();
+  const SQL = await initSqlJs({
+    wasmBinary: wasmBinary
+  });
   if (fs.existsSync(dbPath)) {
-    const fileBuffer = fs.readFileSync(dbPath);
-    db = new SQL.Database(fileBuffer);
-    console.log("Database reloaded from disk successfully.");
+    try {
+      const fileBuffer = fs.readFileSync(dbPath);
+      db = new SQL.Database(fileBuffer);
+      console.log("Database reloaded from disk successfully.");
+    } catch (e) {
+      db = new SQL.Database(seedDbBinary);
+    }
+  } else {
+    db = new SQL.Database(seedDbBinary);
   }
 }
 
