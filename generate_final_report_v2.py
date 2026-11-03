@@ -16,6 +16,21 @@ import win32com.client
 import pythoncom
 import fitz
 import time
+import winreg
+
+def clean_word_resiliency():
+    resiliency_path = r'Software\Microsoft\Office\16.0\Word\Resiliency'
+    for sub in ['DisabledItems', 'DocumentRecovery']:
+        try:
+            path = f'{resiliency_path}\\{sub}'
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, path, 0, winreg.KEY_ALL_ACCESS) as k:
+                n_sub, n_val, _ = winreg.QueryInfoKey(k)
+                for vn in [winreg.EnumValue(k, i)[0] for i in range(n_val)]:
+                    winreg.DeleteValue(k, vn)
+                for sn in [winreg.EnumKey(k, i) for i in range(n_sub)]:
+                    winreg.DeleteKey(k, sn)
+        except Exception:
+            pass
 
 # Import structured text data
 import report_data_front as rfront
@@ -116,7 +131,12 @@ def get_page_number_for(key, page_map, default="1"):
     if key in page_map:
         val = page_map[key]
         return str(val[0] if isinstance(val, list) else val)
-    # Prefix match
+    for k, v in page_map.items():
+        if k.startswith(key + " ") or k == key:
+            return str(v[0] if isinstance(v, list) else v)
+    for k, v in page_map.items():
+        if key.startswith(k + " ") or key == k:
+            return str(v[0] if isinstance(v, list) else v)
     for k, v in page_map.items():
         if k.startswith(key):
             return str(v[0] if isinstance(v, list) else v)
@@ -1018,15 +1038,57 @@ def build_document(page_map=None):
     # =============================================================
     # CHAPTER 8: CONCLUSION AND FUTURE SCOPE
     # =============================================================
-    add_chap_heading(rchap78.CHAP8_TITLE)
-    for p_conc in rchap78.CHAP8_CONCLUSION:
-        add_p(p_conc, space_after=3, line_spacing=1.08)
+    doc.add_page_break()
+    lines_c8 = rchap78.CHAP8_TITLE.split('\n')
+    p1 = doc.add_paragraph()
+    p1.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p1.paragraph_format.space_before = Pt(8)
+    p1.paragraph_format.space_after = Pt(2)
+    p1.paragraph_format.keep_with_next = True
+    r1 = p1.add_run(lines_c8[0])
+    r1.bold = True
+    r1.font.name = 'Times New Roman'
+    r1.font.size = Pt(15)
+    r1.font.color.rgb = RGBColor(0, 0, 0)
 
-    add_sec_heading("8.1 Future Scope")
-    add_p("Based on our implementation experience, several valuable enhancements can be added in future versions:", space_after=2, line_spacing=1.08)
+    p2 = doc.add_paragraph()
+    p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p2.paragraph_format.space_before = Pt(0)
+    p2.paragraph_format.space_after = Pt(6)
+    p2.paragraph_format.keep_with_next = True
+    r2 = p2.add_run(lines_c8[1])
+    r2.bold = True
+    r2.font.name = 'Times New Roman'
+    r2.font.size = Pt(14)
+    r2.font.color.rgb = RGBColor(0, 0, 0)
+
+    for p_conc in rchap78.CHAP8_CONCLUSION:
+        add_p(p_conc, space_after=2, line_spacing=1.05)
+
+    p_fs_h = doc.add_paragraph()
+    p_fs_h.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    p_fs_h.paragraph_format.space_before = Pt(5)
+    p_fs_h.paragraph_format.space_after = Pt(1)
+    p_fs_h.paragraph_format.keep_with_next = True
+    r_fs = p_fs_h.add_run("8.1 Future Scope")
+    r_fs.bold = True
+    r_fs.font.name = 'Times New Roman'
+    r_fs.font.size = Pt(12)
+    r_fs.font.color.rgb = RGBColor(0, 0, 0)
+
+    add_p("Based on our implementation experience, several valuable enhancements can be added in future versions:", space_after=2, line_spacing=1.05)
     for fs_title, fs_desc in rchap78.CHAP8_FUTURE_SCOPE:
-        add_subsec_heading(fs_title)
-        add_p(fs_desc, space_after=2, line_spacing=1.08)
+        p_sub = doc.add_paragraph()
+        p_sub.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p_sub.paragraph_format.space_before = Pt(4)
+        p_sub.paragraph_format.space_after = Pt(1)
+        p_sub.paragraph_format.keep_with_next = True
+        r_sub = p_sub.add_run(fs_title)
+        r_sub.bold = True
+        r_sub.font.name = 'Times New Roman'
+        r_sub.font.size = Pt(11)
+        r_sub.font.color.rgb = RGBColor(0, 0, 0)
+        add_p(fs_desc, space_after=2, line_spacing=1.05)
 
     # =============================================================
     # REFERENCES
@@ -1082,12 +1144,13 @@ def extract_page_map(doc_path):
         except Exception:
             pass
 
+    clean_word_resiliency()
     time.sleep(0.5)
     pythoncom.CoInitialize()
     word = win32com.client.Dispatch('Word.Application')
     word.Visible = False
     word.DisplayAlerts = 0
-    wdoc = word.Documents.Open(os.path.abspath(doc_path), ReadOnly=True, AddToRecentFiles=False)
+    wdoc = word.Documents.Open(FileName=os.path.abspath(doc_path), ConfirmConversions=False, ReadOnly=True, AddToRecentFiles=False)
     wdoc.ExportAsFixedFormat(temp_pdf, 17)
     wdoc.Close(False)
     word.Quit()
@@ -1097,9 +1160,10 @@ def extract_page_map(doc_path):
     sec3_start = None
     for i, page in enumerate(doc_pdf):
         txt = page.get_text()
+        lines = [l.strip() for l in txt.splitlines() if l.strip()]
         if sec2_start is None and ("DECLARATION" in txt or "ACKNOWLEDGMENTS" in txt):
             sec2_start = i + 1
-        if sec3_start is None and "CHAPTER 1" in txt and i > 4:
+        if sec3_start is None and i >= 10 and any(l == "CHAPTER 1" for l in lines) and not any("TABLE OF CONTENTS" in l for l in lines):
             sec3_start = i + 1
 
     def to_roman_local(n):
@@ -1118,35 +1182,44 @@ def extract_page_map(doc_path):
     for i, page in enumerate(doc_pdf):
         sheet = i + 1
         txt = page.get_text()
+        lines = [l.strip() for l in txt.split('\n') if l.strip()]
+        
         if sec2_start and sheet < sec2_start:
             continue
         elif sec3_start and sheet < sec3_start:
             pg_str = to_roman_local(sheet - sec2_start + 1)
-        elif sec3_start:
+            # Only check the top 5 lines for preliminary titles so we don't match TOC rows
+            for l in lines[:5]:
+                for p_title in ['DECLARATION', 'ACKNOWLEDGMENTS', 'ABSTRACT', 'TABLE OF CONTENTS', 'LIST OF FIGURES', 'LIST OF TABLES', 'ABBREVIATIONS AND NOMENCLATURE']:
+                    if p_title in l and p_title not in pages_info:
+                        pages_info[p_title] = pg_str
+        elif sec3_start and sheet >= sec3_start:
             pg_str = str(sheet - sec3_start + 1)
-        else:
-            pg_str = str(sheet)
-
-        lines = [l.strip() for l in txt.split('\n') if l.strip()]
-        for l in lines:
-            if l.startswith("CHAPTER ") and len(l) < 30:
-                if l not in pages_info:
+            for l in lines:
+                for c in range(1, 9):
+                    if l == f"CHAPTER {c}":
+                        if l not in pages_info:
+                            pages_info[l] = pg_str
+                if l == "REFERENCES" and l not in pages_info:
                     pages_info[l] = pg_str
-            elif l in ['ABSTRACT', 'ABBREVIATIONS AND NOMENCLATURE', 'REFERENCES', 'ACKNOWLEDGMENTS', 'DECLARATION', 'TABLE OF CONTENTS', 'LIST OF FIGURES', 'LIST OF TABLES']:
-                if l not in pages_info:
-                    pages_info[l] = pg_str
-            elif any(l.startswith(f"{c}.") for c in range(1, 9)):
-                if len(l) < 70 and not l.endswith('.'):
-                    if l not in pages_info:
-                        pages_info[l] = pg_str
-            elif l.startswith("Figure ") and ":" in l:
-                k = l.split(":")[0].strip()
-                if k not in pages_info:
-                    pages_info[k] = pg_str
-            elif l.startswith("Table ") and ":" in l:
-                k = l.split(":")[0].strip()
-                if k not in pages_info:
-                    pages_info[k] = pg_str
+                # Check section headings like '1.1 Problem Statement' or '6.5.1 Module 1: ...'
+                parts = l.split()
+                if parts:
+                    first_tok = parts[0].strip()
+                    subparts = [p for p in first_tok.split('.') if p.isdigit()]
+                    if len(subparts) >= 2 and len(l) < 80:
+                        if first_tok not in pages_info:
+                            pages_info[first_tok] = pg_str
+                        if l not in pages_info:
+                            pages_info[l] = pg_str
+                if l.startswith("Figure ") and ":" in l:
+                    k = l.split(":")[0].strip()
+                    if k not in pages_info:
+                        pages_info[k] = pg_str
+                if l.startswith("Table ") and ":" in l:
+                    k = l.split(":")[0].strip()
+                    if k not in pages_info:
+                        pages_info[k] = pg_str
 
     doc_pdf.close()
     if os.path.exists(temp_pdf):
@@ -1180,13 +1253,14 @@ def main():
         except Exception:
             pass
 
+    clean_word_resiliency()
     time.sleep(0.5)
     try:
         pythoncom.CoInitialize()
         word = win32com.client.Dispatch('Word.Application')
         word.Visible = False
         word.DisplayAlerts = 0
-        doc_final = word.Documents.Open(os.path.abspath(OUTPUT_FILE), ReadOnly=True, AddToRecentFiles=False)
+        doc_final = word.Documents.Open(FileName=os.path.abspath(OUTPUT_FILE), ConfirmConversions=False, ReadOnly=True, AddToRecentFiles=False)
         total_pages = doc_final.ComputeStatistics(2)
         print(f"Total pages in Word: {total_pages}", flush=True)
         doc_final.ExportAsFixedFormat(pdf_output, 17)

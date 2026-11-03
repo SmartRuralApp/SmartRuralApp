@@ -44,16 +44,44 @@ const PORT = process.env.PORT || 3000;
 let smsGatewayStatus = 'Pending Verification';
 let smsGatewayError = null;
 
+function getSanitizedFast2SMSKey() {
+  const rawKey = process.env.FAST2SMS_API_KEY;
+  if (!rawKey) return null;
+  const cleanKey = String(rawKey).trim().replace(/(^['"]|['"]$)/g, '');
+  if (!cleanKey) return null;
+
+  // Case-insensitive check for placeholder values
+  const lower = cleanKey.toLowerCase();
+  if (
+    lower === 'your key' ||
+    lower === 'your_fast2sms_api_key_here' ||
+    lower === 'your_api_key_here' ||
+    lower.startsWith('your_') ||
+    lower.startsWith('your ') ||
+    lower.includes('placeholder') ||
+    lower.includes('api_key_here') ||
+    lower === 'none' ||
+    lower === 'null' ||
+    cleanKey.length < 10
+  ) {
+    return null;
+  }
+  return cleanKey;
+}
+
 async function verifySMSGatewayConnection() {
+  // If not already set in environment (e.g. Render/production env vars), load from .env without overriding host variables
   try {
-    require('dotenv').config({ override: true });
+    if (!process.env.FAST2SMS_API_KEY) {
+      require('dotenv').config();
+    }
   } catch (e) {
-    console.error("Failed to dynamically reload .env file:", e.message);
+    // Ignore dynamic dotenv load error
   }
 
-  const fast2smsKey = process.env.FAST2SMS_API_KEY;
+  const fast2smsKey = getSanitizedFast2SMSKey();
 
-  if (fast2smsKey && fast2smsKey.trim() !== '' && !fast2smsKey.includes('YOUR_')) {
+  if (fast2smsKey) {
     try {
       const response = await fetch('https://www.fast2sms.com/dev/wallet', {
         method: 'GET',
@@ -78,8 +106,8 @@ async function verifySMSGatewayConnection() {
     }
   } else {
     smsGatewayStatus = 'Error';
-    smsGatewayError = 'Missing SMS provider credentials (FAST2SMS_API_KEY) in .env file.';
-    console.log("⚠ SMS Gateway Credentials not configured.");
+    smsGatewayError = 'Missing or unconfigured FAST2SMS_API_KEY. Please set your valid API key in environment variables.';
+    console.log("⚠ SMS Gateway Credentials not configured or placeholder detected.");
   }
 }
 
@@ -1816,34 +1844,32 @@ app.get('/api/admin/sms-logs', requireAdmin, (req, res) => {
 });
 
 async function sendSMSGateway(phone, citizenName, propertyId, message) {
-  // Always verify connection dynamically before attempting send to pick up runtime .env edits
+  // Always verify connection dynamically before attempting send to pick up runtime environment edits
   await verifySMSGatewayConnection();
 
-  const fast2smsKey = process.env.FAST2SMS_API_KEY;
+  const fast2smsKey = getSanitizedFast2SMSKey();
 
-  // Normalize phone number to E.164 formatting (specifically Indian phone numbers)
-  let formattedPhone = phone.trim().replace(/\s+/g, '').replace(/[-()]/g, '');
-  if (/^\d{10}$/.test(formattedPhone)) {
-    formattedPhone = '+91' + formattedPhone;
-  } else if (/^91\d{10}$/.test(formattedPhone)) {
-    formattedPhone = '+' + formattedPhone;
+  // Normalize phone number to 10 digits as expected by Fast2SMS Quick SMS route
+  let digits = String(phone || '').trim().replace(/\D/g, '');
+  if (digits.length === 12 && digits.startsWith('91')) {
+    digits = digits.slice(2);
+  } else if (digits.length === 11 && digits.startsWith('0')) {
+    digits = digits.slice(1);
   }
 
-  // Strict E.164 validation (+ followed by 10 to 14 digits)
-  const e164Regex = /^\+[1-9]\d{10,14}$/;
-  if (!e164Regex.test(formattedPhone)) {
-    console.error(`[SMS Gateway] Invalid E.164 phone number format: ${formattedPhone}`);
-    return { status: 'Failed', error: `Invalid E.164 phone number format: ${formattedPhone}`, provider: 'None' };
+  if (digits.length !== 10) {
+    console.error(`[SMS Gateway] Invalid 10-digit phone number format: ${phone}`);
+    return { status: 'Failed', error: `Invalid 10-digit mobile number format: ${phone}`, provider: 'None' };
   }
 
   // If no credentials configured at all, return error
-  if (!fast2smsKey || fast2smsKey.trim() === '' || fast2smsKey.includes('YOUR_')) {
-    console.error(`[SMS Gateway] Credentials missing.`);
-    return { status: 'Failed', error: 'SMS Gateway credentials not configured. Please add FAST2SMS_API_KEY to your environment.', provider: 'None' };
+  if (!fast2smsKey) {
+    console.error(`[SMS Gateway] Credentials missing or unconfigured.`);
+    return { status: 'Failed', error: 'SMS Gateway credentials not configured. Please add FAST2SMS_API_KEY to your environment variables.', provider: 'None' };
   }
 
   if (smsGatewayStatus !== 'Connected') {
-    return { status: 'Failed', error: 'SMS Gateway is not connected: ' + (smsGatewayError || 'Missing credentials.'), provider: 'None' };
+    return { status: 'Failed', error: 'SMS Gateway is not connected: ' + (smsGatewayError || 'Missing or invalid credentials.'), provider: 'None' };
   }
 
   try {
@@ -1851,7 +1877,7 @@ async function sendSMSGateway(phone, citizenName, propertyId, message) {
       route: 'q',
       message: message,
       language: 'english',
-      numbers: formattedPhone
+      numbers: digits
     };
     console.log('[SMS Gateway] Request to Fast2SMS:', {
       url: 'https://www.fast2sms.com/dev/bulkV2',
