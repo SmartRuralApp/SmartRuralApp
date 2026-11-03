@@ -14,6 +14,8 @@ from docx.oxml import parse_xml, OxmlElement
 from docx.oxml.ns import nsdecls, qn
 import win32com.client
 import pythoncom
+import fitz
+import time
 
 # Import structured text data
 import report_data_front as rfront
@@ -86,18 +88,18 @@ def setup_section3_footer(footer):
     tblPr.append(borders)
     
     c0 = ftab.cell(0, 0)
-    c0.width = Inches(4.5)
+    c0.width = Inches(5.2)
     p0 = c0.paragraphs[0]
     p0.alignment = WD_ALIGN_PARAGRAPH.LEFT
     p0.paragraph_format.space_before = Pt(2)
     p0.paragraph_format.space_after = Pt(0)
-    r0 = p0.add_run("A J Institute of Engineering & Technology")
+    r0 = p0.add_run("Department of Artificial Intelligence and Data Science, AJIET, Mangaluru")
     r0.font.name = "Times New Roman"
-    r0.font.size = Pt(9.5)
+    r0.font.size = Pt(8.5)
     r0.font.color.rgb = RGBColor(0x33, 0x33, 0x33)
     
     c1 = ftab.cell(0, 1)
-    c1.width = Inches(1.52)
+    c1.width = Inches(0.82)
     p1 = c1.paragraphs[0]
     p1.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     p1.paragraph_format.space_before = Pt(2)
@@ -106,7 +108,7 @@ def setup_section3_footer(footer):
     p1._p.append(fld)
     for run in p1.runs:
         run.font.name = "Times New Roman"
-        run.font.size = Pt(9.5)
+        run.font.size = Pt(8.5)
 
 def get_page_number_for(key, page_map, default="1"):
     if not page_map:
@@ -1018,13 +1020,13 @@ def build_document(page_map=None):
     # =============================================================
     add_chap_heading(rchap78.CHAP8_TITLE)
     for p_conc in rchap78.CHAP8_CONCLUSION:
-        add_p(p_conc)
+        add_p(p_conc, space_after=3, line_spacing=1.08)
 
     add_sec_heading("8.1 Future Scope")
-    add_p("Based on our implementation experience, several valuable enhancements can be added in future versions:")
+    add_p("Based on our implementation experience, several valuable enhancements can be added in future versions:", space_after=2, line_spacing=1.08)
     for fs_title, fs_desc in rchap78.CHAP8_FUTURE_SCOPE:
         add_subsec_heading(fs_title)
-        add_p(fs_desc)
+        add_p(fs_desc, space_after=2, line_spacing=1.08)
 
     # =============================================================
     # REFERENCES
@@ -1032,8 +1034,9 @@ def build_document(page_map=None):
     doc.add_page_break()
     p_ref_head = doc.add_paragraph()
     p_ref_head.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_ref_head.paragraph_format.space_before = Pt(14)
-    p_ref_head.paragraph_format.space_after = Pt(14)
+    p_ref_head.paragraph_format.space_before = Pt(10)
+    p_ref_head.paragraph_format.space_after = Pt(8)
+    p_ref_head.paragraph_format.keep_with_next = True
     r_rf = p_ref_head.add_run("REFERENCES")
     r_rf.bold = True
     r_rf.font.name = 'Times New Roman'
@@ -1043,13 +1046,13 @@ def build_document(page_map=None):
     for ref_entry in rchap78.REFERENCES_LIST:
         p_ref = doc.add_paragraph()
         p_ref.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-        p_ref.paragraph_format.space_after = Pt(5)
-        p_ref.paragraph_format.line_spacing = 1.15
-        p_ref.paragraph_format.left_indent = Inches(0.4)
-        p_ref.paragraph_format.first_line_indent = Inches(-0.4)
+        p_ref.paragraph_format.space_after = Pt(3)
+        p_ref.paragraph_format.line_spacing = 1.05
+        p_ref.paragraph_format.left_indent = Inches(0.35)
+        p_ref.paragraph_format.first_line_indent = Inches(-0.35)
         run = p_ref.add_run(ref_entry)
         run.font.name = 'Times New Roman'
-        run.font.size = Pt(10.5)
+        run.font.size = Pt(9.5)
         run.font.color.rgb = RGBColor(0, 0, 0)
 
     return doc
@@ -1071,60 +1074,103 @@ def to_roman(n):
     return roman_num
 
 def extract_page_map(doc_path):
-    print("Extracting exact page numbers from Word via COM...", flush=True)
+    print("Extracting exact page numbers from PDF via PyMuPDF...", flush=True)
+    temp_pdf = os.path.abspath(doc_path.replace(".docx", "_temp.pdf"))
+    if os.path.exists(temp_pdf):
+        try:
+            os.remove(temp_pdf)
+        except Exception:
+            pass
+
+    time.sleep(0.5)
     pythoncom.CoInitialize()
     word = win32com.client.Dispatch('Word.Application')
     word.Visible = False
     word.DisplayAlerts = 0
-    doc = word.Documents.Open(os.path.abspath(doc_path))
-    
-    pages_info = {}
-    for p in doc.Paragraphs:
-        txt = p.Range.Text.strip()
-        if not txt:
-            continue
-
-        target_key = None
-        if txt.startswith('CHAPTER ') or txt in ['ABSTRACT', 'ABBREVIATIONS AND NOMENCLATURE', 'REFERENCES', 'ACKNOWLEDGMENTS', 'DECLARATION', 'TABLE OF CONTENTS', 'LIST OF FIGURES', 'LIST OF TABLES']:
-            target_key = txt
-        elif any(txt.startswith(f'{c}.') for c in range(1, 9)):
-            if len(txt) < 80 and not txt.endswith('.'):
-                target_key = txt
-        elif txt.startswith('Figure ') and ':' in txt:
-            target_key = txt.split(':')[0].strip()
-        elif txt.startswith('Table ') and ':' in txt:
-            target_key = txt.split(':')[0].strip()
-
-        if target_key:
-            # Skip paragraphs inside tables (e.g., TOC or List of Figures tables)
-            if p.Range.Tables.Count > 0:
-                continue
-            sec_idx = p.Range.Information(2)  # wdActiveEndSectionNumber
-            raw_page = p.Range.Information(1)  # wdActiveEndPageNumber
-            if sec_idx == 2:
-                page_val = to_roman(raw_page)
-            else:
-                page_val = str(raw_page)
-            pages_info[target_key] = page_val
-
-    doc.Close(False)
+    wdoc = word.Documents.Open(os.path.abspath(doc_path), ReadOnly=True, AddToRecentFiles=False)
+    wdoc.ExportAsFixedFormat(temp_pdf, 17)
+    wdoc.Close(False)
     word.Quit()
+
+    doc_pdf = fitz.open(temp_pdf)
+    sec2_start = None
+    sec3_start = None
+    for i, page in enumerate(doc_pdf):
+        txt = page.get_text()
+        if sec2_start is None and ("DECLARATION" in txt or "ACKNOWLEDGMENTS" in txt):
+            sec2_start = i + 1
+        if sec3_start is None and "CHAPTER 1" in txt and i > 4:
+            sec3_start = i + 1
+
+    def to_roman_local(n):
+        val = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+        syb = ["m", "cm", "d", "cd", "c", "xc", "l", "xl", "x", "ix", "v", "iv", "i"]
+        res = ""
+        idx = 0
+        while n > 0 and idx < len(val):
+            for _ in range(n // val[idx]):
+                res += syb[idx]
+                n -= val[idx]
+            idx += 1
+        return res
+
+    pages_info = {}
+    for i, page in enumerate(doc_pdf):
+        sheet = i + 1
+        txt = page.get_text()
+        if sec2_start and sheet < sec2_start:
+            continue
+        elif sec3_start and sheet < sec3_start:
+            pg_str = to_roman_local(sheet - sec2_start + 1)
+        elif sec3_start:
+            pg_str = str(sheet - sec3_start + 1)
+        else:
+            pg_str = str(sheet)
+
+        lines = [l.strip() for l in txt.split('\n') if l.strip()]
+        for l in lines:
+            if l.startswith("CHAPTER ") and len(l) < 30:
+                if l not in pages_info:
+                    pages_info[l] = pg_str
+            elif l in ['ABSTRACT', 'ABBREVIATIONS AND NOMENCLATURE', 'REFERENCES', 'ACKNOWLEDGMENTS', 'DECLARATION', 'TABLE OF CONTENTS', 'LIST OF FIGURES', 'LIST OF TABLES']:
+                if l not in pages_info:
+                    pages_info[l] = pg_str
+            elif any(l.startswith(f"{c}.") for c in range(1, 9)):
+                if len(l) < 70 and not l.endswith('.'):
+                    if l not in pages_info:
+                        pages_info[l] = pg_str
+            elif l.startswith("Figure ") and ":" in l:
+                k = l.split(":")[0].strip()
+                if k not in pages_info:
+                    pages_info[k] = pg_str
+            elif l.startswith("Table ") and ":" in l:
+                k = l.split(":")[0].strip()
+                if k not in pages_info:
+                    pages_info[k] = pg_str
+
+    doc_pdf.close()
+    if os.path.exists(temp_pdf):
+        try:
+            os.remove(temp_pdf)
+        except Exception:
+            pass
+
     return pages_info
 
 def main():
-    print("=== PASS 1: Generate initial document with preliminary TOC ===")
+    print("=== PASS 1: Generate initial document with preliminary TOC ===", flush=True)
     doc = build_document()
     doc.save(OUTPUT_FILE)
-    print(f"Pass 1 saved to: {OUTPUT_FILE}")
+    print(f"Pass 1 saved to: {OUTPUT_FILE}", flush=True)
 
-    print("=== PASS 2: Extract exact page numbers via Word ===")
+    print("=== PASS 2: Extract exact page numbers via Word & PDF ===", flush=True)
     page_map = extract_page_map(OUTPUT_FILE)
-    print("Extracted page map entries:", len(page_map))
+    print(f"Extracted {len(page_map)} page map entries successfully!", flush=True)
 
-    print("=== PASS 3: Rebuild document with exact synchronized page numbers ===")
+    print("=== PASS 3: Rebuild document with exact synchronized page numbers ===", flush=True)
     doc2 = build_document(page_map)
     doc2.save(OUTPUT_FILE)
-    print(f"Pass 3 saved to: {OUTPUT_FILE}")
+    print(f"Pass 3 saved to: {OUTPUT_FILE}", flush=True)
 
     print("=== PASS 4: Final verification and PDF Export via Word ===", flush=True)
     pdf_output = os.path.abspath(OUTPUT_FILE.replace(".docx", ".pdf"))
