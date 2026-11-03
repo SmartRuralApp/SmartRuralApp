@@ -146,12 +146,12 @@ def build_document(page_map=None):
     style_normal.paragraph_format.line_spacing = 1.15
     style_normal.paragraph_format.space_after = Pt(4)
 
-    def add_p(text, bold=False, italic=False, size=12, align=WD_ALIGN_PARAGRAPH.JUSTIFY, space_after=4, space_before=0):
+    def add_p(text, bold=False, italic=False, size=12, align=WD_ALIGN_PARAGRAPH.JUSTIFY, space_after=4, space_before=0, line_spacing=1.15):
         p = doc.add_paragraph()
         p.alignment = align
         p.paragraph_format.space_after = Pt(space_after)
         p.paragraph_format.space_before = Pt(space_before)
-        p.paragraph_format.line_spacing = 1.15
+        p.paragraph_format.line_spacing = line_spacing
         run = p.add_run(text)
         run.bold = bold
         run.italic = italic
@@ -1174,15 +1174,22 @@ def main():
 
     print("=== PASS 4: Final verification and PDF Export via Word ===", flush=True)
     pdf_output = os.path.abspath(OUTPUT_FILE.replace(".docx", ".pdf"))
+    if os.path.exists(pdf_output):
+        try:
+            os.remove(pdf_output)
+        except Exception:
+            pass
+
+    time.sleep(0.5)
     try:
         pythoncom.CoInitialize()
         word = win32com.client.Dispatch('Word.Application')
         word.Visible = False
         word.DisplayAlerts = 0
-        doc_final = word.Documents.Open(os.path.abspath(OUTPUT_FILE))
+        doc_final = word.Documents.Open(os.path.abspath(OUTPUT_FILE), ReadOnly=True, AddToRecentFiles=False)
         total_pages = doc_final.ComputeStatistics(2)
         print(f"Total pages in Word: {total_pages}", flush=True)
-        doc_final.SaveAs(pdf_output, FileFormat=17)
+        doc_final.ExportAsFixedFormat(pdf_output, 17)
         print(f"Exported PDF to: {pdf_output}", flush=True)
         doc_final.Close(False)
         word.Quit()
