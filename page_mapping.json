@@ -1,0 +1,234 @@
+{
+  "1. RUBY KUMARI KADKHA  (4JK23AD042)\r\u0007": 1,
+  "2. SAKSHI  (4JK23AD044)\r\u0007": 1,
+  "3. SUDEEPTHI  (4JK23AD056)\r\u0007": 1,
+  "4. THRISHA  (4JK23AD057)\r\u0007": 1,
+  "DECLARATION": 4,
+  "1. RUBY KUMARI KADKHA\r\u0007": 4,
+  "2. SAKSHI\r\u0007": 4,
+  "3. SUDEEPTHI\r\u0007": 4,
+  "4. THRISHA\r\u0007": 4,
+  "ACKNOWLEDGMENTS": 5,
+  "ABSTRACT": 6,
+  "ABBREVIATIONS AND NOMENCLATURE": 7,
+  "CHAPTER 1": 9,
+  "1.1 Problem Statement": 10,
+  "1.2 Objectives": 11,
+  "1.3 Scope": 13,
+  "CHAPTER 2": 15,
+  "Table 2.1": [
+    23,
+    "Table 2.1: Literature Survey Comparative Matrix"
+  ],
+  "2.1 Research Gap": 26,
+  "2.2 Overall Summary": 26,
+  "CHAPTER 3": 28,
+  "3.1 Existing System": 28,
+  "3.2 Drawbacks of Existing System": 29,
+  "1. Errors and Inconsistencies in Records": 29,
+  "2. Difficulties in Tax Collection and Financial Management": 29,
+  "3. Poor Complaint Tracking and Prioritization": 29,
+  "4. Limited Awareness of Government Welfare Schemes": 29,
+  "5. Risk of Losing Important Records": 30,
+  "6. Increased Workload and Reduced Productivity": 30,
+  "3.3 Proposed System": 30,
+  "3.4 Feasibility Analysis": 31,
+  "3.4.1 Technical Feasibility": 31,
+  "3.4.2 Economic Feasibility": 31,
+  "3.4.3 Operational Feasibility": 32,
+  "CHAPTER 4": 33,
+  "4.1 System Architecture": 33,
+  "Figure 4.1": [
+    33,
+    "Figure 4.1: System Architecture of Smart Rural App"
+  ],
+  "1. Client / Presentation Layer": 33,
+  "2. Application / API Layer": 34,
+  "3. Python Machine Learning Subsystem": 34,
+  "4. Data Persistence Layer": 34,
+  "5. External Telecommunications Gateway": 34,
+  "4.2 Module Description": 35,
+  "Figure 4.2": [
+    35,
+    "Figure 4.2: Module Architecture of Smart Rural Web Application"
+  ],
+  "1. Authentication and Role-Based Access Control (RBAC) Module": 35,
+  "2. Property and Tax Management Module": 35,
+  "3. Payment and Appointment Scheduling Module": 36,
+  "4. Grievance Redressal and Priority Triage Module": 36,
+  "5. Public Services and Welfare Schemes Catalog Module": 36,
+  "6. AI-Based Welfare Scheme Recommendation Module": 36,
+  "7. Automated SMS Reminders and Gateway Console Module": 36,
+  "8. Bilingual AI Virtual Assistant Module": 36,
+  "4.3 Database Design": 37,
+  "Figure 4.3": [
+    37,
+    "Figure 4.3: Entity Relationship (ER) Diagram"
+  ],
+  "Table 4.1": [
+    37,
+    "Table 4.1: Comprehensive Relational Database Schema and Key Constraints"
+  ],
+  "4.4 Data Flow Analysis": 40,
+  "Figure 4.4": [
+    41,
+    "Figure 4.4: Data Flow Diagram \u2013 Level 0 (Context Level)"
+  ],
+  "Figure 4.5": [
+    41,
+    "Figure 4.5: Data Flow Diagram \u2013 Level 1 (Functional Decomposition)"
+  ],
+  "4.5 UML Use Case Modeling": 42,
+  "Figure 4.6": [
+    42,
+    "Figure 4.6: UML Use Case Diagram of Smart Rural App"
+  ],
+  "4.6 System Workflow & Process Logic": 42,
+  "Figure 4.7": [
+    43,
+    "Figure 4.7: Overall System Workflow Flowchart"
+  ],
+  "4.7 Behavioral Modeling & Sequence Analysis": 43,
+  "Figure 4.8": [
+    44,
+    "Figure 4.8: Sequence Diagram for Grievance Redressal & AI Prioritization"
+  ],
+  "4.8 Deployment Architecture": 44,
+  "Figure 4.9": [
+    45,
+    "Figure 4.9: Deployment Diagram of Smart Rural Web Application"
+  ],
+  "CHAPTER 5": 46,
+  "5.1 Hardware Requirements": 46,
+  "Table 5.1": [
+    46,
+    "Table 5.1: Minimum and Recommended Hardware Specifications"
+  ],
+  "1.0 GHz Quad-Core (Mobile/Desktop)\r\u0007": 46,
+  "5.2 Software Requirements": 47,
+  "Table 5.2": [
+    47,
+    "Table 5.2: Software Technology Stack and Production Dependencies"
+  ],
+  "5.3 Functional Requirements": 48,
+  "5.4 Non-Functional Requirements": 50,
+  "1. Security and Access Control": 50,
+  "2. Performance and Latency": 50,
+  "3. Reliability, Data Integrity, and ACID Compliance": 50,
+  "4. Usability and Vernacular Accessibility": 51,
+  "5. Maintainability, Modularity, and Extensibility": 51,
+  "CHAPTER 6": 52,
+  "6.1 System Working and Runtime Lifecycle": 52,
+  "6.2 Frontend Implementation": 53,
+  "6.3 Backend Implementation": 53,
+  "6.4 Database Implementation": 54,
+  "6.5 Implementation of Core Functional Modules": 54,
+  "6.5.1 Module 1: Citizen and Administrator Authentication": 55,
+  "6.5.2 Module 2: Tax Assessment and Defaulter Prediction": 55,
+  "6.5.3 Module 3: Payment and Appointment Scheduling": 55,
+  "6.5.4 Module 4: Grievance Redressal and Priority Classification": 56,
+  "6.5.5 Module 5: Welfare Scheme Recommendation": 56,
+  "6.5.6 Module 6: Automated SMS Reminders and Gateway Console": 57,
+  "6.5.7 Module 7: Bilingual AI Virtual Assistant": 57,
+  "6.6 Database Interaction and Parameterized Queries": 58,
+  "1. Retrieving Active Tax Records by Property ID and Fiscal Year": 58,
+  "2. Inserting a New Grievance with AI Priority and XAI Rationale": 58,
+  "3. Updating Tax Payment Settlement and Lowering Defaulter Risk": 58,
+  "6.7 Machine Learning Pipeline Implementation": 58,
+  "CHAPTER 7": 61,
+  "7.1 Results": 61,
+  "7.1.1 Tax Defaulter Risk Predictor Evaluation": 61,
+  "Table 7.1": [
+    62,
+    "Table 7.1: Model Comparison Metrics for Tax Defaulter Risk Prediction (Dataset: 482 records)"
+  ],
+  "Figure 7.1": [
+    62,
+    "Figure 7.1: Multi-Model Evaluation Comparison for Tax Defaulter Prediction"
+  ],
+  "7.1.2 Grievance Priority Classifier Evaluation": 62,
+  "Table 7.2": [
+    63,
+    "Table 7.2: Model Comparison Metrics for Grievance Priority Classification (Dataset: 6,373 records)"
+  ],
+  "Figure 7.2": [
+    64,
+    "Figure 7.2: Multi-Model Evaluation Comparison for Grievance Priority Classification"
+  ],
+  "7.1.3 Welfare Scheme Eligibility Recommender Evaluation": 64,
+  "Table 7.3": [
+    64,
+    "Table 7.3: Model Comparison Metrics for Welfare Scheme Recommendation (Dataset: 136 records)"
+  ],
+  "Figure 7.3": [
+    65,
+    "Figure 7.3: Multi-Model Evaluation Comparison for Welfare Scheme Recommendation"
+  ],
+  "7.1.4 Live System Execution Screenshots": 65,
+  "Figure 7.4": [
+    65,
+    "Figure 7.4: Citizen Portal Landing Page and Quick Access Navigation"
+  ],
+  "Figure 7.5": [
+    66,
+    "Figure 7.5: Property Tax Search and Payment Interface"
+  ],
+  "Figure 7.6": [
+    66,
+    "Figure 7.6: Public Panchayat Services and Welfare Schemes Catalog"
+  ],
+  "Figure 7.7": [
+    67,
+    "Figure 7.7: Citizen Demographic Registration Interface"
+  ],
+  "Figure 7.8": [
+    67,
+    "Figure 7.8: Citizen Login Interface with Dual-Credential Authentication"
+  ],
+  "Figure 7.9": [
+    68,
+    "Figure 7.9: Citizen Dashboard with AI Scheme Recommendations"
+  ],
+  "Figure 7.10": [
+    68,
+    "Figure 7.10: Administrator Secure Login Console"
+  ],
+  "Figure 7.11": [
+    69,
+    "Figure 7.11: Master Administrator Dashboard with Revenue & Grievance KPIs"
+  ],
+  "Figure 7.12": [
+    69,
+    "Figure 7.12: Tax Assessment Records and ML Defaulter Risk Console"
+  ],
+  "Figure 7.13": [
+    70,
+    "Figure 7.13: Grievance Redressal and AI Priority Triage Console"
+  ],
+  "Figure 7.14": [
+    70,
+    "Figure 7.14: Machine Learning Model Performance & Retraining Dashboard"
+  ],
+  "Figure 7.15": [
+    71,
+    "Figure 7.15: Automated SMS Reminder Console and Gateway Logs"
+  ],
+  "Figure 7.16": [
+    71,
+    "Figure 7.16: Citizen Demographics Management Registry"
+  ],
+  "Figure 7.17": [
+    72,
+    "Figure 7.17: Welfare Schemes Catalog and Criteria Management Console"
+  ],
+  "7.2 Discussion": 72,
+  "CHAPTER 8": 74,
+  "8.1 Future Scope": 74,
+  "1. Native Mobile Applications": 74,
+  "2. Real-Time Payment Gateway Integration": 74,
+  "3. Aadhaar-Based Biometric e-KYC": 74,
+  "4. Vernacular Voice Assistant": 74,
+  "5. IoT Village Telemetry Integration": 75,
+  "6. State & National Portal Interoperability": 75,
+  "REFERENCES": 76
+}
