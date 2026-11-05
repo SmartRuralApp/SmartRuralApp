@@ -1,82 +1,469 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System: AI-Powered Smart Rural Community Digital Governance System</title>
+  <title>Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System: AI-Powered Smart Rural
+    Community Digital Governance System</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Open Sans', sans-serif; background: #f5f5f5; color: #212121; line-height: 1.6; }
-    .header { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; padding: 1rem 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-    .navbar { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 2rem; }
-    .logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: white; font-weight: 700; font-size: 1.3rem; }
-    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
-    .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px; transition: 0.3s; }
-    .nav-links a:hover { background: rgba(255,255,255,0.15); }
-    .hero { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; text-align: center; padding: 4rem 2rem; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
-    .stat-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; gap: 1rem; align-items: center; }
-    .stat-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; }
-    .stat-icon.green { background: #2e7d32; }
-    .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: 0.3s; }
-    .btn-primary { background: #ff8f00; color: white; }
-    .btn-primary:hover { background: #ffb300; transform: translateY(-2px); }
-    .card { background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 1.5rem; margin-bottom: 1.5rem; }
-    .search-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 2rem 0; }
-    .search-tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
-    .search-tab { padding: 0.5rem 1rem; border: none; background: transparent; cursor: pointer; border-bottom: 2px solid transparent; }
-    .search-tab.active { border-bottom-color: #2e7d32; color: #2e7d32; font-weight: 600; }
-    .search-form { display: flex; gap: 1rem; }
-    .search-input { flex: 1; padding: 0.875rem; border: 2px solid #eee; border-radius: 6px; font-size: 1rem; }
-    .search-input:focus { outline: none; border-color: #2e7d32; }
-    .tax-result { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left: 4px solid #2e7d32; }
-    .tax-detail { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
-    .tax-label { font-size: 0.85rem; color: #757575; margin-bottom: 0.25rem; }
-    .tax-value { font-weight: 600; }
-    .status-badge { padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-    .status-badge.paid { background: #e8f5e9; color: #2e7d32; }
-    .status-badge.unpaid { background: #fff3e0; color: #ff8f00; }
-    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-    .service-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .service-icon { width: 50px; height: 50px; background: #2e7d32; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-bottom: 1rem; }
-    .admin-layout { display: flex; min-height: 100vh; }
-    .sidebar { width: 260px; background: linear-gradient(180deg, #1565c0 0%, #0d47a1 100%); color: white; padding: 1.5rem 0; position: fixed; height: 100vh; }
-    .admin-content { margin-left: 260px; padding: 2rem; }
-    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .admin-content { margin-left: 0; } }
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; }
-    .modal { background: white; border-radius: 12px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
-    .modal-header { padding: 1.5rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-    .modal-body { padding: 1.5rem; }
-    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #eee; display: flex; gap: 1rem; justify-content: flex-end; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
-    th { background: #f8f9fa; font-weight: 600; }
-    .form-group { margin-bottom: 1.25rem; }
-    .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
-    .form-control { width: 100%; padding: 0.75rem; border: 2px solid #eee; border-radius: 6px; }
-    .form-control:focus { border-color: #2e7d32; outline: none; }
-    .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%); }
-    .login-card { background: white; border-radius: 12px; padding: 2.5rem; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-    .login-error { background: #ffeb ee; color: #e53935; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; }
-    .success-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%); }
-    .success-card { background: white; border-radius: 12px; padding: 3rem; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-    .custom-alert { position: fixed; top: 100px; right: 20px; padding: 1rem 1.5rem; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 3000; animation: slideIn 0.3s ease; }
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    .table-filter { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
-    .filter-btn { padding: 0.5rem 1rem; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; cursor: pointer; }
-    .filter-btn.active { background: #2e7d32; color: white; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #f5f5f5;
+      color: #212121;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+      color: white;
+      padding: 1rem 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: white;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+      color: white;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .stat-icon.green {
+      background: #2e7d32;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: 0.3s;
+    }
+
+    .btn-primary {
+      background: #ff8f00;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #ffb300;
+      transform: translateY(-2px);
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-section {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin: 2rem 0;
+    }
+
+    .search-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-tab {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .search-tab.active {
+      border-bottom-color: #2e7d32;
+      color: #2e7d32;
+      font-weight: 600;
+    }
+
+    .search-form {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 0.875rem;
+      border: 2px solid #eee;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #2e7d32;
+    }
+
+    .tax-result {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #2e7d32;
+    }
+
+    .tax-detail {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .tax-label {
+      font-size: 0.85rem;
+      color: #757575;
+      margin-bottom: 0.25rem;
+    }
+
+    .tax-value {
+      font-weight: 600;
+    }
+
+    .status-badge {
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-badge.paid {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .status-badge.unpaid {
+      background: #fff3e0;
+      color: #ff8f00;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .service-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-icon {
+      width: 50px;
+      height: 50px;
+      background: #2e7d32;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #1565c0 0%, #0d47a1 100%);
+      color: white;
+      padding: 1.5rem 0;
+      position: fixed;
+      height: 100vh;
+    }
+
+    .admin-content {
+      margin-left: 260px;
+      padding: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .admin-content {
+        margin-left: 0;
+      }
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #eee;
+      border-radius: 6px;
+    }
+
+    .form-control:focus {
+      border-color: #2e7d32;
+      outline: none;
+    }
+
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .login-error {
+      background: #ffeb ee;
+      color: #e53935;
+      padding: 0.75rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+
+    .success-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+    }
+
+    .success-card {
+      background: white;
+      border-radius: 12px;
+      padding: 3rem;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .custom-alert {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 3000;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .table-filter {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .filter-btn.active {
+      background: #2e7d32;
+      color: white;
+    }
   </style>
 </head>
+
 <body>
   <!-- Header -->
   <header class="header">
     <nav class="navbar">
       <a href="#" class="logo">
         <i class="fas fa-landmark"></i>
-        <span>Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System: AI-Powered Smart Rural Community Digital Governance System</span>
+        <span>Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System</span>
       </a>
       <ul class="nav-links">
         <li><a href="#home" class="nav-active">Home</a></li>
@@ -90,7 +477,7 @@
   <!-- Home Section -->
   <section id="home" class="hero">
     <div class="container">
-      <h1>Welcome to Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System: AI-Powered Smart Rural Community Digital Governance System</h1>
+      <h1>Welcome to Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System </h1>
       <p>Digitize your Panchayat services - Pay taxes online, view services, and manage records efficiently.</p>
       <div class="stats-grid">
         <div class="stat-card">
@@ -144,7 +531,8 @@
           </button>
         </div>
         <div class="search-form">
-          <input type="text" id="searchInput" class="search-input" placeholder="Enter Property ID (PROP001) or Owner Name">
+          <input type="text" id="searchInput" class="search-input"
+            placeholder="Enter Property ID (PROP001) or Owner Name">
           <button onclick="searchTax()" class="btn btn-primary">
             <i class="fas fa-search"></i> Search
           </button>
@@ -290,7 +678,10 @@
           </div>
           <!-- Tax List -->
           <div class="card">
-            <h3>Tax Records <span style="font-size: 0.8rem; color: #757575;">(Filter: <button onclick="filterTaxes('all')" class="filter-btn active">All</button> <button onclick="filterTaxes('paid')" class="filter-btn">Paid</button> <button onclick="filterTaxes('unpaid')" class="filter-btn">Unpaid</button>)</span></h3>
+            <h3>Tax Records <span style="font-size: 0.8rem; color: #757575;">(Filter: <button
+                  onclick="filterTaxes('all')" class="filter-btn active">All</button> <button
+                  onclick="filterTaxes('paid')" class="filter-btn">Paid</button> <button onclick="filterTaxes('unpaid')"
+                  class="filter-btn">Unpaid</button>)</span></h3>
             <div id="taxList">
               <table>
                 <thead>
@@ -343,7 +734,7 @@
 
     function searchTax() {
       const query = document.getElementById('searchInput').value.toLowerCase();
-      const results = properties.filter(p => 
+      const results = properties.filter(p =>
         p.property_id.toLowerCase().includes(query) || p.owner_name.toLowerCase().includes(query)
       );
       displayTaxResults(results);
@@ -387,7 +778,7 @@
     }
 
     // Admin
-    document.getElementById('adminForm').addEventListener('submit', function(e) {
+    document.getElementById('adminForm').addEventListener('submit', function (e) {
       e.preventDefault();
       const user = document.getElementById('adminUser').value;
       const pass = document.getElementById('adminPass').value;
@@ -405,14 +796,14 @@
       const collection = properties.reduce((sum, p) => sum + (p.taxes.reduce((s, t) => t.status === 'Paid' ? s + t.amount : s, 0)), 0);
       const pending = properties.reduce((sum, p) => sum + p.taxes.filter(t => t.status === 'Unpaid').length, 0);
       const totalProps = properties.length;
-      
+
       document.getElementById('totalCollection').textContent = '₹' + collection.toLocaleString();
       document.getElementById('pendingTaxes').textContent = pending;
       document.getElementById('totalProperties').textContent = totalProps;
     }
 
     // Tax Management
-    document.getElementById('addTaxForm').addEventListener('submit', function(e) {
+    document.getElementById('addTaxForm').addEventListener('submit', function (e) {
       e.preventDefault();
       const newProp = {
         property_id: document.getElementById('newPropertyId').value,
@@ -498,5 +889,5 @@
     loadTaxList();
   </script>
 </body>
-</html>
 
+</html>

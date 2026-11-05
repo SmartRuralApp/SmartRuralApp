@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Citizen Portal Login - Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System: AI-Powered Smart Rural Community Digital Governance System</title>
+  <title>Citizen Portal Login - Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System</title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
 </head>
-<body style="background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
+
+<body
+  style="background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
 
   <!-- Header / Navigation -->
   <header class="header" style="background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); width:100%;">
@@ -17,7 +22,7 @@
         <div class="logo-icon">
           <i class="fas fa-landmark"></i>
         </div>
-        <span class="logo-text">Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System: AI-Powered Smart Rural Community Digital Governance System</span>
+        <span class="logo-text">Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System</span>
       </a>
       <ul class="nav-links">
         <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
@@ -30,63 +35,82 @@
 
   <!-- Login Main Content -->
   <main style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px;">
-    <div class="card" style="width: 100%; max-width: 450px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 30px; background: white;">
+    <div class="card"
+      style="width: 100%; max-width: 450px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 30px; background: white;">
       <div class="text-center mb-4">
-        <div style="width: 70px; height: 70px; background: #E8F5E9; color: #2E7D32; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 2rem;">
+        <div
+          style="width: 70px; height: 70px; background: #E8F5E9; color: #2E7D32; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 2rem;">
           <i class="fas fa-user-circle"></i>
         </div>
-        <h2 style="font-weight: 700; color: var(--primary); font-family: 'Poppins', sans-serif;">Citizen Services Portal</h2>
-        <p class="text-muted" style="font-size: 0.9rem;">Access scheme eligibility, file complaints, and view your tax compliance status.</p>
+        <h2 style="font-weight: 700; color: var(--primary); font-family: 'Poppins', sans-serif;">Citizen Services Portal
+        </h2>
+        <p class="text-muted" style="font-size: 0.9rem;">Access scheme eligibility, file complaints, and view your tax
+          compliance status.</p>
       </div>
 
       <% if (error) { %>
-        <div class="alert overdue" style="padding: 12px; margin-bottom: 20px; border-radius: 8px; background-color: #FFEBEE; color: #C62828; display: flex; align-items: center; gap: 10px; font-size: 0.9rem;">
+        <div class="alert overdue"
+          style="padding: 12px; margin-bottom: 20px; border-radius: 8px; background-color: #FFEBEE; color: #C62828; display: flex; align-items: center; gap: 10px; font-size: 0.9rem;">
           <i class="fas fa-exclamation-circle"></i>
-          <span><%= error %></span>
+          <span>
+            <%= error %>
+          </span>
         </div>
-      <% } %>
-      <form action="/user-login" method="POST">
-        <!-- Username input -->
-        <div class="form-group mb-3">
-          <label class="form-label" for="username" style="font-weight: 600;"><i class="fas fa-user"></i> Username / Property ID</label>
-          <input type="text" id="username" name="username" class="form-control" placeholder="e.g. ramesh or PROP001" required>
-        </div>
+        <% } %>
+          <form action="/user-login" method="POST">
+            <!-- Username input -->
+            <div class="form-group mb-3">
+              <label class="form-label" for="username" style="font-weight: 600;"><i class="fas fa-user"></i> Username /
+                Property ID</label>
+              <input type="text" id="username" name="username" class="form-control" placeholder="e.g. ramesh or PROP001"
+                required>
+            </div>
 
-        <!-- Password input -->
-        <div class="form-group mb-4">
-          <label class="form-label" for="password" style="font-weight: 600;"><i class="fas fa-lock"></i> Password / Mobile No.</label>
-          <input type="password" id="password" name="password" class="form-control" placeholder="Enter password or mobile" required>
-        </div>
+            <!-- Password input -->
+            <div class="form-group mb-4">
+              <label class="form-label" for="password" style="font-weight: 600;"><i class="fas fa-lock"></i> Password /
+                Mobile No.</label>
+              <input type="password" id="password" name="password" class="form-control"
+                placeholder="Enter password or mobile" required>
+            </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600;">
-          <i class="fas fa-sign-in-alt"></i> Access Dashboard
-        </button>
-      </form>
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary"
+              style="width: 100%; justify-content: center; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600;">
+              <i class="fas fa-sign-in-alt"></i> Access Dashboard
+            </button>
+          </form>
 
-      <div style="margin-top: 20px; text-align: center; font-size: 0.9rem;">
-        <span class="text-muted">New citizen? </span>
-        <a href="/user-register" style="color: var(--primary); font-weight: 600; text-decoration: none;">Register Account</a>
-      </div>
+          <div style="margin-top: 20px; text-align: center; font-size: 0.9rem;">
+            <span class="text-muted">New citizen? </span>
+            <a href="/user-register" style="color: var(--primary); font-weight: 600; text-decoration: none;">Register
+              Account</a>
+          </div>
 
-      <!-- Note block -->
-      <div style="margin-top: 25px; padding-top: 20px; border-top: 1px dashed #EEE; text-align: center;">
-        <span class="text-muted" style="font-size: 0.8rem;"><i class="fas fa-info-circle"></i> Seeded Accounts (Username / Pass):</span><br>
-        <div style="font-size: 0.8rem; background: #F9F9F9; padding: 8px; border-radius: 6px; display: inline-block; text-align: left; margin-top: 5px;">
-          • Ramesh: <strong>ramesh</strong> / <strong>user123</strong><br>
-          • Lakshmi: <strong>lakshmi</strong> / <strong>user123</strong>
-        </div>
-      </div>
+          <!-- Note block -->
+          <div style="margin-top: 25px; padding-top: 20px; border-top: 1px dashed #EEE; text-align: center;">
+            <span class="text-muted" style="font-size: 0.8rem;"><i class="fas fa-info-circle"></i> Seeded Accounts
+              (Username / Pass):</span><br>
+            <div
+              style="font-size: 0.8rem; background: #F9F9F9; padding: 8px; border-radius: 6px; display: inline-block; text-align: left; margin-top: 5px;">
+              • Ramesh: <strong>ramesh</strong> / <strong>user123</strong><br>
+              • Lakshmi: <strong>lakshmi</strong> / <strong>user123</strong>
+            </div>
+          </div>
     </div>
   </main>
 
   <!-- Footer -->
   <footer class="footer" style="background: white; border-top: 1px solid #E0E0E0; width:100%; padding: 15px 0;">
-    <div class="footer-content" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-      <div class="footer-logo" style="color: var(--primary); font-weight: 700;">Smart Gram Panchayat: AI-Powered Smart Rural Community Digital Governance System: AI-Powered Smart Rural Community Digital Governance System</div>
-      <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Digitizing Rural Governance | © 2026 All Rights Reserved</p>
+    <div class="footer-content"
+      style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+      <div class="footer-logo" style="color: var(--primary); font-weight: 700;">Smart Gram Panchayat: AI-Powered Smart
+        Rural Community Digital Governance System: AI-Powered Smart Rural Community Digital Governance System</div>
+      <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Digitizing Rural Governance | © 2026 All
+        Rights Reserved</p>
     </div>
   </footer>
 
 </body>
+
 </html>
